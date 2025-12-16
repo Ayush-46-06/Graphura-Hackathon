@@ -1,14 +1,22 @@
-import express from "express"
-import cors from "cors"
-import { errorMiddleware } from "./middleware/error.middleware"
-const app = express()
-app.use(errorMiddleware)
-app.use(cors())
-app.use(express.json())
-app.use(express.urlencoded({extends:true}))
+import express from "express";
+import cors from "cors";
+import { errorMiddleware } from "./middleware/error.middleware.js";
+import authRoutes from "./routes/auth.routes.js"
 
-app.get("/health",(_,res)=>{
-  res.status(200).json({status:"OK"})
-})
+const app = express();
 
-export default app
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
+app.use("/api/auth",authRoutes)
+
+app.get("/health", (_, res) => {
+  res.status(200).json({ status: "OK" });
+});
+
+
+app.use(errorMiddleware);
+
+export default app;
