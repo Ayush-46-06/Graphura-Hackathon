@@ -44,16 +44,8 @@ export const registerSchema = joi.object({
       "any.required": "University is required"
     }),
 
-  college: joi.string()
-    .hex()
-    .length(24)
-    .required()
-    .messages({
-      "string.hex": "Invalid college id",
-      "string.length": "Invalid college id"
-    })
-});
-
+  college: joi.string(),
+  })
 
 export const loginSchema = joi.object({
   email: joi.string()

@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User from "../models/User.model.js";
+import User from "../model/User.model.js";
 import { config } from "../config/env.js";
 
 export const register = async (req, res) => {
@@ -16,7 +16,7 @@ export const register = async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = await User.create({
+  await User.create({
     name,
     email,
     password: hashedPassword,
@@ -38,7 +38,7 @@ export const login = async (req, res) => {
   if (!user) {
     return res.status(400).json({
       success: false,
-      message: "Invalid credentials"
+      message: "Email not found please register"
     });
   }
 
@@ -46,7 +46,7 @@ export const login = async (req, res) => {
   if (!isMatch) {
     return res.status(400).json({
       success: false,
-      message: "Invalid credentials"
+      message: "Incorrect password"
     });
   }
 

@@ -18,5 +18,5 @@ const adminSchema = mongoose.Schema({
     {timestamps:true}
 )
 
-const Admin = mongoose.model("Admin",adminSchema)
+const Admin = mongoose.model("Hackathon_Admin",adminSchema)
 export default Admin

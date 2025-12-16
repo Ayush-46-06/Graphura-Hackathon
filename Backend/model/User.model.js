@@ -1,55 +1,59 @@
 import mongoose from "mongoose";
+
 const userSchema = mongoose.Schema(
   {
     name: {
-      required: true,
       type: String,
+      required: true,
       trim: true,
     },
     email: {
-      required: true,
       type: String,
+      required: true,
       unique: true,
       lowercase: true,
       trim: true,
     },
     password: {
-      required: true,
       type: String,
+      required: true,
       select: false,
       trim: true,
     },
     contactNumber: {
       type: String,
+      required: true,
     },
     university: {
       type: String,
+      required: true,
     },
     college: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "College",
+      type:String,
+      required:true,
+
     },
     role: {
       type: String,
       enum: ["user", "admin"],
       default: "user",
     },
-    hackathons:[
+    hackathons: [
       {
-        hackathon:{
-          type:mongoose.Schema.Types.ObjectId,
-          ref:"Hackathon"
+        hackathon: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Hackathon",
         },
-        result:{
-          type:String,
-          enum:["pending","winner","lost"],
-          default:"pending"
+        result: {
+          type: String,
+          enum: ["pending", "winner", "lost"],
+          default: "pending",
         },
-        score:{
-          type:Number,
-          default:0
-        }
-      }
+        score: {
+          type: Number,
+          default: 0,
+        },
+      },
     ],
     isActive: {
       type: Boolean,
@@ -59,5 +63,5 @@ const userSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model("Hackathon_User", userSchema);
 export default User;
