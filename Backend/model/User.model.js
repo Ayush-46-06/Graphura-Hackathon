@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import { ROLES,ROLE_ARRAY } from "../config/roles.js";
 const userSchema = mongoose.Schema(
   {
     name: {
@@ -20,6 +20,10 @@ const userSchema = mongoose.Schema(
       select: false,
       trim: true,
     },
+    address: {
+      type: String,
+      required: true,
+    },
     contactNumber: {
       type: String,
       required: true,
@@ -31,12 +35,11 @@ const userSchema = mongoose.Schema(
     college: {
       type:String,
       required:true,
-
     },
     role: {
       type: String,
-      enum: ["user", "admin"],
-      default: "user",
+      enum: ROLE_ARRAY,
+      default: ROLES.USER,
     },
     hackathons: [
       {
