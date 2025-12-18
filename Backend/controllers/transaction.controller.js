@@ -1,9 +1,12 @@
-import Transaction from "../model/Transaction.model.js";
+import Transaction from "../models/Transaction.model.js";
 
 export const createTransaction = async (req, res) => {
+  const { hackathonId, amount } = req.body;
+
   const transaction = await Transaction.create({
     user: req.user._id,
-    ...req.body
+    hackathon: hackathonId, 
+    amount
   });
 
   res.status(201).json({
@@ -11,7 +14,6 @@ export const createTransaction = async (req, res) => {
     data: transaction
   });
 };
-
 export const updateTransactionStatus = async (req, res) => {
   const transaction = await Transaction.findByIdAndUpdate(
     req.params.id,
@@ -26,7 +28,9 @@ export const updateTransactionStatus = async (req, res) => {
 };
 
 export const getMyTransactions = async (req, res) => {
-  const transactions = await Transaction.find({ user: req.user._id });
+  const transactions = await Transaction.find({ user: req.user._id })
+    .populate("hackathon", "title startDate endDate status");
+
   res.json({ success: true, data: transactions });
 };
 

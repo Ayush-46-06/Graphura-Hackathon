@@ -41,23 +41,7 @@ const userSchema = mongoose.Schema(
       enum: ROLE_ARRAY,
       default: ROLES.USER,
     },
-    hackathons: [
-      {
-        hackathon: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Hackathon",
-        },
-        result: {
-          type: String,
-          enum: ["pending", "winner", "lost"],
-          default: "pending",
-        },
-        score: {
-          type: Number,
-          default: 0,
-        },
-      },
-    ],
+    
     isActive: {
       type: Boolean,
       default: true,

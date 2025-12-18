@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
-const transactionSchema = mongoose.Schema(
+const registraionSchema = mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Hackathon_User",
       required: true,
     },
     hackathon: {
@@ -12,20 +12,14 @@ const transactionSchema = mongoose.Schema(
       ref: "Hackathon",
       required: true,
     },
-    amount: {
-      type: Number,
-      required: true,
-    },
-    paymentId: String,
     status: {
       type: String,
-      enum: ["success", "pending", "rejected"],
+      enum: ["pending", "completed"],
       default: "pending",
     },
   },
   { timestamps: true }
 );
 
-const Transaction = mongoose.model("Transaction", transactionSchema);
-
-export default Transaction;
+const  Registration = mongoose.model("Registration",registraionSchema)
+export default Registration

@@ -22,11 +22,11 @@ const hackathonSchema = mongoose.Schema(
     },
     participants: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Hackathon_User",
     },
     winners: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Hackathon_User",
     },
   },
   { timestamps: true }
