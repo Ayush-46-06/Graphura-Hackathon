@@ -1,6 +1,6 @@
-import User from "../model/User.model.js";
-import Hackathon from "../model/Hackathon.model.js";
-import Certificate from "../model/Certificate.model.js";
+import User from "../models/User.model.js";
+import Hackathon from "../models/Hackathon.model.js";
+import Certificate from "../models/Certificate.model.js";
 import googleSheetService from "../services/googleSheet.service.js";
 
 export const getAllUsers = async (req, res) => {

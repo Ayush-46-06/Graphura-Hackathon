@@ -1,10 +1,10 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User from "../model/User.model.js";
+import User from "../models/User.model.js";
 import { config } from "../config/env.js";
 
 export const register = async (req, res) => {
-  const { name, email, password, contactNumber, university, college } = req.body;
+  const { name, email, password, contactNumber, university, college,address } = req.body;
 
   const exists = await User.findOne({ email });
   if (exists) {
@@ -22,7 +22,8 @@ export const register = async (req, res) => {
     password: hashedPassword,
     contactNumber,
     university,
-    college
+    college,
+    address
   });
 
   res.status(201).json({
@@ -35,10 +36,11 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email }).select("+password");
+
   if (!user) {
     return res.status(400).json({
       success: false,
-      message: "Email not found please register"
+      message: "Email not found, please register"
     });
   }
 
@@ -50,14 +52,22 @@ export const login = async (req, res) => {
     });
   }
 
+
+  user.password = undefined;
+
   const token = jwt.sign(
-    { id: user._id },
+    { id: user._id, role: user.role },
     config.JWT_SECRET,
     { expiresIn: "7d" }
   );
 
   res.json({
     success: true,
-    token
+    token,
+    user: {
+      id: user._id,
+      email: user.email,
+      role: user.role
+    }
   });
 };

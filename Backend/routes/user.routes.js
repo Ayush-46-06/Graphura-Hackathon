@@ -1,8 +1,8 @@
 import express from "express";
 import {getProfile,updateProfile,myHackathons,downloadCertificate} from "../controllers/user.controller.js";
-import { authMiddleware } from "../middleware/auth.middleware.js";
-import { updateProfileSchema } from "../validator/auth.validator.js";
-import { validateBody } from "../middleware/validate.middleware.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
+import { updateProfileSchema } from "../validators/auth.validator.js";
+import { validateBody } from "../middlewares/validate.middleware.js";
 
 const router = express.Router();
 

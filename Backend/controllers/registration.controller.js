@@ -1,4 +1,4 @@
-import Registration from "../model/Registration.model.js";
+import Registration from "../models/Registration.model.js";
 
 export const registerForHackathon = async (req, res) => {
   const { hackathonId } = req.body;

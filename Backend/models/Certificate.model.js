@@ -4,7 +4,7 @@ const certificateSchema = mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Hackathon_User",
       required: true,
     },
     hackathon: {

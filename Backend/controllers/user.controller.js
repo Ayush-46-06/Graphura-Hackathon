@@ -1,6 +1,7 @@
-import User from "../model/User.model.js";
-import Certificate from "../model/Certificate.model.js";
-import Hackathon from "../model/Hackathon.model.js";
+import User from "../models/User.model.js";
+import Certificate from "../models/Certificate.model.js";
+
+import Registration from "../models/Registration.model.js";
 export const getProfile = async (req, res) => {
   res.json({
     success: true,
@@ -21,15 +22,19 @@ export const updateProfile = async (req, res) => {
   });
 };
 
+
+
 export const myHackathons = async (req, res) => {
-  const user = await User.findById(req.user._id)
-    .populate("hackathons.hackathon");
+  const registrations = await Registration.find({
+    user: req.user._id
+  }).populate("hackathon");
 
   res.json({
     success: true,
-    data: user.hackathons
+    data: registrations
   });
 };
+
 
 export const downloadCertificate = async (req, res) => {
   const certificate = await Certificate.findOne({

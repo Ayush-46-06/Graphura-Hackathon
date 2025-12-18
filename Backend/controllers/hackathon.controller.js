@@ -1,4 +1,4 @@
-import Hackathon from "../model/Hackathon.model.js";
+import Hackathon from "../models/Hackathon.model.js";
 
 export const createHackathon = async (req, res) => {
   const hackathon = await Hackathon.create(req.body);

@@ -1,6 +1,6 @@
-import Registration from "../model/Registration.model.js";
-import Transaction from "../model/Transaction.model.js";
-import Hackathon from "../model/Hackathon.model.js";
+import Registration from "../models/Registration.model.js";
+import Transaction from "../models/Transaction.model.js";
+import Hackathon from "../models/Hackathon.model.js";
 
 export const adminDashboardOverview = async (req, res) => {
   const totalHackathons = await Hackathon.countDocuments();
