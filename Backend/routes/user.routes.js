@@ -9,6 +9,10 @@ const router = express.Router();
 router.get("/profile", authMiddleware, getProfile);
 router.put("/profile", authMiddleware,validateBody(updateProfileSchema),updateProfile);
 router.get("/hackathons", authMiddleware, myHackathons);
-router.get("/certificate/:hackathonId",authMiddleware,downloadCertificate);
+router.get(
+  "/certificate/:hackathonId",
+  authMiddleware,
+  downloadCertificate
+);
 
 export default router;
