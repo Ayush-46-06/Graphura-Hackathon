@@ -16,11 +16,16 @@ const validate = (schema, property) => {
       });
     }
 
-    req[property] = value;
+  
+    if (property === "query") {
+      req.validatedQuery = value;
+    } else {
+      req[property] = value;
+    }
+
     next();
   };
 };
-
 
 export const validateBody = (schema) => validate(schema, "body");
 export const validateQuery = (schema) => validate(schema, "query");
