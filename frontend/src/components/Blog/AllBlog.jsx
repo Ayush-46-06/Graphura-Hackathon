@@ -1,0 +1,228 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+
+// 🔥 HERO ASSETS
+import heroImg from "../../assets/blogs/blog-hero.png";
+import breadcrumbBg from "../../assets/blogs/breadcrumb-1-bg.png";
+import dotsImg from "../../assets/blogs/breadcrumb-1-2.png";
+import brushImg from "../../assets/blogs/breadcrumb-1-1.png";
+import circleImg from "../../assets/blogs/breadcrumb-circle.png";
+
+const BLOGS_PER_PAGE = 9;
+const API_URL = "http://localhost:5001/api/blog";
+
+const AllBlog = () => {
+  const [blogs, setBlogs] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+
+  /* ================= FETCH BLOGS ================= */
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const res = await axios.get(API_URL);
+        // ✅ API returns { success, data: [] }
+        setBlogs(res.data.data || []);
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
+
+  /* ================= PAGINATION LOGIC ================= */
+  const totalPages = Math.ceil(blogs.length / BLOGS_PER_PAGE);
+  const startIndex = (currentPage - 1) * BLOGS_PER_PAGE;
+  const currentBlogs = blogs.slice(startIndex, startIndex + BLOGS_PER_PAGE);
+
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      window.scrollTo({ top: 400, behavior: "smooth" });
+    }
+  };
+
+  return (
+    <div className="bg-[#f8fafb]">
+      {/* ================= HERO SECTION ================= */}
+      <section
+        className="relative overflow-hidden"
+        style={{
+          backgroundImage: `url(${breadcrumbBg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="container mx-auto px-4 py-16 md:py-24">
+          <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-12">
+            {/* LEFT */}
+            <div className="relative z-10 text-center md:text-left max-w-xl">
+              <img
+                src={dotsImg}
+                alt=""
+                className="hidden md:block absolute left-0 top-4"
+              />
+
+              <h1
+                className="text-4xl sm:text-5xl font-extrabold mb-6"
+                style={{
+                  fontFamily: "var(--it-ff-heading)",
+                  color: "#0C121D",
+                }}
+              >
+                Graphothon Blogs
+              </h1>
+
+              <p
+                className="text-base sm:text-lg leading-relaxed"
+                style={{
+                  fontFamily: "var(--it-ff-body)",
+                  color: "#6C757D",
+                }}
+              >
+                Drop in. Team up. Build fast. Outplay the competition. A
+                survival-of-the-smartest hackathon where only the top creators
+                claim victory.
+              </p>
+
+              <img
+                src={brushImg}
+                alt=""
+                className="hidden md:block absolute -left-20 bottom-0"
+              />
+            </div>
+
+            {/* RIGHT */}
+            <div className="relative flex justify-center md:justify-start">
+              <img
+                src={circleImg}
+                alt=""
+                className="hidden md:block absolute right-10 top-1/2 -translate-y-1/2 w-[480px]"
+              />
+
+              <img
+                src={heroImg}
+                alt="Blog Hero"
+                className="relative z-10 w-full max-w-[460px] rounded-md shadow-xl"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= BLOG GRID ================= */}
+      <section className="container mx-auto px-4 py-16">
+        {loading ? (
+          <p className="text-center text-gray-500">Loading blogs...</p>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {currentBlogs.map((blog) => (
+                <div
+                  key={blog._id}
+                  className="bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden"
+                >
+                  {/* Image */}
+                  <div className="relative">
+                    <img
+                      src={
+                        blog.image ||
+                        "https://via.placeholder.com/600x400?text=No+Image"
+                      }
+                      alt={blog.title}
+                      className="w-full h-56 object-cover"
+                    />
+                    <span className="absolute top-4 left-4 bg-[#03594E] text-white text-sm px-4 py-1 rounded-md">
+                      {blog.category || "General"}
+                    </span>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-6">
+                    <div className="text-sm text-gray-500 mb-3">
+                      📅{" "}
+                      {new Date(
+                        blog.publishedAt || blog.createdAt
+                      ).toDateString()}
+                    </div>
+
+                    <h3
+                      className="text-lg font-semibold mb-4"
+                      style={{
+                        color: "#0C121D",
+                        fontFamily: "var(--it-ff-heading)",
+                      }}
+                    >
+                      {blog.title}
+                    </h3>
+
+                    <Link to={`/blog/${blog._id}`}>
+                      <button
+                        className="text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all"
+                        style={{
+                          color: "#03594E",
+                          fontFamily: "var(--it-ff-body)",
+                        }}
+                      >
+                        More Details <span>→</span>
+                      </button>
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* ================= PAGINATION ================= */}
+            {totalPages > 1 && (
+              <div className="flex justify-center mt-12 sm:mt-16">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  {/* Prev */}
+                  <button
+                    onClick={() => goToPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg border flex items-center justify-center disabled:opacity-40"
+                  >
+                    ←
+                  </button>
+
+                  {/* Page Numbers */}
+                  {[...Array(totalPages)].map((_, i) => {
+                    const page = i + 1;
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => goToPage(page)}
+                        className={`w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg ${
+                          currentPage === page
+                            ? "bg-[#03594E] text-white"
+                            : "border"
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
+
+                  {/* Next */}
+                  <button
+                    onClick={() => goToPage(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg bg-[#03594E] text-white flex items-center justify-center disabled:opacity-40"
+                  >
+                    →
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </section>
+    </div>
+  );
+};
+
+export default AllBlog;
