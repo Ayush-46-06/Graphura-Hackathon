@@ -14,7 +14,7 @@ const navItems = [
     ],
   },
   { name: "Courses", path: "/courses" },
-  { name: "Blog", path: "/blog" },
+  { name: "Blog", path: "/all-blog" },
   { name: "Contact", path: "/contact" },
 ];
 
