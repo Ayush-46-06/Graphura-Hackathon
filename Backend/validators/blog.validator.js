@@ -1,38 +1,19 @@
 import joi from "joi";
 
 export const createBlogSchema = joi.object({
-  title: joi.string()
-    .trim()
-    .required()
-    .messages({
-      "string.empty": "Title is required",
-      "any.required": "Title is required"
-    }),
-
-  content: joi.string()
-    .trim()
-    .required()
-    .messages({
-      "string.empty": "Content is required",
-      "any.required": "Content is required"
-    })
+  title: joi.string().trim().required(),
+  content: joi.string().trim().required(),
+  category: joi.string().trim().required(),
+  publishedAt: joi.date().optional()
 });
 
-
 export const updateBlogSchema = joi.object({
-  title: joi.string()
-    .trim()
-    .messages({
-      "string.empty": "Title cannot be empty"
-    }),
-
-  content: joi.string()
-    .trim()
-    .messages({
-      "string.empty": "Content cannot be empty"
-    })
+  title: joi.string().trim(),
+  content: joi.string().trim(),
+  category: joi.string().trim(),
+  publishedAt: joi.date()
 })
-.min(1) 
+.min(1)
 .messages({
-  "object.min": "At least one field must be provided for update"
+  "object.min": "At least one field must be provided for update",
 });
