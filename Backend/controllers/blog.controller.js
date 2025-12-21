@@ -1,20 +1,40 @@
 import Blog from "../models/Blog.model.js";
 
 export const createBlog = async (req, res) => {
+  const imageUrl = req.file?.path;
+
+  if (!imageUrl) {
+    return res.status(400).json({
+      success: false,
+      message: "Blog image is required",
+    });
+  }
+
   const blog = await Blog.create({
-    ...req.body,
-    createdBy: req.user._id
+    title: req.body.title,
+    content: req.body.content,
+    category: req.body.category,
+    image: imageUrl,
+    publishedAt: req.body.publishedAt,
+    createdBy: req.user._id,
   });
 
-  res.status(201).json({ success: true, data: blog });
+  res.status(201).json({
+    success: true,
+    data: blog,
+  });
 };
 
 export const updateBlog = async (req, res) => {
-  const blog = await Blog.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-  );
+  const updateData = { ...req.body };
+
+  if (req.file) {
+    updateData.image = req.file.path;
+  }
+
+  const blog = await Blog.findByIdAndUpdate(req.params.id, updateData, {
+    new: true,
+  });
 
   res.json({ success: true, data: blog });
 };

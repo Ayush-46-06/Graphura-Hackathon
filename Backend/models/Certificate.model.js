@@ -14,8 +14,8 @@ const certificateSchema = mongoose.Schema(
     },
     certificateUrl: {
       type: String,
-      trim:true,
-      required:true
+      trim: true,
+      required: true,
     },
   },
   { timestamps: true }
