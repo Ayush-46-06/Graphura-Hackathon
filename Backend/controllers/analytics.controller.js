@@ -3,18 +3,32 @@ import Transaction from "../models/Transaction.model.js";
 import Hackathon from "../models/Hackathon.model.js";
 
 export const adminDashboardOverview = async (req, res) => {
-  const totalHackathons = await Hackathon.countDocuments();
-  const totalRegistrations = await Registration.countDocuments();
-  const completedHackathons = await Hackathon.countDocuments({ status: "completed" });
-
-  res.json({
-    success: true,
-    data: {
+  try {
+    const [
       totalHackathons,
       completedHackathons,
       totalRegistrations
-    }
-  });
+    ] = await Promise.all([
+      Hackathon.countDocuments(),
+      Hackathon.countDocuments({ status: "completed" }),
+      Registration.countDocuments()
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        totalHackathons,
+        completedHackathons,
+        totalRegistrations
+      }
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to load dashboard overview"
+    });
+  }
 };
 
 export const hackathonGraphData = async (req, res) => {
@@ -24,13 +38,15 @@ export const hackathonGraphData = async (req, res) => {
     let groupBy;
     let labels = [];
 
-
     if (filter === "day") {
       groupBy = {
-        $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
+        $dateToString: {
+          format: "%Y-%m-%d",
+          date: "$createdAt",
+          timezone: "Asia/Kolkata"
+        }
       };
 
-   
       labels = Array.from({ length: 7 }).map((_, i) => {
         const d = new Date();
         d.setDate(d.getDate() - (6 - i));
@@ -55,7 +71,6 @@ export const hackathonGraphData = async (req, res) => {
     const rawData = await Registration.aggregate([
       { $group: { _id: groupBy, count: { $sum: 1 } } }
     ]);
-
 
     const data = labels.map((label, index) => {
       let match;
@@ -82,7 +97,6 @@ export const hackathonGraphData = async (req, res) => {
   }
 };
 
-
 export const transactionStats = async (req, res) => {
   try {
     const rawStats = await Transaction.aggregate([
@@ -108,4 +122,3 @@ export const transactionStats = async (req, res) => {
     });
   }
 };
-

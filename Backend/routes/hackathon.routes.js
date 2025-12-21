@@ -7,12 +7,16 @@ import { registerForHackathon } from "../controllers/registration.controller.js"
 import { roleMiddleware } from "../middlewares/role.middleware.js"
 import {validateBody} from "../middlewares/validate.middleware.js"
 import { registerHackathonSchema} from "../validators/registration.validator.js"
+import upload from "../middlewares/upload.middleware.js";
 const router = express.Router()
 
 router.get("/",getAllHackathons)
 router.get("/:id",getHackathonById)
 
-router.post("/",authMiddleware,roleMiddleware(ROLES.ADMIN),validateBody(createHackathonSchema),createHackathon);
+
+
+router.post("/",authMiddleware,roleMiddleware(ROLES.ADMIN),upload.single("image"),validateBody(createHackathonSchema),createHackathon);
+;
 router.put("/:id",authMiddleware,roleMiddleware(ROLES.ADMIN),validateBody(updateHackathonSchema),updateHackathon);
 router.delete("/:id",authMiddleware,roleMiddleware(ROLES.ADMIN),deleteHackathon)
 

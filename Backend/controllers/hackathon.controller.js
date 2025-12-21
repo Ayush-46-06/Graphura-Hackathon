@@ -1,9 +1,25 @@
 import Hackathon from "../models/Hackathon.model.js";
 
 export const createHackathon = async (req, res) => {
-  const hackathon = await Hackathon.create(req.body);
-  res.status(201).json({ success: true, data: hackathon });
+
+
+  if (req.body.tags && typeof req.body.tags === "string") {
+    req.body.tags = JSON.parse(req.body.tags);
+  }
+
+  const hackathon = await Hackathon.create({
+    ...req.body,
+    image: req.file.path
+  });
+
+  res.status(201).json({
+    success: true,
+    data: hackathon
+  });
 };
+
+
+
 
 export const updateHackathon = async (req, res) => {
   const hackathon = await Hackathon.findByIdAndUpdate(
