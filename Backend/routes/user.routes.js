@@ -3,7 +3,7 @@ import {getProfile,updateProfile,myHackathons,downloadCertificate} from "../cont
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { updateProfileSchema } from "../validators/auth.validator.js";
 import { validateBody } from "../middlewares/validate.middleware.js";
-
+import User from "../models/User.model.js"
 const router = express.Router();
 
 router.get("/profile", authMiddleware, getProfile);
@@ -14,5 +14,12 @@ router.get(
   authMiddleware,
   downloadCertificate
 );
+router.get("/wallet", authMiddleware, async (req, res) => {
+  const user = await User.findById(req.user._id).select("wallet");
+  res.json({
+    success: true,
+    data: { wallet: user.wallet }
+  });
+});
 
 export default router;

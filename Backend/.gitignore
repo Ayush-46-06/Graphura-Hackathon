@@ -1,6 +1,6 @@
 # Node
 node_modules/
-uploads/
+
 # Environment variables
 .env
 
@@ -12,6 +12,5 @@ yarn-error.log*
 # OS files
 .DS_Store
 Thumbs.db
-# frontend 
-Frontend/
+
 

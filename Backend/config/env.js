@@ -1,6 +1,6 @@
-import dotenv from "dotenv"
-dotenv.config()
-export const config={
+import dotenv from "dotenv";
+dotenv.config();
+export const config = {
   PORT: process.env.PORT,
   MONGO_URI: process.env.MONGO_URI,
   JWT_SECRET: process.env.JWT_SECRET,
@@ -12,5 +12,8 @@ export const config={
   RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
   RAZORPAY_SECRET: process.env.RAZORPAY_SECRET,
   GOOGLE_CLIENT_EMAIL: process.env.GOOGLE_CLIENT_EMAIL,
-  GOOGLE_PRIVATE_KEY: process.env.GOOGLE_PRIVATE_KEY
-}
+  GOOGLE_PRIVATE_KEY: process.env.GOOGLE_PRIVATE_KEY,
+  CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET
+};
