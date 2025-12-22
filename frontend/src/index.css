@@ -1,1 +1,37 @@
 @import "tailwindcss";
+
+:root {
+  --it-ff-body: 'Open Sans', sans-serif;
+  --it-ff-heading: 'Spartan-Bold', sans-serif;
+  --it-ff-jost: 'Jost', sans-serif;
+  --it-ff-newyork: 'NewYork-Regular', serif;
+  --it-ff-schoolbell: 'Schoolbell', cursive;
+  --it-ff-cinzel-decorative: 'Cinzel Decorative', cursive;
+  --it-ff-oxanium: 'Oxanium', sans-serif;
+  --it-ff-spartan-semibold: 'Spartan-SemiBold', sans-serif;
+  --it-ff-spartan-medium: 'Spartan-Medium', sans-serif;
+  --it-ff-spartan-regular: 'Spartan-Regular', sans-serif;
+  --it-ff-edensor-regular: 'Edensor-Regular', sans-serif;
+  --it-ff-edensor-semibold: 'Edensor-Semibold', sans-serif;
+  --it-ff-fontawesome: "Font Awesome 6 Pro";
+
+  --it-common-white: #ffffff;
+  --it-common-black: #1F2432;
+  --it-common-black-2: #313537;
+  --it-common-brown: #272422;
+  --it-heading-primary: #0C121D;
+
+  --it-gray-1: #F0F4F5;
+  --it-gray-2: #D9D9D9;
+  --it-gray-3: #F5F7F9;
+  --it-gray-4: #FFF8F4;
+
+  --it-text-body: #6C757D;
+
+  --it-theme-1: #03594E;
+  --it-theme-2: #F8C62F;
+  --it-theme-3: #1AB69D;
+  --it-theme-4: #618269;
+  --it-theme-5: #FE8235;
+  --it-theme-6: #CD935A;
+}
