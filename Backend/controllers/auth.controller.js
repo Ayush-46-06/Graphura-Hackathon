@@ -2,12 +2,17 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.model.js";
 import { config } from "../config/env.js";
+import Admin from "../models/Admin.model.js";
+
 
 export const register = async (req, res) => {
-  const { name, email, password, contactNumber, university, college,address } = req.body;
+  const { name, email, password, contactNumber, university, college, address, role, adminSecret } = req.body;
 
-  const exists = await User.findOne({ email });
-  if (exists) {
+  // Check if email exists in both collections
+  const existsUser = await User.findOne({ email });
+  const existsAdmin = await Admin.findOne({ email });
+
+  if (existsUser || existsAdmin) {
     return res.status(400).json({
       success: false,
       message: "Email already registered"
@@ -16,6 +21,30 @@ export const register = async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
+  if (role === "admin") {
+    // Admin banane ke liye secret key check
+    if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET_KEY) {
+      return res.status(403).json({
+        success: false,
+        message: "Invalid admin secret key"
+      });
+    }
+
+    // Admin create
+    await Admin.create({
+      name,
+      email,
+      password: hashedPassword,
+      role: "admin"
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Admin registered successfully"
+    });
+  }
+
+  // Normal user create
   await User.create({
     name,
     email,
@@ -31,6 +60,8 @@ export const register = async (req, res) => {
     message: "User registered successfully"
   });
 };
+
+
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -68,6 +99,46 @@ export const login = async (req, res) => {
       id: user._id,
       email: user.email,
       role: user.role
+    }
+  });
+};
+
+
+export const adminLogin = async (req, res) => {
+  const { email, password } = req.body;
+
+  const admin = await Admin.findOne({ email }).select("+password");
+
+  if (!admin) {
+    return res.status(400).json({
+      success: false,
+      message: "Admin email not found"
+    });
+  }
+
+  const isMatch = await bcrypt.compare(password, admin.password);
+  if (!isMatch) {
+    return res.status(400).json({
+      success: false,
+      message: "Incorrect password"
+    });
+  }
+
+  admin.password = undefined;
+
+  const token = jwt.sign(
+    { id: admin._id, role: admin.role },
+    config.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+
+  res.json({
+    success: true,
+    token,
+    admin: {
+      id: admin._id,
+      email: admin.email,
+      role: admin.role
     }
   });
 };

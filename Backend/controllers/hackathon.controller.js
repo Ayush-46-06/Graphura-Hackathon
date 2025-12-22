@@ -2,9 +2,14 @@ import Hackathon from "../models/Hackathon.model.js";
 
 export const createHackathon = async (req, res) => {
 
-
+  // Tags parse
   if (req.body.tags && typeof req.body.tags === "string") {
     req.body.tags = JSON.parse(req.body.tags);
+  }
+
+  // Judges parse
+  if (req.body.judges && typeof req.body.judges === "string") {
+    req.body.judges = JSON.parse(req.body.judges);
   }
 
   const hackathon = await Hackathon.create({
@@ -17,8 +22,6 @@ export const createHackathon = async (req, res) => {
     data: hackathon
   });
 };
-
-
 
 
 export const updateHackathon = async (req, res) => {
@@ -37,11 +40,15 @@ export const deleteHackathon = async (req, res) => {
 };
 
 export const getAllHackathons = async (req, res) => {
-  const hackathons = await Hackathon.find();
+  const hackathons = await Hackathon.find()
+    .populate("judges", "name email");
+
   res.json({ success: true, data: hackathons });
 };
 
 export const getHackathonById = async (req, res) => {
-  const hackathon = await Hackathon.findById(req.params.id);
+  const hackathon = await Hackathon.findById(req.params.id)
+    .populate("judges", "name email");
+
   res.json({ success: true, data: hackathon });
 };
