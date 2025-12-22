@@ -54,7 +54,7 @@ export const declareHackathonResult = async (req, res) => {
     // 🔢 Numeric unique certificate ID
     const certificateId = `${Date.now()}${Math.floor(100000 + Math.random() * 900000)}`;
 
-    // ================== CERTIFICATE PDF ==================
+  
 await new Promise((resolve, reject) => {
   const doc = new PDFDocument({
     size: "A4",
@@ -76,10 +76,7 @@ await new Promise((resolve, reject) => {
     }
   );
 
-  /* =====================================================
-     🏆 HACKATHON TITLE
-     (Slightly lower)
-  ====================================================== */
+
   doc
     .font("Helvetica-Bold")
     .fontSize(28)
@@ -88,10 +85,7 @@ await new Promise((resolve, reject) => {
       align: "center"
     });
 
-  /* =====================================================
-     🧑 USER NAME
-     (Much lower – correct spacing)
-  ====================================================== */
+
   doc
     .font("Helvetica-Bold")
     .fontSize(34)
@@ -100,10 +94,6 @@ await new Promise((resolve, reject) => {
       align: "center"
     });
 
-  /* =====================================================
-     🥇 FIRST PLACE TEXT
-     (Placed inside pill area)
-  ====================================================== */
   doc
     .font("Helvetica-Bold")
     .fontSize(14)
@@ -112,18 +102,13 @@ await new Promise((resolve, reject) => {
       align: "center"
     });
 
-  /* =====================================================
-     🆔 CERTIFICATE ID (Bottom-left)
-  ====================================================== */
   doc
     .font("Helvetica")
     .fontSize(9)
     .fillColor("#6b7280")
     .text(`Certificate ID: ${certificateId}`, 40, doc.page.height - 50);
 
-  /* =====================================================
-     📅 ISSUE DATE (Bottom-right)
-  ====================================================== */
+
   doc
     .fontSize(9)
     .fillColor("#6b7280")
@@ -142,7 +127,6 @@ await new Promise((resolve, reject) => {
 
 
 
-    // 📄 Save certificate record
     await Certificate.create({
       user: userId,
       hackathon: hackathonId,

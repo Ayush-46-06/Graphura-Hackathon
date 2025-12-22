@@ -1,22 +1,27 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
+import { ROLES } from "../config/roles.js";
 
 const adminSchema = mongoose.Schema({
-    name:String,
-    email:{
-        type:String,
-        unique:true
+    name: {
+        type: String,
+        required: true
     },
-    password:{
-        type:String,
-        select:false
+    email: {
+        type: String,
+        unique: true,
+        required: true
     },
-    role:{
-        type:String,
-        default:Admin
+    password: {
+        type: String,
+        select: false,
+        required: true
+    },
+    role: {
+        type: String,
+        enum: [ROLES.ADMIN, ROLES.USER], 
+        default: ROLES.ADMIN
     }
-},
-    {timestamps:true}
-)
+}, { timestamps: true });
 
-const Admin = mongoose.model("Hackathon_Admin",adminSchema)
-export default Admin
+const Admin = mongoose.model("Hackathon_Admin", adminSchema);
+export default Admin;

@@ -1,27 +1,59 @@
 import joi from "joi";
 
+
 export const createHackathonSchema = joi.object({
   title: joi.string().required(),
   description: joi.string().required(),
+  about: joi.string().optional(),
   image: joi.string().optional(),
   prizePool: joi.number().required(),
+  prizeDetails: joi.string().optional(),
   category: joi.string().required(),
-  tags: joi.array().items(joi.string()).required(),
-  startDate: joi.date().required(),
-  endDate: joi.date().greater(joi.ref("startDate")).required(),
+  tags: joi.alternatives().try(
+    joi.array().items(joi.string()),
+    joi.string()
+  ),
+  sponsors: joi.alternatives().try(
+    joi.array().items(joi.string()),
+    joi.string()
+  ).optional(),
+  judges: joi.alternatives().try(
+    joi.array().items(joi.string().hex().length(24)),
+    joi.string()
+  ).optional(),
+  startDate: joi.date(),
+  endDate: joi.date().greater(joi.ref("startDate")),
+  lastEnrollmentDate: joi.date().less(joi.ref("startDate")).optional(),
   status: joi.string().valid("upcoming", "ongoing", "completed").required(),
 });
 
 
-
 export const updateHackathonSchema = joi.object({
   title: joi.string().trim(),
+
   description: joi.string(),
-  image: joi.string().uri(),
+
+  about: joi.string(),
+
+  image: joi.string(),
+
   prizePool: joi.number().positive(),
-  category: joi.string().valid("coding", "design", "ai", "blockchain", "general"),
+
+  prizeDetails: joi.string(),
+
+  category: joi.string(),
+
   tags: joi.array().items(joi.string()),
+
+  sponsors: joi.array().items(joi.string()),
+
+  judges: joi.array().items(joi.string().hex().length(24)),
+
   startDate: joi.date(),
+
   endDate: joi.date(),
-  status: joi.string().valid("upcoming", "ongoing", "completed")
+
+  lastEnrollmentDate: joi.date(),
+
+  status: joi.string().valid("upcoming", "ongoing", "completed"),
 });
