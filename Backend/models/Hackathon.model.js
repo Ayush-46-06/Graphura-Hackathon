@@ -27,7 +27,7 @@ const hackathonSchema = mongoose.Schema(
     category: {
       type: String,
       required: true,
-      enum: ["coding", "design", "ai", "blockchain", "general"]
+      enum: ["Coding", "Design", "AI/ML", "Blockchain", "Web Development", "Mobile Apps"]
     },
 
 tags: {
@@ -46,7 +46,9 @@ tags: {
         "Beginner Friendly",
         "Intermediate",
         "Advanced",
-        "Open for All"
+        "Open for All",
+        "Coding",
+        "AI"
       ]
     }
   ],

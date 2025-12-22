@@ -12,6 +12,7 @@ const Hackathon = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [active, setActive] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
   const filterList = [
     "All",
     "Coding",
@@ -39,6 +40,31 @@ const Hackathon = () => {
 
   if (loading) return <p>Loading...</p>;
   if (!data) return <p>Hackathon not found</p>;
+
+ const filteredData = data.filter((item) => {
+  // CATEGORY FILTER
+  const categoryMatch =
+    active === "All" || item.category === active;
+
+  // SEARCH FILTER
+  const searchMatch =
+    item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.tags?.some(tag =>
+      tag.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+  return categoryMatch && searchMatch;
+});
+
+    const formatDate = (date) => {
+  return new Date(date).toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  });
+};
+
 
   return (
     <div className="overflow-x-hidden">
@@ -78,6 +104,8 @@ const Hackathon = () => {
                 <input
                   type="text"
                   placeholder="Search hackathons..."
+                  value = {searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   className="bg-[#02b098] py-2 pl-8 pr-4 text-white placeholder:text-white focus:outline-none rounded-3xl"
                 />
                 <FontAwesomeIcon
@@ -219,20 +247,28 @@ const Hackathon = () => {
             </ul>
           </div>
           {view === "grid" && (
-            <div className="flex flex-wrap gap-6 justify-center lg:justify-start">
-              {data.map((val) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 place-items-center lg:place-items-start w-full">
+              {filteredData.map((val) => (
                 <Link to={`/hackathons/${val._id}`} key={val._id}>
-                  <div className="relative mx-2 rounded-3xl shadow-lg overflow-hidden pb-3 border border-gray-200 max-w-[320px] lg:max-w-[280px]">
+                  <div className="relative mx-2 rounded-3xl shadow-lg overflow-hidden pb-3 border border-gray-200">
                     <div className="mb-4">
-                      <img
-                        src="https://res.cloudinary.com/drq2a0262/image/upload/v1766129810/hackathon_bljdtw.png"
-                        alt="hackathon-image"
-                      />
+                      <img src={val.image} alt="hackathon-image" />
                     </div>
                     <div className="mx-4  pb-3 border-b border-gray-300">
-                      <span className="px-4 py-[2px] bg-green-100 border border-green-400 rounded-2xl text-green-500">
-                        Tags
-                      </span>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {val.tags.map((tag, index) => (
+                          <span
+                            key={tag}
+                            className={`px-3 py-[3px] text-xs font-medium rounded-full border transition-colors
+        ${index % 3 === 0 && "bg-green-50 text-green-700 border-green-300"}
+        ${index % 3 === 1 && "bg-blue-50 text-blue-700 border-blue-300"}
+        ${index % 3 === 2 && "bg-purple-50 text-purple-700 border-purple-300"}`}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+
                       <h2 className="font-bold text-lg mt-2 truncate">
                         {val.title}
                       </h2>
@@ -240,18 +276,33 @@ const Hackathon = () => {
                         {val.description}
                       </p>
                     </div>
-                    <span className="absolute top-2 right-2 bg-blue-900 text-green-400 font-semibold py-1 px-3 rounded-2xl">
-                      {val.status}
+                    <span className="absolute top-2 right-2 bg-[#2c572f] text-[#39ff14] font-semibold py-1 px-3 rounded-2xl border border-[#39ff14] shadow-[0_0_8px_#39ff14,0_0_16px_#39ff14]">
+                      Free
                     </span>
+
                     <div className="mx-4 flex justify-between mt-2">
                       <div className="flex flex-col font-semibold items-center">
                         <span className="text-gray-500">Participants</span>
-                        <span className="text-green-400">1234</span>
+                        <span className="text-green-400">{val.participants.length}</span>
                       </div>
-                      <div className="flex flex-col font-semibold">
-                        <span className="text-gray-500">Ends In</span>
+                      {val.status === "upcoming" && (
+                        <div className="flex flex-col font-semibold">
+                        <span className="text-gray-500 text-center">Starts On</span>
+                        <span className="text-green-400">{formatDate(val.startDate)}</span>
+                      </div>
+                      )}
+                      {val.status === "ongoing" && (
+                        <div className="flex flex-col font-semibold">
+                        <span className="text-gray-500 text-center">Ends On</span>
+                        <span className="text-green-400">{formatDate(val.endDate)}</span>
+                      </div>
+                      )}
+                      {val.status === "completed" && (
+                        <div className="flex flex-col font-semibold">
+                        <span className="text-gray-500 text-center">Starts In</span>
                         <span className="text-green-400">2d 14h</span>
                       </div>
+                      )}
                     </div>
                   </div>
                 </Link>
@@ -260,16 +311,16 @@ const Hackathon = () => {
           )}
 
           {view === "list" && (
-            <div className="md:mx-8 flex flex-wrap gap-6 justify-center lg:justify-end">
+            <div className="md:mx-8 grid grid-cols-1 gap-6 place-items-center lg:place-items-end w-full">
               {data.map((val) => (
                 <div
                   key={val._id}
-                  className="relative w-full sm:max-w-[600px] xl:max-w-[800px] rounded-3xl shadow-lg flex border border-gray-200 overflow-hidden"
+                  className="relative w-full sm:max-w-[600px] xl:max-w-[800px] 2xl:max-w-[1000px] rounded-3xl shadow-lg flex items-stretch border border-gray-200 overflow-hidden"
                 >
                   {/* LEFT IMAGE */}
-                  <div className="w-[130px] md:w-[180px] xl:w-[220px] h-full flex-shrink-0">
+                  <div className="w-[130px] md:w-[180px] xl:w-[250px] 2xl:w-[300px] flex-shrink-0">
                     <img
-                      src="https://res.cloudinary.com/drq2a0262/image/upload/v1766129810/hackathon_bljdtw.png"
+                      src={val.image}
                       alt="hackathon-image"
                       className="w-full h-full object-cover"
                     />

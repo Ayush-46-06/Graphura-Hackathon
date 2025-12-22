@@ -12,6 +12,11 @@ export const createHackathon = async (req, res) => {
     req.body.judges = JSON.parse(req.body.judges);
   }
 
+  // Participants parse
+  if (req.body.participants && typeof req.body.participants === "string") {
+    req.body.participants = JSON.parse(req.body.participants);
+  }
+
   const hackathon = await Hackathon.create({
     ...req.body,
     image: req.file.path
@@ -41,14 +46,16 @@ export const deleteHackathon = async (req, res) => {
 
 export const getAllHackathons = async (req, res) => {
   const hackathons = await Hackathon.find()
-    .populate("judges", "name email");
+    .populate("judges", "name email")
+    .populate("participants", "name email");
 
   res.json({ success: true, data: hackathons });
 };
 
 export const getHackathonById = async (req, res) => {
   const hackathon = await Hackathon.findById(req.params.id)
-    .populate("judges", "name email");
+    .populate("judges", "name email")
+    .populate("participants", "name email");
 
   res.json({ success: true, data: hackathon });
 };
