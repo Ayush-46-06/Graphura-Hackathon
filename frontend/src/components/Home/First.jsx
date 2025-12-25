@@ -1,3 +1,5 @@
+
+      import Counter from "./Stats";
 export default function First() {
   return (
     <main className="bg-white">
@@ -36,24 +38,31 @@ export default function First() {
           </div>
         </div>
       </section>
-
       {/* ================= COUNTERS ================= */}
       <section className="py-24 bg-[#03594E] text-white">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h2 className="text-4xl font-bold mb-12">Our Global Game Stats</h2>
 
           <div className="grid md:grid-cols-4 gap-8">
-            {[
-              ["20+", "Hackathons Hosted"],
-              ["950+", "Active Participants"],
-              ["13+", "Universities Collaborating"],
-              ["7+", "Corporate Partners"],
-            ].map((stat, i) => (
-              <div key={i}>
-                <h3 className="text-5xl font-bold text-[#F8C62F]">{stat[0]}</h3>
-                <p className="mt-2">{stat[1]}</p>
-              </div>
-            ))}
+            <div>
+              <Counter end={20} />
+              <p className="mt-2">Hackathons Hosted</p>
+            </div>
+
+            <div>
+              <Counter end={950} />
+              <p className="mt-2">Active Participants</p>
+            </div>
+
+            <div>
+              <Counter end={13} />
+              <p className="mt-2">Universities Collaborating</p>
+            </div>
+
+            <div>
+              <Counter end={7} />
+              <p className="mt-2">Corporate Partners</p>
+            </div>
           </div>
 
           <p className="mt-12 text-white/80">
@@ -61,7 +70,6 @@ export default function First() {
           </p>
         </div>
       </section>
-
       {/* ================= ABOUT ================= */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
@@ -95,7 +103,6 @@ export default function First() {
           </div>
         </div>
       </section>
-
       {/* ================= ACTIVE HACKATHONS ================= */}
       <section className="py-24 bg-[#F5F7F9]">
         <div className="max-w-7xl mx-auto px-6 text-center">
@@ -126,7 +133,6 @@ export default function First() {
           </button>
         </div>
       </section>
-
       {/* ================= TESTIMONIALS ================= */}
       <section className="py-24">
         <div className="max-w-4xl mx-auto px-6 text-center">
@@ -153,7 +159,6 @@ export default function First() {
           </button>
         </div>
       </section>
-
       {/* ================= CTA BANNER ================= */}
       <section className="py-24 bg-[#03594E] text-white text-center">
         <h2 className="text-4xl font-bold mb-4">
