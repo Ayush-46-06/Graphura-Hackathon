@@ -22,7 +22,7 @@ export const register = async (req, res) => {
 
     const image = req.file ? req.file.path : null;
 
-    // ===================== BASIC VALIDATION =====================
+
     if (!name || !email || !password || !address || !contactNumber || !university || !college) {
       return res.status(400).json({
         success: false,
@@ -52,7 +52,7 @@ export const register = async (req, res) => {
       });
     }
 
-    // ===================== CHECK DUPLICATE EMAIL =====================
+
     const userExists = await User.findOne({ email });
     const adminExists = await Admin.findOne({ email });
 
@@ -65,7 +65,7 @@ export const register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // ===================== ADMIN REGISTER =====================
+
     if (role === "admin") {
       if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET_KEY) {
         return res.status(403).json({
@@ -93,7 +93,7 @@ export const register = async (req, res) => {
       });
     }
 
-    // ===================== USER REGISTER =====================
+
     await User.create({
       name,
       email,
@@ -122,7 +122,7 @@ export const register = async (req, res) => {
   }
 };
 
-// ============================================================
+
 
 export const login = async (req, res) => {
   try {

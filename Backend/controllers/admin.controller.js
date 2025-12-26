@@ -13,7 +13,7 @@ export const getAllUsers = async (req, res) => {
   res.json({ success: true, data: users });
 };
 
-/* ===================== PRIZE SPLIT ===================== */
+
 const getPrizeSplit = (totalPrize, count) => {
   if (count === 1) return [totalPrize];
   if (count === 2)
@@ -30,7 +30,7 @@ const getPrizeSplit = (totalPrize, count) => {
   return [];
 };
 
-/* ===================== DECLARE RESULT ===================== */
+
 export const declareHackathonResult = async (req, res) => {
   try {
     const { hackathonId, winners } = req.body;
@@ -57,7 +57,7 @@ export const declareHackathonResult = async (req, res) => {
       });
     }
 
-    /* ===================== VALIDATE REGISTRATION ===================== */
+
     const invalidUsers = [];
     for (const userId of winners) {
       const registered = await Registration.findOne({
@@ -75,29 +75,29 @@ export const declareHackathonResult = async (req, res) => {
       });
     }
 
-    /* ===================== PRIZE CALC ===================== */
+
     const prizeSplit = getPrizeSplit(hackathon.prizePool, winners.length);
 
     const winnerDetails = [];
 
-    /* ===================== PROCESS EACH WINNER ===================== */
+
     for (let i = 0; i < winners.length; i++) {
       const userId = winners[i];
       const user = await User.findById(userId);
       if (!user) continue;
 
-      /* Wallet update */
+      
       user.wallet += prizeSplit[i];
       await user.save();
 
-      /* Certificate directory */
+
       const dir = path.join(process.cwd(), "uploads", "certificates", hackathonId);
       await fs.ensureDir(dir);
       const filePath = path.join(dir, `${userId}.pdf`);
 
       const certificateId = `${Date.now()}${Math.floor(100000 + Math.random() * 900000)}`;
 
-      /* ===================== CERTIFICATE ===================== */
+
       await new Promise((resolve, reject) => {
         const doc = new PDFDocument({
           size: "A4",
@@ -163,7 +163,7 @@ export const declareHackathonResult = async (req, res) => {
       });
     }
 
-    /* ===================== SAVE HACKATHON ===================== */
+
     hackathon.winners = winners;
     hackathon.winnerDetails = winnerDetails;
     hackathon.status = "completed";
@@ -186,7 +186,7 @@ export const declareHackathonResult = async (req, res) => {
   }
 };
 
-/* ===================== EXPORT USERS ===================== */
+
 export const exportStudentsToSheet = async (req, res) => {
   const users = await User.find().select("name email university");
   await googleSheetService.exportUsers(users);

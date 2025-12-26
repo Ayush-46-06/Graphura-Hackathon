@@ -16,7 +16,7 @@ export const createBlog = async (req, res) => {
     category: req.body.category,
     image: imageUrl,
     publishedAt: req.body.publishedAt,
-    createdBy: req.user._id,
+    createdBy: req.admin._id,
   });
 
   res.status(201).json({
