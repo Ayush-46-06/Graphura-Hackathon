@@ -35,3 +35,39 @@
   --it-theme-5: #FE8235;
   --it-theme-6: #CD935A;
 }
+
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-wrapper {
+  overflow: hidden;
+  width: 100%;
+}
+
+.marquee-track {
+  display: flex;
+  gap: 40px;              /* ✅ spacing lives here */
+  width: max-content;
+  animation: marquee-scroll 12s linear infinite;
+}

@@ -17,6 +17,10 @@ import AdminDashboard from "./components/Dashboard/Dashboard";
 import OAuthSuccess from "./components/Auth/OAuthSuccess";
 import Footer from "./components/Footer";
 
+import About from "./components/About";
+// import Results from "./components/Results";
+
+
 // 🔐 Protected Route (Requires Login)
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -35,6 +39,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
         <Route path="/all-blog" element={<AllBlog />} />
         <Route path="/hackathons" element={<Hackathon />} />
         <Route path="/hackathons/:id" element={<HackathonDetail />} />
@@ -79,7 +84,6 @@ function App() {
             </h1>
           }
         />
-        
       </Routes>
       
     </Router>
