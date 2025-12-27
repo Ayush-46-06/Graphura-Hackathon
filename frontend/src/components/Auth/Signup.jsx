@@ -6,7 +6,6 @@ const API_URL = "http://localhost:5001/api/auth/register";
 
 const Signup = () => {
   const navigate = useNavigate();
-
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
@@ -19,7 +18,7 @@ const Signup = () => {
     university: "",
     college: "",
     role: "user",
-    secretKey: "",
+    adminSecret: "",
     agree: false,
   });
 
@@ -39,7 +38,7 @@ const Signup = () => {
       return;
     }
 
-    if (form.role === "admin" && !form.secretKey) {
+    if (form.role === "admin" && !form.adminSecret) {
       alert("Secret key is required for admin registration");
       return;
     }
@@ -59,31 +58,28 @@ const Signup = () => {
       };
 
       if (form.role === "admin") {
-        payload.secretKey = form.secretKey;
+        payload.adminSecret = form.adminSecret;
       }
 
       const res = await axios.post(API_URL, payload);
 
-      const { token, user } = res.data;
+      // ✅ Backend only sends success & message
+      if (res.data.success) {
+        alert(res.data.message);
+        navigate("/login"); // 🔥 CORRECT FLOW
+      }
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-
-      navigate("/dashboard");
     } catch (err) {
       console.error("Signup error:", err);
-      if (err.code === "ERR_NETWORK" || err.message.includes("Network Error")) {
-        alert("❌ Cannot connect to server. Please make sure the backend is running on port 5001.");
-      } else {
-        alert(err.response?.data?.message || "Signup failed. Please try again.");
-      }
+      alert(err.response?.data?.message || "Signup failed");
     } finally {
       setLoading(false);
     }
   };
 
+
   return (
-    <div className="min-h-screen flex pt-15 bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 relative overflow-hidden">
+    <div className="min-h-screen flex pt-15  bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] relative overflow-hidden">
       
      
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -101,7 +97,7 @@ const Signup = () => {
             filter: "brightness(0.6)",
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/40 to-purple-600/40 rounded-3xl" />
+          <div className="absolute inset-0  rounded-3xl" />
         </div>
 
         <div className="relative z-10 text-center px-8">
@@ -232,9 +228,9 @@ const Signup = () => {
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-red-400">🔑</span>
                   <input
                     type="password"
-                    name="secretKey"
+                    name="adminSecret"
                     placeholder="Admin Secret Key"
-                    value={form.secretKey}
+                    value={form.adminSecret}
                     onChange={handleChange}
                     required
                     className="w-full bg-red-500/10 border border-red-500 focus:border-red-400 rounded-xl p-3 pl-10 text-white placeholder-red-300/70 transition duration-300 focus:ring-2 focus:ring-red-500/30 outline-none"
