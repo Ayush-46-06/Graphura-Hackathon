@@ -18,6 +18,7 @@ import OAuthSuccess from "./components/Auth/OAuthSuccess";
 import AdminDashboard from "./components/Dashboard/Dashboard";
 import UserDashboard from "./components/Dashboard/UserDashboard";
 import Footer from "./components/Footer";
+import PartnerPage from "./components/Partner/PartnerPage";
 
 import About from "./components/About";
 import Results from "./components/Results/Results";
@@ -66,6 +67,8 @@ function App() {
         <Route path="/hackathons" element={<Hackathon />} />
         <Route path="/hackathons/:id" element={<HackathonDetail />} />
         <Route path="/dashboards" element={<AdminDashboard />} />
+        <Route path="/partner" element={<PartnerPage />} />
+        {/* Public Auth Routes */}
         {/* Auth */}
         <Route
           path="/login"
