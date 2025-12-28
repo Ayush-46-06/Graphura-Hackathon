@@ -16,6 +16,7 @@ import Signup from "./components/Auth/Signup";
 import AdminDashboard from "./components/Dashboard/Dashboard";
 import OAuthSuccess from "./components/Auth/OAuthSuccess";
 import Footer from "./components/Footer";
+import PartnerPage from "./components/Partner/PartnerPage";
 
 // 🔐 Protected Route (Requires Login)
 const ProtectedRoute = ({ children }) => {
@@ -39,6 +40,7 @@ function App() {
         <Route path="/hackathons" element={<Hackathon />} />
         <Route path="/hackathons/:id" element={<HackathonDetail />} />
         <Route path="/dashboards" element={<AdminDashboard />} />
+        <Route path="/partner" element={<PartnerPage />} />
         {/* Public Auth Routes */}
         <Route
           path="/login"
