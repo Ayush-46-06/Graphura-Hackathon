@@ -20,7 +20,7 @@ import UserDashboard from "./components/Dashboard/UserDashboard";
 import Footer from "./components/Footer";
 
 import About from "./components/About";
-// import Results from "./components/Results";
+import Results from "./components/Results/Results";
 
 
 /* ================== ROUTE GUARDS ================== */
@@ -61,6 +61,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/results" element={<Results />} />
         <Route path="/all-blog" element={<AllBlog />} />
         <Route path="/hackathons" element={<Hackathon />} />
         <Route path="/hackathons/:id" element={<HackathonDetail />} />
