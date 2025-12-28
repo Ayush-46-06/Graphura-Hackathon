@@ -4,15 +4,21 @@ import Certificate from "../models/Certificate.model.js";
 import googleSheetService from "../services/googleSheet.service.js";
 import Registration from "../models/Registration.model.js";
 
-import fs from "fs-extra";
-import path from "path";
+import cloudinary from "../config/cloudinary.js";
+import streamifier from "streamifier";
+
 import PDFDocument from "pdfkit";
+import path from "path";
+
+/* ❌ OLD LOCAL FS CODE (NO LONGER USED)
+import fs from "fs-extra";
+*/
+
 
 export const getAllUsers = async (req, res) => {
   const users = await User.find().select("-password");
   res.json({ success: true, data: users });
 };
-
 
 const getPrizeSplit = (totalPrize, count) => {
   if (count === 1) return [totalPrize];
@@ -70,14 +76,13 @@ export const declareHackathonResult = async (req, res) => {
     if (invalidUsers.length > 0) {
       return res.status(400).json({
         success: false,
-        message: "Some users are not registered for this hackathon",
+        message: "Some users are not registered",
         invalidUsers
       });
     }
 
 
     const prizeSplit = getPrizeSplit(hackathon.prizePool, winners.length);
-
     const winnerDetails = [];
 
 
@@ -86,27 +91,31 @@ export const declareHackathonResult = async (req, res) => {
       const user = await User.findById(userId);
       if (!user) continue;
 
-      
+
       user.wallet += prizeSplit[i];
       await user.save();
-
-
-      const dir = path.join(process.cwd(), "uploads", "certificates", hackathonId);
-      await fs.ensureDir(dir);
-      const filePath = path.join(dir, `${userId}.pdf`);
 
       const certificateId = `${Date.now()}${Math.floor(100000 + Math.random() * 900000)}`;
 
 
-      await new Promise((resolve, reject) => {
+      /*
+      const dir = path.join(process.cwd(), "uploads", "certificates", hackathonId);
+      await fs.ensureDir(dir);
+      const filePath = path.join(dir, `${userId}.pdf`);
+      */
+
+
+      const pdfBuffer = await new Promise((resolve, reject) => {
         const doc = new PDFDocument({
           size: "A4",
           layout: "landscape",
           margin: 0
         });
 
-        const stream = fs.createWriteStream(filePath);
-        doc.pipe(stream);
+        const buffers = [];
+        doc.on("data", buffers.push.bind(buffers));
+        doc.on("end", () => resolve(Buffer.concat(buffers)));
+        doc.on("error", reject);
 
         doc.image(
           path.join(process.cwd(), "assets", "certificate-template.jpg"),
@@ -145,14 +154,31 @@ export const declareHackathonResult = async (req, res) => {
           );
 
         doc.end();
-        stream.on("finish", resolve);
-        stream.on("error", reject);
       });
+
+      const uploadResult = await new Promise((resolve, reject) => {
+  const uploadStream = cloudinary.uploader.upload_stream(
+    {
+      folder: `certificates/${hackathonId}`,
+    resource_type: "image", // ✅ IMPORTANT
+      public_id: userId,
+      format: "pdf"
+    },
+    (error, result) => {
+      if (error) reject(error);
+      else resolve(result);
+    }
+  );
+
+  streamifier.createReadStream(pdfBuffer).pipe(uploadStream);
+});
+
+
 
       await Certificate.create({
         user: userId,
         hackathon: hackathonId,
-        certificateUrl: `${req.protocol}://${req.get("host")}/certificates/${hackathonId}/${userId}.pdf`,
+        certificateUrl: uploadResult.secure_url,
         certificateId
       });
 
@@ -162,7 +188,6 @@ export const declareHackathonResult = async (req, res) => {
         prizeAmount: prizeSplit[i]
       });
     }
-
 
     hackathon.winners = winners;
     hackathon.winnerDetails = winnerDetails;
@@ -185,7 +210,6 @@ export const declareHackathonResult = async (req, res) => {
     });
   }
 };
-
 
 export const exportStudentsToSheet = async (req, res) => {
   const users = await User.find().select("name email university");
