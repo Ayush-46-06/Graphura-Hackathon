@@ -1,10 +1,12 @@
+import HomeHackathonSection from "./HomeHackathonSlider";
+import StatCard from "./StatsSection";
+import CTASection from "./CTASection";
 
-      import Counter from "./Stats";
 export default function First() {
   return (
     <main className="bg-white">
       {/* ================= CATEGORIES / DOMAINS ================= */}
-      <section className="py-24 bg-[#F5F7F9]">
+      {/* <section className="py-24 bg-[#F5F7F9]">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h2 className="text-4xl font-bold text-[#0C121D] mb-4">
             Choose Your Mission
@@ -37,39 +39,110 @@ export default function First() {
             ))}
           </div>
         </div>
-      </section>
-      {/* ================= COUNTERS ================= */}
-      <section className="py-24 bg-[#03594E] text-white">
+      </section> */}
+      <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-12">Our Global Game Stats</h2>
+          <h2 className="text-4xl font-bold text-[#0C121D] mb-4 bg-gradient-to-br from-[#F8C62F] to-[#FE8235]">
+            Choose Your Mission
+            <span className="relative inline-block ml-2">
+              <span className=" w-full h-2 text-2xl text-[#F8C62F]/60 ">
+                From creative sprints to data combat — pick the battlefield that
+                suits your skill.
+              </span>
+            </span>
+          </h2>
 
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <Counter end={20} />
-              <p className="mt-2">Hackathons Hosted</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
+            {/* Card 1 */}
+            <div className="group bg-[#F3F8F7] border border-[#0E766E] rounded-2xl p-10 transition hover:-translate-y-2">
+              <div className="mb-6 text-[#0E766E] flex justify-center alignitmes-center">
+                <img src="./Sales.svg" alt="" />
+              </div>
+              <h4 className="text-lg font-semibold text-[#0C121D]">
+                Sales & Marketing Faceoffs
+              </h4>
             </div>
 
-            <div>
-              <Counter end={950} />
-              <p className="mt-2">Active Participants</p>
+            {/* Card 2 */}
+            <div className="group bg-[#FFD23F] border border-[#F8C62F] rounded-2xl p-10 transition hover:-translate-y-2">
+              <div className="mb-6 text-[#1F2937] flex justify-center alignitmes-center">
+                <img src="./Ui.svg" alt="" />
+              </div>
+              <h4 className="text-lg font-semibold text-[#0C121D]">
+                UI/UX Design Quests
+              </h4>
             </div>
 
-            <div>
-              <Counter end={13} />
-              <p className="mt-2">Universities Collaborating</p>
+            {/* Card 3 */}
+            <div className="group bg-[#FFF1F1] border border-[#FF6B6B] rounded-2xl p-10 transition hover:-translate-y-2">
+              <div className="mb-6 text-[#FF6B6B] flex justify-center alignitmes-center">
+                <img src="./ContentStatergy.svg" alt="" />
+              </div>
+              <h4 className="text-lg font-semibold text-[#0C121D]">
+                Content Strategy Challenges
+              </h4>
             </div>
 
-            <div>
-              <Counter end={7} />
-              <p className="mt-2">Corporate Partners</p>
+            {/* Card 4 */}
+            <div className="group bg-[#EDF5FF] border border-[#3B82F6] rounded-2xl p-10 transition hover:-translate-y-2">
+              <div className="mb-6 text-[#3B82F6] flex justify-center alignitmes-center">
+                <img src="./HumanResources.svg" alt="" />
+              </div>
+              <h4 className="text-lg font-semibold text-[#0C121D]">
+                Human Resources Hack Battles
+              </h4>
+            </div>
+
+            {/* Card 5 */}
+            <div className="group bg-[#EEF2FF] border border-[#4F46E5] rounded-2xl p-10 transition hover:-translate-y-2">
+              <div className="mb-6 text-[#4F46E5] flex justify-center alignitmes-center">
+                <img
+                  src="./VideoEditing.svg
+              "
+                  alt=""
+                />
+              </div>
+              <h4 className="text-lg font-semibold text-[#0C121D]">
+                Video Editing Showdowns
+              </h4>
+            </div>
+
+            {/* Card 6 */}
+            <div className="group bg-[#F3FFF0] border border-[#22C55E] rounded-2xl p-10 transition hover:-translate-y-2">
+              <div className="mb-6 text-[#22C55E] flex justify-center alignitmes-center">
+                <img src="./GraphicDesign.svg" alt="" />
+              </div>
+              <h4 className="text-lg font-semibold text-[#0C121D]">
+                Graphic Design Combat
+              </h4>
+            </div>
+
+            {/* Card 7 */}
+            <div className="group bg-[#F5F3FF] border border-[#8B5CF6] rounded-2xl p-10 transition hover:-translate-y-2">
+              <div className="mb-6 text-[#8B5CF6] flex justify-center alignitmes-center">
+                <img src="./DigitalMarketing.svg" alt="" />
+              </div>
+              <h4 className="text-lg font-semibold text-[#0C121D]">
+                Digital Marketing Ops
+              </h4>
+            </div>
+
+            {/* Card 8 */}
+            <div className="group bg-[#FFF5F9] border border-[#EC4899] rounded-2xl p-10 transition hover:-translate-y-2">
+              <div className="mb-6 text-[#EC4899] flex justify-center alignitmes-center">
+                <img src="./DataScience.svg" alt="" />
+              </div>
+              <h4 className="text-lg font-semibold text-[#0C121D]">
+                Data Science & Analytics Missions
+              </h4>
             </div>
           </div>
-
-          <p className="mt-12 text-white/80">
-            The map is expanding. So is your opportunity.
-          </p>
         </div>
       </section>
+
+      {/* ================= COUNTERS ================= */}
+      <StatCard />
+
       {/* ================= ABOUT ================= */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
@@ -104,35 +177,7 @@ export default function First() {
         </div>
       </section>
       {/* ================= ACTIVE HACKATHONS ================= */}
-      <section className="py-24 bg-[#F5F7F9]">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-4">
-            Live Missions You Can Join Right Now
-          </h2>
-          <p className="text-[#6C757D] mb-12">
-            Registration open. Rankings begin the moment you enter.
-          </p>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              "Trending Challenges",
-              "High-Reward Missions",
-              "Spotlight Hackathons",
-            ].map((type, i) => (
-              <div key={i} className="bg-white p-6 rounded-xl shadow">
-                <h4 className="font-semibold">{type}</h4>
-                <p className="text-sm text-[#6C757D] mt-2">
-                  Time to make your move.
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <button className="mt-12 bg-[#F8C62F] text-black px-8 py-4 rounded-lg font-semibold">
-            View All Hackathons
-          </button>
-        </div>
-      </section>
+      <HomeHackathonSection />
       {/* ================= TESTIMONIALS ================= */}
       <section className="py-24">
         <div className="max-w-4xl mx-auto px-6 text-center">
@@ -160,7 +205,7 @@ export default function First() {
         </div>
       </section>
       {/* ================= CTA BANNER ================= */}
-      <section className="py-24 bg-[#03594E] text-white text-center">
+      {/* <section className="py-24 bg-[#03594E] text-white text-center">
         <h2 className="text-4xl font-bold mb-4">
           Ready To Enter a New Level of Innovation?
         </h2>
@@ -177,7 +222,8 @@ export default function First() {
             Contact Our Team
           </button>
         </div>
-      </section>
+      </section> */}
+      <CTASection />
     </main>
   );
 }

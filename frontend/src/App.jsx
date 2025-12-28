@@ -1,5 +1,6 @@
 import React from "react";
 import Navbar from "./components/Navbar";
+import Privacy from "./components/privacy/Privacy";
 
 import {
   BrowserRouter as Router,
@@ -68,6 +69,7 @@ function App() {
         <Route path="/hackathons/:id" element={<HackathonDetail />} />
         <Route path="/dashboards" element={<AdminDashboard />} />
         <Route path="/partner" element={<PartnerPage />} />
+        <Route path="/privacy" element={<Privacy />} />
         {/* Public Auth Routes */}
         {/* Auth */}
         <Route
@@ -113,13 +115,10 @@ function App() {
         <Route
           path="*"
           element={
-            <h1 className="text-white text-center mt-20">
-              404 - Not Found
-            </h1>
+            <h1 className="text-white text-center mt-20">404 - Not Found</h1>
           }
         />
       </Routes>
-      
     </Router>
   );
 }

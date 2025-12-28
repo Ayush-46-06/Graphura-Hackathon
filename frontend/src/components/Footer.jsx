@@ -1,257 +1,249 @@
+import React, { useState, useEffect } from "react";
 import {
-  FaFacebookF,
-  FaTwitter,
-  FaLinkedinIn,
-  FaInstagram,
-  FaMapMarkerAlt,
-  FaPhone,
-  FaEnvelope,
-} from "react-icons/fa";
+  Facebook,
+  Instagram,
+  Linkedin,
+  Twitter,
+  ArrowUp,
+  Mail,
+  Phone,
+  MapPin,
+  ChevronRight,
+} from "lucide-react";
 
-export default function Footer() {
+const Footer = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Show button when page is scrolled down
+  useEffect(() => {
+    const toggleVisibility = () => {
+      if (window.scrollY > 300) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener("scroll", toggleVisibility);
+    return () => window.removeEventListener("scroll", toggleVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
-    <footer
-      className="
-        relative w-full
-        bg-[var(--it-heading-primary)]
-        text-[var(--it-text-body)]
-        overflow-hidden
-        px-8 py-8
-        border border-white/10 border-b-0
-        backdrop-blur-[20px]
-        shadow-[0_4px_30px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.1)]
-      "
-    >
-      {/* CONTENT GRID */}
-      <div className="max-w-7xl mx-auto grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8 mb-12">
-        {/* ABOUT */}
-        <div>
-          <img
-            src="/image/Graphura-logo-white.png"
-            alt="Graphura Logo"
-            className="mt-2 w-[200px] max-h-[150px]"
-          />
+    <footer className="relative bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800 pt-20 overflow-hidden">
+      {/* Decorative Background Element */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none opacity-40 dark:opacity-20">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-teal-200 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan-200 blur-[120px] rounded-full" />
+      </div>
 
-          <p className="mt-[10px] mb-6 text-[var(--it-text-body)]">
-            Your trusted digital marketing partner helping businesses grow their
-            online presence and reach their target audience effectively.
-          </p>
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+          {/* Brand Section */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-500/20 transform hover:rotate-6 transition-transform">
+                <span className="text-white text-2xl font-black">E</span>
+              </div>
+              <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+                Edu<span className="text-teal-600">ceet</span>
+              </h2>
+            </div>
+            <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-xs">
+              Empowering learners worldwide with expert-led courses and a
+              cutting-edge platform for career growth.
+            </p>
+            <button className="group flex items-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-6 py-3 rounded-xl font-semibold transition-all hover:bg-teal-600 dark:hover:bg-teal-500 hover:text-white shadow-sm">
+              Contact Us
+              <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
 
-          <div className="flex">
-            {[
-              {
-                icon: <FaFacebookF />,
-                link: "https://www.facebook.com/share/19nKAMTopZ/",
-              },
-              {
-                icon: <FaTwitter />,
-                link: "https://share.google/w9KeZZ72v8KQxGpFn",
-              },
-              {
-                icon: <FaLinkedinIn />,
-                link: "https://www.linkedin.com/company/graphura-india-private-limited/",
-              },
-              {
-                icon: <FaInstagram />,
-                link: "https://www.instagram.com/graphura.in",
-              },
-            ].map((item, i) => (
+          {/* Useful Links */}
+          <div>
+            <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-8">
+              Useful Links
+            </h3>
+            <ul className="space-y-4">
+              {[
+                "Marketplace",
+                "Kindergarten",
+                "University",
+                "GYM Coaching",
+                "Cooking",
+              ].map((link) => (
+                <li key={link}>
+                  <a
+                    href="#"
+                    className="text-zinc-600 dark:text-zinc-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors flex items-center gap-2 group"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700 group-hover:bg-teal-500 transition-colors" />
+                    {link}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Our Company */}
+          <div>
+            <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-8">
+              Our Company
+            </h3>
+            <ul className="space-y-4">
+              {[
+                "About Us",
+                "Become Teacher",
+                "Blog",
+                "Instructor",
+                "Events",
+              ].map((link) => (
+                <li key={link}>
+                  <a
+                    href="#"
+                    className="text-zinc-600 dark:text-zinc-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors flex items-center gap-2 group"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700 group-hover:bg-teal-500 transition-colors" />
+                    {link}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact Info */}
+          <div>
+            <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-8">
+              Get Contact
+            </h3>
+            <div className="space-y-6">
               <a
-                key={i}
-                href={item.link}
-                target="_blank"
-                rel="noreferrer"
-                className="
-                  w-10 h-10 mr-4 rounded-full
-                  bg-white/10 text-white
-                  flex items-center justify-center
-                  transition
-                  hover:bg-[var(--it-theme-2)]
-                  hover:text-black
-                "
+                href="tel:+911234567890"
+                className="flex items-start gap-4 group"
               >
-                {item.icon}
+                <div className="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-900/20 flex items-center justify-center text-teal-600 shrink-0 group-hover:bg-teal-600 group-hover:text-white transition-all">
+                  <Phone className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-0.5">
+                    Phone
+                  </p>
+                  <p className="text-zinc-900 dark:text-zinc-100 font-medium">
+                    (+91) 123-456-789
+                  </p>
+                </div>
               </a>
-            ))}
+              <a
+                href="mailto:hello@educeet.com"
+                className="flex items-start gap-4 group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-cyan-50 dark:bg-cyan-900/20 flex items-center justify-center text-cyan-600 shrink-0 group-hover:bg-cyan-600 group-hover:text-white transition-all">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-0.5">
+                    Email
+                  </p>
+                  <p className="text-zinc-900 dark:text-zinc-100 font-medium">
+                    hello@educeet.com
+                  </p>
+                </div>
+              </a>
+              <div className="flex items-start gap-4 group">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-600 shrink-0 transition-all">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-0.5">
+                    Location
+                  </p>
+                  <p className="text-zinc-900 dark:text-zinc-100 font-medium">
+                    North America, USA
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* QUICK LINKS */}
-        <div>
-          <h4
-            className="
-              text-[var(--it-common-white)]
-              text-[1.3rem]
-              mb-6
-              relative
-              after:content-['']
-              after:absolute
-              after:-bottom-2
-              after:left-0
-              after:w-10
-              after:h-[3px]
-              after:bg-[var(--it-theme-2)]
-            "
-          >
-            Quick Links
-          </h4>
-
-          <ul className="space-y-3">
+        {/* Social & Newsletter */}
+        <div className="flex flex-col md:flex-row justify-between items-center py-10 border-t border-zinc-200 dark:border-zinc-800 gap-8">
+          <div className="flex gap-4">
             {[
-              "Home",
-              "Services",
-              "About Us",
-              "Intership",
-              "Career",
-              "Blog",
-              "Contact",
-            ].map((item, i) => (
-              <li key={i}>
-                <a
-                  href="#"
-                  className="
-                      text-[var(--it-text-body)]
-                      transition
-                      hover:text-[var(--it-theme-2)]
-                      hover:pl-[5px]
-                    "
-                >
-                  {item}
-                </a>
-              </li>
+              {
+                icon: <Facebook className="w-5 h-5" />,
+                color: "hover:bg-blue-600",
+              },
+              {
+                icon: <Twitter className="w-5 h-5" />,
+                color: "hover:bg-sky-500",
+              },
+              {
+                icon: <Instagram className="w-5 h-5" />,
+                color: "hover:bg-pink-600",
+              },
+              {
+                icon: <Linkedin className="w-5 h-5" />,
+                color: "hover:bg-blue-700",
+              },
+            ].map((social, idx) => (
+              <a
+                key={idx}
+                href="#"
+                className={`w-11 h-11 rounded-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-white transition-all hover:scale-110 shadow-sm ${social.color}`}
+              >
+                {social.icon}
+              </a>
             ))}
-          </ul>
-        </div>
-
-        {/* SERVICES */}
-        <div>
-          <h4
-            className="
-              text-[var(--it-common-white)]
-              text-[1.3rem]
-              mb-6
-              relative
-              after:content-['']
-              after:absolute
-              after:-bottom-2
-              after:left-0
-              after:w-10
-              after:h-[3px]
-              after:bg-[var(--it-theme-2)]
-            "
-          >
-            Our Services
-          </h4>
-
-          <ul className="space-y-3">
-            {[
-              "SEO Services",
-              "Social Media Marketing",
-              "Social Media Optimization",
-              "Flyers",
-              "Content Writing",
-            ].map((item, i) => (
-              <li key={i}>
-                <a
-                  href="#"
-                  className="
-                    text-[var(--it-text-body)]
-                    transition
-                    hover:text-[var(--it-theme-2)]
-                    hover:pl-[5px]
-                  "
-                >
-                  {item}
-                </a>
-              </li>
-            ))}
-          </ul>
-
-          <img
-            src="/image/Footer/razorpay.jpg"
-            alt="Razorpay"
-            className="w-[230px] h-[85px] mt-3"
-          />
-        </div>
-
-        {/* CONTACT */}
-        <div>
-          <h4
-            className="
-              text-[var(--it-common-white)]
-              text-[1.3rem]
-              mb-6
-              relative
-              after:content-['']
-              after:absolute
-              after:-bottom-2
-              after:left-0
-              after:w-10
-              after:h-[3px]
-              after:bg-[var(--it-theme-2)]
-            "
-          >
-            Contact Us
-          </h4>
-
-          <ul className="space-y-4 text-[var(--it-text-body)]">
-            <li className="flex items-start">
-              <FaMapMarkerAlt className="text-[var(--it-theme-2)] mr-4 mt-1 w-5" />
-              Graphura India Private Limited, near Renu Sharma Foundation,
-              Pataudi, Gurgaon, Haryana 122503
-            </li>
-
-            <li className="flex items-center">
-              <FaPhone className="text-[var(--it-theme-2)] mr-4 w-5" />
-              +91 7378021327
-            </li>
-
-            <li className="flex items-center">
-              <FaEnvelope className="text-[var(--it-theme-2)] mr-4 w-5" />
-              support@graphura.in
-            </li>
-
-            <li className="grid grid-cols-2 gap-3">
-              <img
-                src="/image/Footer/skill india.jpg"
-                alt="Skill India"
-                className="h-[88px]"
-              />
-              <img
-                src="/image/Footer/startup.png"
-                alt="Startup India"
-                className="h-[88px] w-[150px]"
-              />
-            </li>
-          </ul>
+          </div>
+          <div className="text-center md:text-right">
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+              © {new Date().getFullYear()} Educeet. All Rights Reserved.
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* BOTTOM */}
-      <div className="border-t border-white/10 pt-6 flex flex-col items-center gap-3 text-center">
-        <p className="text-white/70 text-sm">
-          © 2025 Graphura India Private Limited. All Rights Reserved.
-        </p>
-
-        <ul className="flex gap-6 text-sm">
-          {["Privacy Policy", "Terms of Service", "Cookie Policy"].map(
-            (item, i) => (
-              <li key={i}>
-                <a
-                  href="#"
-                  className="
-                  text-white/70
-                  transition
-                  hover:text-[var(--it-theme-2)]
-                "
-                >
-                  {item}
-                </a>
-              </li>
-            )
-          )}
-        </ul>
+      {/* Bottom Privacy Bar */}
+      <div className="bg-zinc-100 dark:bg-zinc-900/50 py-4">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-xs font-medium text-zinc-500 uppercase tracking-widest">
+            <a href="#" className="hover:text-teal-600 transition-colors">
+              Terms
+            </a>
+            <a href="#" className="hover:text-teal-600 transition-colors">
+              Privacy
+            </a>
+            <a href="#" className="hover:text-teal-600 transition-colors">
+              Cookies
+            </a>
+            <a href="#" className="hover:text-teal-600 transition-colors">
+              Support
+            </a>
+          </div>
+        </div>
       </div>
+
+      {/* Improved Scroll to Top Button */}
+      <button
+        onClick={scrollToTop}
+        className={`fixed bottom-8 right-8 z-50 w-14 h-14 rounded-2xl bg-teal-600 text-white shadow-2xl shadow-teal-600/30 flex items-center justify-center transition-all duration-300 hover:bg-teal-700 hover:-translate-y-1 active:scale-90 ${
+          isVisible
+            ? "translate-y-0 opacity-100"
+            : "translate-y-20 opacity-0 pointer-events-none"
+        }`}
+        aria-label="Scroll to top"
+      >
+        <ArrowUp className="w-6 h-6 animate-pulse" />
+      </button>
     </footer>
   );
-}
+};
+
+export default Footer;
