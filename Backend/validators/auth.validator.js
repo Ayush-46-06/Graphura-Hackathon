@@ -5,15 +5,17 @@ import joi from "joi"
 export const registerSchema = joi.object({
   name: joi.string().required(),
   email: joi.string().email().required(),
-  password: joi.string().min(6).required(),
+  password: joi.string().min(8).required(),
   address: joi.string().required(),
-  contactNumber: joi.string().min(10).required(),
+  contactNumber: joi.string().min(10).max(15).required(),
   university: joi.string().required(),
   college: joi.string().required(),
   occupation: joi.string().optional(),
   company: joi.string().optional(),
   role: joi.string().valid("user", "admin").optional(),
-  adminSecret: joi.string().optional()
+  adminSecret: joi.string().optional(),
+  courseName: joi.string(),
+  yearOfStudy: joi.string()
 });
 
 export const loginSchema = joi.object({

@@ -40,7 +40,7 @@ const userSchema = mongoose.Schema(
       required: true
     },
 
-    // 👇 ADDED (same as Admin)
+
     occupation: {
       type: String,
       default: null
@@ -70,6 +70,12 @@ const userSchema = mongoose.Schema(
     wallet: {
       type: Number,
       default: 0
+    },
+    courseName:{
+      type:String
+    },
+    yearOfStudy:{
+      type:String
     }
   },
   { timestamps: true }

@@ -67,6 +67,12 @@ const adminSchema = new mongoose.Schema(
     isActive: {
       type: Boolean,
       default: true
+    },
+    yearOfStudy:{
+      type:String
+    },
+    courseName:{
+      type:String
     }
   },
   { timestamps: true }

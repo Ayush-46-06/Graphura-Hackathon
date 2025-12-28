@@ -4,6 +4,7 @@ import User from "../models/User.model.js";
 import Admin from "../models/Admin.model.js";
 import { config } from "../config/env.js";
 
+
 export const register = async (req, res) => {
   try {
     const {
@@ -17,42 +18,14 @@ export const register = async (req, res) => {
       occupation,
       company,
       role,
-      adminSecret
+      adminSecret,
+      courseName,
+      yearOfStudy
     } = req.body;
 
     const image = req.file ? req.file.path : null;
 
-
-    if (!name || !email || !password || !address || !contactNumber || !university || !college) {
-      return res.status(400).json({
-        success: false,
-        message: "All required fields must be filled"
-      });
-    }
-
-    if (password.length < 6) {
-      return res.status(400).json({
-        success: false,
-        message: "Password must be at least 6 characters long"
-      });
-    }
-
-    if (contactNumber.length < 10 || contactNumber.length > 15) {
-      return res.status(400).json({
-        success: false,
-        message: "Contact number must be between 10 and 15 digits"
-      });
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid email format"
-      });
-    }
-
-
+  
     const userExists = await User.findOne({ email });
     const adminExists = await Admin.findOne({ email });
 
@@ -62,6 +35,7 @@ export const register = async (req, res) => {
         message: "Email already registered"
       });
     }
+
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -84,7 +58,9 @@ export const register = async (req, res) => {
         college,
         occupation: occupation || null,
         company: company || null,
-        image
+        image,
+        yearOfStudy,
+        courseName
       });
 
       return res.status(201).json({
@@ -104,7 +80,9 @@ export const register = async (req, res) => {
       college,
       occupation: occupation || null,
       company: company || null,
-      image
+      image,
+      courseName,
+      yearOfStudy
     });
 
     res.status(201).json({
@@ -116,24 +94,15 @@ export const register = async (req, res) => {
     console.error("REGISTER ERROR:", error);
     res.status(500).json({
       success: false,
-      message: "Registration failed",
-      error: error.message
+      message: "Registration failed"
     });
   }
 };
 
 
-
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Email and password are required"
-      });
-    }
 
     let account = await User.findOne({ email }).select("+password");
     let role = "user";
@@ -178,3 +147,5 @@ export const login = async (req, res) => {
     });
   }
 };
+
+
