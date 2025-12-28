@@ -1,30 +1,59 @@
 import joi from "joi";
 
-
 export const createHackathonSchema = joi.object({
-  title: joi.string().required(),
+  title: joi.string().trim().required(),
+
   description: joi.string().required(),
+
   about: joi.string().optional(),
+
   image: joi.string().optional(),
-  prizePool: joi.number().required(),
+
+  prizePool: joi.number().positive().required(),
+
   prizeDetails: joi.string().optional(),
-  category: joi.string().required(),
+
+  category: joi.string()
+    .valid(
+      "Coding",
+      "Design",
+      "AI/ML",
+      "Blockchain",
+      "Web Development",
+      "Mobile Apps"
+    )
+    .required(),
+
   tags: joi.alternatives().try(
     joi.array().items(joi.string()),
     joi.string()
-  ),
+  ).optional(),
+
   sponsors: joi.alternatives().try(
     joi.array().items(joi.string()),
     joi.string()
   ).optional(),
+
   judges: joi.alternatives().try(
-    joi.array().items(joi.string().hex().length(24)),
+    joi.array().items(
+      joi.string().hex().length(24)
+    ),
     joi.string()
   ).optional(),
-  startDate: joi.date(),
-  endDate: joi.date().greater(joi.ref("startDate")),
-  lastEnrollmentDate: joi.date().less(joi.ref("startDate")).optional(),
-  status: joi.string().valid("upcoming", "ongoing", "completed").required(),
+
+  startDate: joi.date().required(),
+
+  endDate: joi.date()
+    .greater(joi.ref("startDate"))
+    .required(),
+
+  lastEnrollmentDate: joi.date()
+    .less(joi.ref("startDate"))
+    .optional(),
+
+  status: joi.string()
+    .valid("upcoming", "ongoing", "completed")
+    .required()
 });
 
 
@@ -41,13 +70,22 @@ export const updateHackathonSchema = joi.object({
 
   prizeDetails: joi.string(),
 
-  category: joi.string(),
+  category: joi.string().valid(
+    "Coding",
+    "Design",
+    "AI/ML",
+    "Blockchain",
+    "Web Development",
+    "Mobile Apps"
+  ),
 
   tags: joi.array().items(joi.string()),
 
   sponsors: joi.array().items(joi.string()),
 
-  judges: joi.array().items(joi.string().hex().length(24)),
+  judges: joi.array().items(
+    joi.string().hex().length(24)
+  ),
 
   startDate: joi.date(),
 
@@ -55,5 +93,5 @@ export const updateHackathonSchema = joi.object({
 
   lastEnrollmentDate: joi.date(),
 
-  status: joi.string().valid("upcoming", "ongoing", "completed"),
+  status: joi.string().valid("upcoming", "ongoing", "completed")
 });

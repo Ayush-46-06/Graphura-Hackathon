@@ -13,35 +13,62 @@ import Hackathon from "./components/Hackathon/Hackathon";
 import HackathonDetail from "./components/Hackathon/HackathonDetail";
 import Login from "./components/Auth/Login";
 import Signup from "./components/Auth/Signup";
-import AdminDashboard from "./components/Dashboard/Dashboard";
 import OAuthSuccess from "./components/Auth/OAuthSuccess";
+
+import AdminDashboard from "./components/Dashboard/Dashboard";
+import UserDashboard from "./components/Dashboard/UserDashboard";
 import Footer from "./components/Footer";
 import PartnerPage from "./components/Partner/PartnerPage";
 
-// 🔐 Protected Route (Requires Login)
+import About from "./components/About";
+// import Results from "./components/Results";
+
+
+/* ================== ROUTE GUARDS ================== */
+
+// 🔐 Requires login
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
   return token ? children : <Navigate to="/login" replace />;
 };
 
-// 🌐 Public Route (Redirect if Logged In)
-const PublicRoute = ({ children }) => {
+// 🔐 Admin only
+const AdminRoute = ({ children }) => {
   const token = localStorage.getItem("token");
-  return token ? <Navigate to="/dashboard" replace /> : children;
+  const role = localStorage.getItem("role");
+
+  if (!token) return <Navigate to="/login" replace />;
+
+  return role === "admin"
+    ? children
+    : <Navigate to="/user/dashboard" replace />;
 };
 
+// 🌐 Public (login/signup)
+const PublicRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+
+  if (!token) return children;
+
+  return role === "admin"
+    ? <Navigate to="/admin/dashboard" replace />
+    : <Navigate to="/user/dashboard" replace />;
+};
 function App() {
   return (
     <Router>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
         <Route path="/all-blog" element={<AllBlog />} />
         <Route path="/hackathons" element={<Hackathon />} />
         <Route path="/hackathons/:id" element={<HackathonDetail />} />
         <Route path="/dashboards" element={<AdminDashboard />} />
         <Route path="/partner" element={<PartnerPage />} />
         {/* Public Auth Routes */}
+        {/* Auth */}
         <Route
           path="/login"
           element={
@@ -59,15 +86,24 @@ function App() {
           }
         />
 
-        {/* Google OAuth Success */}
+        {/* OAuth */}
         <Route path="/oauth-success" element={<OAuthSuccess />} />
 
-        {/* Protected Dashboard */}
+        {/* Dashboards */}
         <Route
-          path="/dashboard"
+          path="/admin/dashboard"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/user/dashboard"
           element={
             <ProtectedRoute>
-              <AdminDashboard />
+              <UserDashboard />
             </ProtectedRoute>
           }
         />
@@ -81,7 +117,6 @@ function App() {
             </h1>
           }
         />
-        
       </Routes>
       
     </Router>

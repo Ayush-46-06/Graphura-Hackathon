@@ -1,8 +1,29 @@
 import mongoose from "mongoose";
 
-const hackathonSchema = mongoose.Schema(
-  {
 
+const winnerDetailSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Hackathon_User",
+      required: true
+    },
+    rank: {
+      type: Number,
+      enum: [1, 2, 3],
+      required: true
+    },
+    prizeAmount: {
+      type: Number,
+      required: true
+    }
+  },
+  { _id: false }
+);
+
+
+const hackathonSchema = new mongoose.Schema(
+  {
     title: {
       type: String,
       required: true,
@@ -20,51 +41,30 @@ const hackathonSchema = mongoose.Schema(
     },
 
     prizePool: {
-      type: Number, 
+      type: Number,
       required: true
     },
 
     category: {
       type: String,
       required: true,
-      enum: ["Coding", "Design", "AI/ML", "Blockchain", "Web Development", "Mobile Apps"]
-    },
-
-tags: {
-  type: [
-    {
-      type: String,
       enum: [
-        "Blockchain",
-        "Web3",
-        "Cyber Security",
-        "Cloud Computing",
-        "DevOps",
-        "C",
-        "C++",
-        "Go",
-        "Beginner Friendly",
-        "Intermediate",
-        "Advanced",
-        "Open for All",
         "Coding",
-        "AI"
+        "Design",
+        "AI/ML",
+        "Blockchain",
+        "Web Development",
+        "Mobile Apps"
       ]
-    }
-  ],
-  default: ["Open for All"]
-},
-
-
-    startDate: {
-      type: Date,
-  
     },
 
-    endDate: {
-      type: Date,
-    
+    tags: {
+      type: [String],
+      default: ["Open for All"]
     },
+
+    startDate: Date,
+    endDate: Date,
 
     status: {
       type: String,
@@ -79,26 +79,17 @@ tags: {
       }
     ],
 
-    winners: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Hackathon_User"
-      }
-    ],
 
-  
-    about: {
-      type: String
+    winnerDetails: {
+      type: [winnerDetailSchema],
+      default: []
     },
 
-    prizeDetails: {
-      type: String
-    },
+    about: String,
+    prizeDetails: String,
+    lastEnrollmentDate: Date,
 
-    lastEnrollmentDate: {
-      type: Date
-    },
-
+ 
     sponsors: {
       type: [String],
       default: []

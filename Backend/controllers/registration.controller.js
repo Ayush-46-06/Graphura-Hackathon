@@ -1,27 +1,100 @@
 import Registration from "../models/Registration.model.js";
+import Hackathon from "../models/Hackathon.model.js";
 
 export const registerForHackathon = async (req, res) => {
-  const { hackathonId } = req.body;
+  try {
+    const { hackathonId } = req.body;
+    const userId = req.user._id;
 
-  const exists = await Registration.findOne({
-    user: req.user._id,
-    hackathon: hackathonId
-  });
+    // 🔹 Fetch hackathon
+    const hackathon = await Hackathon.findById(hackathonId);
 
-  if (exists) {
-    return res.status(400).json({
+    if (!hackathon) {
+      return res.status(404).json({
+        success: false,
+        message: "Hackathon not found"
+      });
+    }
+
+    // 🔥 IMPORTANT: Status check
+    if (hackathon.status === "completed") {
+      return res.status(400).json({
+        success: false,
+        message: "Registrations are closed for this hackathon"
+      });
+    }
+
+    // (Optional) Agar tum ongoing bhi block karna chahte ho
+    // if (hackathon.status === "ongoing") {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Hackathon already started"
+    //   });
+    // }
+
+    // 🔹 Already registered check
+    const exists = await Registration.findOne({
+      user: userId,
+      hackathon: hackathonId
+    });
+
+    if (exists) {
+      return res.status(400).json({
+        success: false,
+        message: "Already registered"
+      });
+    }
+
+    // 🔹 Register user
+    await Registration.create({
+      user: userId,
+      hackathon: hackathonId
+    });
+
+    // 🔹 Add to participants
+    await Hackathon.findByIdAndUpdate(
+      hackathonId,
+      { $addToSet: { participants: userId } }
+    );
+
+    res.status(201).json({
+      success: true,
+      message: "Registered successfully"
+    });
+
+  } catch (error) {
+    console.error("REGISTER HACKATHON ERROR:", error);
+    res.status(500).json({
       success: false,
-      message: "Already registered"
+      message: "Failed to register for hackathon"
     });
   }
+};
 
-  await Registration.create({
-    user: req.user._id,
+
+
+export const getParticipantsCount = async (req, res) => {
+  const { hackathonId } = req.params;
+
+  const count = await Registration.countDocuments({
     hackathon: hackathonId
   });
 
-  res.status(201).json({
+  res.json({
     success: true,
-    message: "Registered successfully"
+    data: { count }
+  });
+};
+
+export const getParticipantsList = async (req, res) => {
+  const { hackathonId } = req.params;
+
+  const participants = await Registration.find({
+    hackathon: hackathonId
+  }).populate("user", "name email university");
+
+  res.json({
+    success: true,
+    data: participants
   });
 };

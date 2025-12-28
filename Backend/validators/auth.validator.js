@@ -1,35 +1,28 @@
 import joi from "joi"
 
-export const registerSchema = joi.object({
-  name: joi.string().trim().min(1).required(),
-  email: joi.string().email().lowercase().required(),
-  password: joi.string().min(6).required(),
-  address: joi.string().min(1).required(),
-  contactNumber: joi.string().min(10).max(15).required(),
-  university: joi.string().trim().required(),
-  college: joi.string().required(),
-  role: joi.string().valid("user", "admin").optional(),
-  adminSecret: joi.string().optional() 
-});
 
+
+export const registerSchema = joi.object({
+  name: joi.string().required(),
+  email: joi.string().email().required(),
+  password: joi.string().min(8).required(),
+  address: joi.string().required(),
+  contactNumber: joi.string().min(10).max(15).required(),
+  university: joi.string().required(),
+  college: joi.string().required(),
+  occupation: joi.string().optional(),
+  company: joi.string().optional(),
+  role: joi.string().valid("user", "admin").optional(),
+  adminSecret: joi.string().optional(),
+  courseName: joi.string(),
+  yearOfStudy: joi.string()
+});
 
 export const loginSchema = joi.object({
-  email: joi.string()
-    .email()
-    .required()
-    .messages({
-      "string.email": "Valid email is required",
-      "any.required": "Email is required"
-    }),
-
-  password: joi.string()
-    .min(6)
-    .required()
-    .messages({
-      "string.min": "Password length must be at least 6 characters long",
-      "any.required": "Password is required"
-    })
+  email: joi.string().email().required(),
+  password: joi.string().required()
 });
+
 
 export const updateProfileSchema = joi.object({
   name: joi.string()

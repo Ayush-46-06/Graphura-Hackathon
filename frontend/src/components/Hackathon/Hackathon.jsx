@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCalendarDays,
+  faPeopleGroup,
+  faSearch,
+} from "@fortawesome/free-solid-svg-icons";
 import { faCalendarWeek } from "@fortawesome/free-solid-svg-icons";
 import { faList } from "@fortawesome/free-solid-svg-icons";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faClock } from "@fortawesome/free-regular-svg-icons";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 
 const Hackathon = () => {
   const [view, setView] = useState("grid");
@@ -13,6 +20,11 @@ const Hackathon = () => {
   const [loading, setLoading] = useState(true);
   const [active, setActive] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
+  const [range, setRange] = useState([]);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
+
   const filterList = [
     "All",
     "Coding",
@@ -38,33 +50,59 @@ const Hackathon = () => {
     fetchHackathons();
   }, []);
 
+  const filteredData = data.filter((item) => {
+    // CATEGORY FILTER
+    const categoryMatch = active === "All" || item.category === active;
+
+    // SEARCH FILTER
+    const searchMatch =
+      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.tags?.some((tag) =>
+        tag.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+    // DATE FILTER (react-calendar)
+    let dateMatch = true;
+
+    if (range && range.length === 2) {
+      const [startDate, endDate] = range;
+
+      const hackathonStart = new Date(item.startDate);
+      const hackathonEnd = new Date(item.endDate);
+
+      dateMatch = hackathonStart <= endDate && hackathonEnd >= startDate;
+    }
+
+    return categoryMatch && searchMatch && dateMatch;
+  });
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  const paginatedData = filteredData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  const handleChange = (value) => {
+    setRange(value);
+    setShowCalendar(false);
+  };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [active, searchTerm, range]);
+
   if (loading) return <p>Loading...</p>;
   if (!data) return <p>Hackathon not found</p>;
-
- const filteredData = data.filter((item) => {
-  // CATEGORY FILTER
-  const categoryMatch =
-    active === "All" || item.category === active;
-
-  // SEARCH FILTER
-  const searchMatch =
-    item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.tags?.some(tag =>
-      tag.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-  return categoryMatch && searchMatch;
-});
-
-    const formatDate = (date) => {
-  return new Date(date).toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "short",
-    year: "numeric"
-  });
-};
-
 
   return (
     <div className="overflow-x-hidden">
@@ -104,7 +142,7 @@ const Hackathon = () => {
                 <input
                   type="text"
                   placeholder="Search hackathons..."
-                  value = {searchTerm}
+                  value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="bg-[#02b098] py-2 pl-8 pr-4 text-white placeholder:text-white focus:outline-none rounded-3xl"
                 />
@@ -116,6 +154,7 @@ const Hackathon = () => {
                   <FontAwesomeIcon
                     icon={faCalendarWeek}
                     className="text-white text-lg"
+                    onClick={() => setShowCalendar((prev) => !prev)}
                   />
                 </span>
                 <div className="lg:hidden">
@@ -214,6 +253,11 @@ const Hackathon = () => {
             </div>
           </div>
         </div>
+        {showCalendar && (
+          <div className="fixed top-20 right-10 z-50 bg-white shadow-xl rounded-xl overflow-hidden">
+            <Calendar selectRange={true} onChange={handleChange} />
+          </div>
+        )}
       </section>
 
       {/* hackathons list */}
@@ -223,21 +267,23 @@ const Hackathon = () => {
             <h3 className="text-xl font-semibold">
               <FontAwesomeIcon
                 icon={faFilter}
-                className="text-green-500 text-lg"
+                className="text-green-500 text-lg pr-2"
               />
               Categories
             </h3>
-            <ul className="flex flex-col gap-1 mt-2">
+            <ul className="flex flex-col gap-1 mt-2 px-2">
               {filterList.map((val) => (
                 <li
                   onClick={() => setActive(val)}
-                  className="flex items-center cursor-pointer"
+                  className={`flex items-center cursor-pointer p-2 rounded-xl ${
+                    active === val ? "text-white bg-green-500" : ""
+                  }`}
                   key={val}
                 >
                   <span
                     className={`${
                       active === val
-                        ? "bg-green-500 border-green-700"
+                        ? "bg-white border-white"
                         : "bg-gray-300 border-gray-500"
                     } border flex rounded-full w-3 h-3 mr-2`}
                   ></span>
@@ -248,11 +294,15 @@ const Hackathon = () => {
           </div>
           {view === "grid" && (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 place-items-center lg:place-items-start w-full">
-              {filteredData.map((val) => (
+              {paginatedData.map((val) => (
                 <Link to={`/hackathons/${val._id}`} key={val._id}>
-                  <div className="relative mx-2 rounded-3xl shadow-lg overflow-hidden pb-3 border border-gray-200">
-                    <div className="mb-4">
-                      <img src={val.image} alt="hackathon-image" />
+                  <div className="group relative mx-2 rounded-3xl shadow-lg overflow-hidden pb-3 border border-gray-200 max-w-[420px] hover:scale-105 hover:shadow-xl transition-transform duration-200">
+                    <div className="mb-4 overflow-hidden">
+                      <img
+                        src={val.image}
+                        alt="hackathon-image"
+                        className="group-hover:scale-110 transition-transform duration-200"
+                      />
                     </div>
                     <div className="mx-4  pb-3 border-b border-gray-300">
                       <div className="flex flex-wrap gap-2 mt-2">
@@ -269,7 +319,7 @@ const Hackathon = () => {
                         ))}
                       </div>
 
-                      <h2 className="font-bold text-lg mt-2 truncate">
+                      <h2 className="font-bold text-lg mt-2 truncate group-hover:text-green-800">
                         {val.title}
                       </h2>
                       <p className="font-semibold text-gray-500 text-sm">
@@ -281,28 +331,61 @@ const Hackathon = () => {
                     </span>
 
                     <div className="mx-4 flex justify-between mt-2">
-                      <div className="flex flex-col font-semibold items-center">
-                        <span className="text-gray-500">Participants</span>
-                        <span className="text-green-400">{val.participants.length}</span>
+                      <div className="flex items-center gap-1">
+                        <div className="bg-green-200 rounded-lg py-1.5 px-2">
+                          <FontAwesomeIcon
+                            icon={faPeopleGroup}
+                            className="text-green-500"
+                          />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-gray-500 text-sm">
+                            Participants
+                          </span>
+                          <span className="text-green-400 font-medium text-sm">
+                            {val.participants.length}
+                          </span>
+                        </div>
                       </div>
-                      {val.status === "upcoming" && (
-                        <div className="flex flex-col font-semibold">
-                        <span className="text-gray-500 text-center">Starts On</span>
-                        <span className="text-green-400">{formatDate(val.startDate)}</span>
+                      <div className="flex items-center gap-1">
+                        <div className="bg-blue-200 rounded-lg py-1.5 px-2">
+                          <FontAwesomeIcon
+                            icon={faClock}
+                            className="text-blue-600"
+                          />
+                        </div>
+
+                        {val.status === "upcoming" && (
+                          <div className="flex flex-col">
+                            <span className="text-gray-500 text-sm">
+                              Starts On
+                            </span>
+                            <span className="text-blue-500 font-medium text-sm">
+                              {formatDate(val.startDate)}
+                            </span>
+                          </div>
+                        )}
+                        {val.status === "ongoing" && (
+                          <div className="flex flex-col">
+                            <span className="text-gray-500 text-sm">
+                              Ends On
+                            </span>
+                            <span className="text-blue-500 font-medium text-sm">
+                              {formatDate(val.endDate)}
+                            </span>
+                          </div>
+                        )}
+                        {val.status === "completed" && (
+                          <div className="flex flex-col">
+                            <span className="text-gray-500 text-sm">
+                              Starts In
+                            </span>
+                            <span className="text-blue-500 font-medium text-sm">
+                              2d 14h
+                            </span>
+                          </div>
+                        )}
                       </div>
-                      )}
-                      {val.status === "ongoing" && (
-                        <div className="flex flex-col font-semibold">
-                        <span className="text-gray-500 text-center">Ends On</span>
-                        <span className="text-green-400">{formatDate(val.endDate)}</span>
-                      </div>
-                      )}
-                      {val.status === "completed" && (
-                        <div className="flex flex-col font-semibold">
-                        <span className="text-gray-500 text-center">Starts In</span>
-                        <span className="text-green-400">2d 14h</span>
-                      </div>
-                      )}
                     </div>
                   </div>
                 </Link>
@@ -311,51 +394,166 @@ const Hackathon = () => {
           )}
 
           {view === "list" && (
-            <div className="md:mx-8 grid grid-cols-1 gap-6 place-items-center lg:place-items-end w-full">
-              {data.map((val) => (
+            <div className="md:mx-8 grid grid-cols-1 gap-6 place-items-center w-full">
+              {paginatedData.map((val) => (
                 <div
                   key={val._id}
-                  className="relative w-full sm:max-w-[600px] xl:max-w-[800px] 2xl:max-w-[1000px] rounded-3xl shadow-lg flex items-stretch border border-gray-200 overflow-hidden"
+                  className="group cursor-pointer relative w-full sm:max-w-[600px] lg:max-w-[800px] 2xl:max-w-[1000px] rounded-3xl shadow-lg flex items-stretch border border-gray-200 overflow-hidden hover:scale-105 hover:shadow-xl transition-transform duration-200"
                 >
                   {/* LEFT IMAGE */}
-                  <div className="w-[130px] md:w-[180px] xl:w-[250px] 2xl:w-[300px] flex-shrink-0">
+                  <div className="overflow-hidden w-[130px] md:w-[180px] xl:w-[250px] 2xl:w-[300px] flex-shrink-0">
                     <img
                       src={val.image}
                       alt="hackathon-image"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
                     />
                   </div>
 
                   {/* RIGHT CONTENT */}
                   <div className="px-2 py-2 w-full">
-                    <span className="px-3 py-[1px] bg-green-100 border border-green-400 rounded-2xl text-green-500">
-                      Tags
-                    </span>
-                    <h2 className="font-bold text-sm truncate">{val.title}</h2>
-                    <p className="font-semibold text-gray-500 text-xs line-clamp-2">
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {val.tags.map((tag, index) => (
+                        <span
+                          key={tag}
+                          className={`px-3 py-[3px] text-xs font-medium rounded-full border transition-colors
+        ${index % 3 === 0 && "bg-green-50 text-green-700 border-green-300"}
+        ${index % 3 === 1 && "bg-blue-50 text-blue-700 border-blue-300"}
+        ${index % 3 === 2 && "bg-purple-50 text-purple-700 border-purple-300"}`}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <h2 className="font-bold text-sm truncate md:text-lg xl:text-xl group-hover:text-green-800">
+                      {val.title}
+                    </h2>
+                    <p className="font-semibold text-gray-500 text-xs line-clamp-2 md:text-sm xl:text-base">
                       {val.description}
                     </p>
-                    <div className="pt-2 flex justify-between mt-2 mx-2 border-t border-gray-300">
-                      <div className="flex flex-col font-semibold items-center">
-                        <span className="text-gray-500 text-sm">
-                          Participants
-                        </span>
-                        <span className="text-green-400">1234</span>
+
+                    <div className="mx-4 flex justify-between mt-2 border-t border-gray-300 pt-2">
+                      <div className="flex items-center gap-2">
+                        <div className="bg-green-200 rounded-lg py-1.5 px-2">
+                          <FontAwesomeIcon
+                            icon={faPeopleGroup}
+                            className="text-green-500"
+                          />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-gray-500 text-sm md:text-base">
+                            Participants
+                          </span>
+                          <span className="text-green-400 font-medium text-sm md:text-base">
+                            {val.participants.length}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex flex-col font-semibold">
-                        <span className="text-gray-500 text-sm">Ends In</span>
-                        <span className="text-green-400">2d 14h</span>
+                      <div className="flex items-center gap-2">
+                        <div className="bg-blue-200 rounded-lg py-1.5 px-2">
+                          <FontAwesomeIcon
+                            icon={faClock}
+                            className="text-blue-600"
+                          />
+                        </div>
+
+                        {val.status === "upcoming" && (
+                          <div className="flex flex-col">
+                            <span className="text-gray-500 text-sm md:text-base">
+                              Starts On
+                            </span>
+                            <span className="text-blue-500 font-medium text-sm md:text-base">
+                              {formatDate(val.startDate)}
+                            </span>
+                          </div>
+                        )}
+                        {val.status === "ongoing" && (
+                          <div className="flex flex-col">
+                            <span className="text-gray-500 text-sm md:text-base">
+                              Ends On
+                            </span>
+                            <span className="text-blue-500 font-medium text-sm md:text-base">
+                              {formatDate(val.endDate)}
+                            </span>
+                          </div>
+                        )}
+                        {val.status === "completed" && (
+                          <div className="flex flex-col">
+                            <span className="text-gray-500 text-sm md:text-base ">
+                              Starts In
+                            </span>
+                            <span className="text-blue-500 font-medium text-sm md:text-base ">
+                              2d 14h
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="bg-purple-200 rounded-lg py-1.5 px-2">
+                          <FontAwesomeIcon
+                            icon={faCalendarDays}
+                            className="text-purple-700"
+                          />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-gray-500 text-sm md:text-base">
+                            Enrolls By
+                          </span>
+                          <span className="text-purple-600 font-medium text-sm md:text-base">
+                            {formatDate(val.lastEnrollmentDate)}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <span className="absolute top-2 left-2 bg-blue-900 text-green-400 font-semibold py-1 px-3 rounded-2xl">
-                    {val.status}
-                  </span>
+                  <span className="absolute top-2 left-2 bg-[#2c572f] text-[#39ff14] font-semibold py-1 px-3 rounded-2xl border border-[#39ff14] shadow-[0_0_8px_#39ff14,0_0_16px_#39ff14]">
+                      Free
+                    </span>
                 </div>
               ))}
             </div>
           )}
         </div>
+      </section>
+
+      {/* pagination */}
+      <section>
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 mt-10 mb-6">
+            {/* Prev */}
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+              disabled={currentPage === 1}
+              className="w-10 h-10 border rounded-lg disabled:opacity-40"
+            >
+              ←
+            </button>
+
+            {/* Page numbers */}
+            {[...Array(totalPages)].map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentPage(i + 1)}
+                className={`w-10 h-10 rounded-lg border font-semibold
+          ${
+            currentPage === i + 1
+              ? "bg-[#03594E] text-white"
+              : "bg-white text-gray-700"
+          }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+
+            {/* Next */}
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="w-10 h-10 border rounded-lg disabled:opacity-40"
+            >
+              →
+            </button>
+          </div>
+        )}
       </section>
     </div>
   );

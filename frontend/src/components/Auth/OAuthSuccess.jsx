@@ -7,14 +7,20 @@ const OAuthSuccess = () => {
 
   useEffect(() => {
     const token = params.get("token");
+    const role = params.get("role"); // 👈 IMPORTANT
 
     if (token) {
       localStorage.setItem("token", token);
-      navigate("/dashboard");
+
+      if (role === "admin") {
+        navigate("/admin/dashboard", { replace: true });
+      } else {
+        navigate("/user/dashboard", { replace: true });
+      }
     } else {
-      navigate("/login");
+      navigate("/login", { replace: true });
     }
-  }, []);
+  }, [navigate, params]);
 
   return <p className="text-white text-center mt-20">Signing you in...</p>;
 };

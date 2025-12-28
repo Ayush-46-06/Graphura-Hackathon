@@ -38,52 +38,32 @@ export const myHackathons = async (req, res) => {
 
 
 export const downloadCertificate = async (req, res) => {
-  const { hackathonId } = req.params;
-  const userId = req.user._id.toString();
-  
-  console.log(`Attempting to download certificate for user ${userId}, hackathon ${hackathonId}`);
-  
   try {
-    const certificate = await Certificate.findOne({ 
-      user: userId, 
-      hackathon: hackathonId 
+    const { hackathonId } = req.params;
+    const userId = req.user._id;
+
+    const certificate = await Certificate.findOne({
+      user: userId,
+      hackathon: hackathonId
     });
-    
-    console.log('Certificate found:', certificate);
-    
+
     if (!certificate) {
-      return res.status(404).json({ 
-        success: false, 
-        message: "Certificate not found" 
+      return res.status(404).json({
+        success: false,
+        message: "Certificate not found"
       });
     }
-    
-    const filePath = path.join(
-      process.cwd(), 
-      "uploads", 
-      "certificates", 
-      hackathonId, 
-      `${userId}.pdf`
-    );
-    
-    console.log('Looking for file at:', filePath);
-    console.log('File exists:', fs.existsSync(filePath));
-    
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ 
-        success: false, 
-        message: "Certificate file not found on server" 
-      });
-    }
-    
-    res.download(filePath, `${certificate.user}.pdf`);
-  } catch (err) {
-    console.error('Error in downloadCertificate:', err);
-    res.status(500).json({ 
-      success: false, 
-      message: "Error downloading certificate",
-      error: err.message 
+
+    // 👉 redirect to cloudinary
+    return res.redirect(certificate.certificateUrl);
+
+  } catch (error) {
+    console.error("DOWNLOAD CERTIFICATE ERROR:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch certificate"
     });
   }
 };
+
 

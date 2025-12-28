@@ -2,20 +2,28 @@ import axios from "axios";
 import React, { use, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate } from "react-router-dom";
 import {
-  faBuilding,
+  faArrowRight,
+  faAward,
+  faCalendarWeek,
   faCircleCheck,
+  faMedal,
   faPeopleGroup,
+  faRobot,
   faRocket,
+  faShareNodes,
+  faTrophy,
 } from "@fortawesome/free-solid-svg-icons";
 import { faHourglassHalf } from "@fortawesome/free-solid-svg-icons";
 
 const HackathonDetail = () => {
   const { id } = useParams();
-
+  const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [active, setActive] = useState("Overview");
+  const [allHackathons, setAllHackathons] = useState([]);
 
   useEffect(() => {
     const fetchHackathon = async () => {
@@ -34,6 +42,20 @@ const HackathonDetail = () => {
 
     fetchHackathon();
   }, [id]);
+
+  useEffect(() => {
+    const fetchAllHackathons = async () => {
+      try {
+        const res = await axios.get("http://localhost:5001/api/hackathon");
+        setAllHackathons(res.data.data);
+      } catch (err) {
+        console.error("Failed to fetch data", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAllHackathons();
+  }, []);
 
   if (loading) return <p>Loading...</p>;
   if (!data) return <p>Hackathon not found</p>;
@@ -56,10 +78,18 @@ const HackathonDetail = () => {
     "The decision of the judging panel is final.",
   ];
 
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
   return (
     <div>
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-500 flex items-center gap-1 mx-4 my-2">
+      <nav className="text-sm text-gray-500 flex items-center gap-1 mx-4 lg:mx-8 my-2">
         <Link to="/" className="hover:text-black">
           Home
         </Link>
@@ -76,137 +106,302 @@ const HackathonDetail = () => {
       </nav>
 
       {/* hackathon details */}
-      <section className="mx-4">
-        <div className="">
-          <h1 className="font-bold text-xl">{data.title}</h1>
-          <p className="text-gray-500">{data.description}</p>
-          <div className="mt-2 rounded-2xl overflow-hidden">
-            <img
-              src="https://res.cloudinary.com/drq2a0262/image/upload/v1766129810/hackathon_bljdtw.png"
-              alt="hackathon-image"
-            />
-          </div>
-          <div className="grid grid-cols-3 gap-4 mt-5">
-            <div className="border border-gray-200 shadow-md p-2 flex flex-col rounded-xl justify-between">
-              <span>
-                <FontAwesomeIcon
-                  icon={faHourglassHalf}
-                  className="text-green-500"
-                />
-              </span>
-              <span className="text-gray-500 text-sm font-medium">
-                ENROLLMENT ENDS
-              </span>
-              <span className="font-bold">30th Dec</span>
-            </div>
-            <div className="border border-gray-200 shadow-md p-2 flex flex-col rounded-xl">
-              <span>
-                <FontAwesomeIcon
-                  icon={faPeopleGroup}
-                  className="text-green-500"
-                />
-              </span>
-              <span className="text-gray-500 text-sm font-medium">
-                STUDENT ENROLLED
-              </span>
-              <span className="font-bold">1234</span>
-            </div>
-            <div className="border border-gray-200 shadow-md p-2 flex flex-col rounded-xl">
-              <span>
-                <FontAwesomeIcon icon={faRocket} className="text-green-500" />
-              </span>
-              <span className="text-gray-500 text-sm font-medium">
-                STARTS ON
-              </span>
-              <span className="mt-auto font-bold">31st Dec</span>
-            </div>
-          </div>
-          <div>
-            <div className="mt-5 overflow-x-auto border-b-2 border-gray-200 scrollbar-hide">
-              <ul className="flex whitespace-nowrap gap-5 pb-2">
-                {list.map((val) => (
-                  <li
-                    onClick={() => setActive(val)}
-                    key={val}
-                    className={`font-medium ${
-                      active === val
-                        ? "text-green-500 border-b-2 border-green-500"
-                        : "text-gray-500"
-                    } pb-2`}
-                  >
-                    {val}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            {active === "Overview" && (
-              <div className="mt-2">
-                <h3 className="font-bold text-xl">About the Hackathon</h3>
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut
-                  suscipit id delectus nemo, totam aliquam quo fugiat aperiam
-                  voluptatem qui, magni ullam dicta sequi ipsa ratione alias
-                  accusantium voluptatibus, facere quam molestiae fuga
-                  temporibus. Recusandae numquam qui assumenda? Consequatur
-                  quasi id odio sunt quaerat praesentium repudiandae rem
-                  eligendi velit tenetur. Lorem ipsum dolor sit amet consectetur
-                  adipisicing elit. Ipsam, sapiente?
-                </p>
+      <section>
+        <div className="mx-4 lg:mx-8 lg:flex gap-[5%]">
+          <div className="pb-4 w-full">
+            <div className=" relative mt-2 rounded-2xl overflow-hidden max-h-[250px] lg:max-h-[320px]">
+              <img
+                src={data.image}
+                alt="hackathon-image"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bg-black/35 inset-0 flex flex-col justify-center items-center">
+              <h1 className="font-bold text-xl text-white md:text-2xl lg:text-3xl xl:text-4xl mb-5">{data.title}</h1>
+            <p className="text-white font-medium text-center md:text-lg lg:text-xl">{data.description}</p>
               </div>
-            )}
-            {active === "Rules & Guidlines" && (
-              <div>
-                <ul className="flex flex-col gap-2">
-                  {rules.map((val)=>(
-                    <li key={val}><FontAwesomeIcon className="text-green-500" icon={faCircleCheck} /> {val}</li>
-                  ))
-                  }
+            </div>
+
+            <div className="grid grid-cols-3 gap-4 md:gap-6 mt-5">
+              <div className="border border-gray-200 shadow-md p-2 flex flex-col rounded-xl justify-between lg:items-center lg:justify-start">
+                <div className="flex flex-col lg:flex-row lg:gap-2 lg:items-center justify-center">
+                <span>
+                  <FontAwesomeIcon
+                    icon={faHourglassHalf}
+                    className="text-green-500"
+                  />
+                </span>
+                <span className="text-gray-500 text-sm font-medium lg:text-lg">
+                  ENROLLMENT ENDS
+                </span>
+                </div>
+                <span className="font-bold lg:text-lg">30th Dec</span>
+              </div>
+              <div className="border border-gray-200 shadow-md p-2 flex flex-col rounded-xl lg:items-center lg:justify-start">
+                <div className="flex flex-col lg:flex-row lg:gap-2 lg:items-center justify-center">
+                <span>
+                  <FontAwesomeIcon
+                    icon={faPeopleGroup}
+                    className="text-green-500"
+                  />
+                </span>
+                <span className="text-gray-500 text-sm font-medium lg:text-lg">
+                  STUDENT ENROLLED
+                </span>
+                </div>
+                <span className="font-bold lg:text-lg">1234</span>
+              </div>
+              <div className="border border-gray-200 shadow-md p-2 flex flex-col rounded-xl lg:items-center lg:justify-start">
+                <div className="flex flex-col lg:flex-row lg:gap-2 lg:items-center justify-center">
+                <span>
+                  <FontAwesomeIcon icon={faRocket} className="text-green-500" />
+                </span>
+                <span className="text-gray-500 text-sm font-medium lg:text-lg">
+                  STARTS ON
+                </span>
+                </div>
+                <span className="mt-auto font-bold lg:text-lg">31st Dec</span>
+              </div>
+            </div>
+            <div>
+              <div className="mt-5 overflow-x-auto border-b-2 border-gray-200 scrollbar-hide">
+                <ul className="flex whitespace-nowrap gap-5 pb-2">
+                  {list.map((val) => (
+                    <li
+                      onClick={() => setActive(val)}
+                      key={val}
+                      className={`font-medium cursor-pointer ${
+                        active === val
+                          ? "text-green-500 border-b-2 border-green-500"
+                          : "text-gray-500"
+                      } pb-2`}
+                    >
+                      {val}
+                    </li>
+                  ))}
                 </ul>
               </div>
-            )}
+              {active === "Overview" && (
+                <div className="mt-4 max-w-[700px]">
+                  <h3 className="font-bold text-xl mb-2 lg:text-2xl">
+                    About the Hackathon
+                  </h3>
+                  <div className="space-y-4 text-gray-600">
+                    {data?.about.split("\\n").map((p, i) => (
+                      <p key={i}>{p}</p>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {active === "Rules & Guidlines" && (
+                <div className="mt-4">
+                  <h3 className="text-xl font-bold mb-2 lg:text-2xl">
+                    Play fair. Innovate bold.
+                  </h3>
+                  <ul className="flex flex-col gap-3">
+                    {rules.map((val) => (
+                      <li key={val} className="flex gap-2">
+                        <span className="pt-1">
+                          <FontAwesomeIcon
+                            className="text-green-500"
+                            icon={faCircleCheck}
+                          />
+                        </span>{" "}
+                        <span>{val}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className=" mt-2 p-4 bg-green-100 border-l-4 border-green-500 rounded-xl font-semibold">
+                    Pro tip: Strategy matters as much as skill. Plan wisely.
+                  </p>
+                </div>
+              )}
+              {active === "Judges" && (
+                <div className="mt-4 flex flex-col items-center">
+                  <h3 className="font-bold text-xl w-full lg:text-2xl">Meet the Judges</h3>
+                  {data?.judges?.map((judge) => (
+                    <div
+                      key={judge._id}
+                      className="flex items-center gap-4 p-4 border border-gray-200 rounded-2xl shadow-lg mt-2 max-w-[450px] w-full"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center font-semibold text-green-700">
+                        {judge.name.charAt(0)}
+                      </div>
+
+                      <div>
+                        <p className="font-semibold">{judge.name}</p>
+                        <p className="text-sm text-gray-500">{judge.email}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {active === "Prizes" && (
+                <div className="mt-4">
+                  <h3 className="font-bold text-xl lg:text-2xl">
+                    <FontAwesomeIcon
+                      icon={faTrophy}
+                      className="text-green-500 mr-2"
+                    />
+                    Prizes & Awards
+                  </h3>
+                  {/* 1st Prize Winner */}
+                  <div className="flex flex-col gap-6 mt-2 items-center w-full">
+                    <div className="relative max-w-sm w-full rounded-2xl p-5 bg-gradient-to-br from-yellow-300 via-yellow-100 to-yellow-500 shadow-[0_10px_30px_rgba(234,179,8,0.6)] border border-yellow-600">
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="w-10 h-10 flex items-center justify-center rounded-full bg-yellow-600 shadow-inner">
+                          <FontAwesomeIcon
+                            icon={faTrophy}
+                            className="text-yellow-100 text-lg"
+                          />
+                        </span>
+
+                        <h3 className="text-xl font-bold text-yellow-900">
+                          1st Prize Winner
+                        </h3>
+                      </div>
+
+                      {/* Prize amount */}
+                      <p className="text-lg font-bold text-yellow-900">
+                        ₹15,000
+                      </p>
+
+                      <p className="text-sm text-yellow-800 mt-1 font-medium">
+                        Champion of the Hackathon
+                      </p>
+
+                      <span className="absolute inset-0 rounded-2xl ring-2 ring-yellow-400/50 pointer-events-none"></span>
+                    </div>
+
+                    {/* 2nd Prize Winner */}
+                    <div className="relative max-w-sm w-full rounded-2xl p-5 bg-gradient-to-br from-gray-300 via-gray-100 to-gray-400 shadow-[0_10px_30px_rgba(156,163,175,0.6)] border border-gray-500">
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-500 shadow-inner">
+                          <FontAwesomeIcon
+                            icon={faMedal}
+                            className="text-gray-100 text-lg"
+                          />
+                        </span>
+
+                        <h3 className="text-xl font-bold text-gray-800">
+                          2nd Prize Winner
+                        </h3>
+                      </div>
+
+                      <p className="text-lg font-bold text-gray-800">₹10,000</p>
+
+                      <p className="text-sm text-gray-700 mt-1 font-medium">
+                        Outstanding Performance
+                      </p>
+
+                      <span className="absolute inset-0 rounded-2xl ring-2 ring-gray-300/60 pointer-events-none"></span>
+                    </div>
+
+                    {/* 3rd Prize Winner */}
+                    <div className="relative max-w-sm w-full rounded-2xl p-5 bg-gradient-to-br from-[#8C6239] via-[#ec9645] to-[#7A4A2E] shadow-[0_10px_30px_rgba(120,74,46,0.6)] border border-[#6E3B1F]">
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="w-10 h-10 flex items-center justify-center rounded-full bg-[#6E3B1F] shadow-inner">
+                          <FontAwesomeIcon
+                            icon={faAward}
+                            className="text-[#F5E6D3] text-lg"
+                          />
+                        </span>
+
+                        <h3 className="text-xl font-bold text-white">
+                          3rd Prize Winner
+                        </h3>
+                      </div>
+
+                      {/* Prize */}
+                      <p className="text-lg font-bold text-white">₹5,000</p>
+
+                      <p className="text-sm text-white mt-1 font-medium">
+                        Strong Performance
+                      </p>
+
+                      <span className="absolute inset-0 rounded-2xl ring-2 ring-[#B87333]/40 pointer-events-none"></span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* hackathon detail card */}
+          <div className="flex justify-center lg:self-start lg:sticky lg:top-0">
+          <div className="mt-2 rounded-2xl overflow-hidden pb-4 shadow-xl w-[300px]">
+            <div>
+              <img src={data.image} alt="hackathon-image" />
+            </div>
+            <ul className="py-2 px-4 flex flex-col gap-2 border-b border-gray-300">
+              <li className="flex justify-between font-semibold">
+                <span className="text-gray-500">Duration:</span>
+                <span>24 hrs</span>
+              </li>
+              <li className="flex justify-between font-semibold">
+                <span className="text-gray-500">Enrolled:</span>
+                <span>123</span>
+              </li>
+              <li className="flex justify-between font-semibold">
+                <span className="text-gray-500">Certificate:</span>
+                <span>Available</span>
+              </li>
+              <li className="flex justify-between font-semibold">
+                <span className="text-gray-500">Language:</span>
+                <span>English</span>
+              </li>
+            </ul>
+            <div className="flex justify-center bg-green-500 text-white mx-4 mt-4 py-2 rounded-3xl">
+              <Link className="font-semibold">Apply Now</Link>
+            </div>
+            <div className="mt-2 flex justify-around">
+              <span className="bg-gray-200 py-1.5 px-3 rounded-xl text-gray-600 font-semibold"><FontAwesomeIcon icon={faShareNodes} /> Share</span>
+              <span className="bg-gray-200 py-1.5 px-3 rounded-xl text-gray-600 font-semibold"><FontAwesomeIcon icon={faRobot} /> AI Chat</span>
+            </div>
+          </div>
           </div>
         </div>
+      </section>
 
-        {/* hackathon detail card */}
-        <div className="mt-2 rounded-2xl overflow-hidden pb-4 shadow-xl">
-          <div>
-            <img
-              src="https://res.cloudinary.com/drq2a0262/image/upload/v1766129810/hackathon_bljdtw.png"
-              alt="hackathon-image"
-            />
+      {/* Live hackathons section */}
+      <section>
+        <div className="mt-8 pb-5">
+          <div className="flex justify-between mx-4 lg:mx-8">
+            <span className="font-bold lg:text-xl">100+ Latest Hackathons Live Now</span>
+            <span
+              className="font-semibold text-green-500 lg:text-xl cursor-pointer"
+              onClick={() => navigate("/hackathons")}
+            >
+              View All <FontAwesomeIcon icon={faArrowRight} />
+            </span>
           </div>
-          <div className="flex gap-2 items-center px-2 mt-1">
-            <div className="bg-gray-300 p-2 rounded-full">
-              <FontAwesomeIcon
-                icon={faBuilding}
-                className="text-[#03594E] text-2xl"
-              />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-medium text-gray-500">Organizer</span>
-              <span className="font-semibold">Graphura Pvt Ltd.</span>
-            </div>
-          </div>
-          <ul className="py-2 px-4 flex flex-col gap-1 border-b border-gray-300">
-            <li className="flex justify-between font-semibold">
-              <span className="text-gray-500">Duration:</span>
-              <span>24 hrs</span>
-            </li>
-            <li className="flex justify-between font-semibold">
-              <span className="text-gray-500">Enrolled:</span>
-              <span>123</span>
-            </li>
-            <li className="flex justify-between font-semibold">
-              <span className="text-gray-500">Certificate:</span>
-              <span>Available</span>
-            </li>
-            <li className="flex justify-between font-semibold">
-              <span className="text-gray-500">Language:</span>
-              <span>English</span>
-            </li>
-          </ul>
-          <div className="flex justify-center bg-green-500 text-white mx-4 mt-4 py-2 rounded-3xl">
-            <Link className="font-semibold">Apply Now</Link>
+          <div className="pl-4 lg:pl-8 flex gap-5 overflow-x-auto scrollbar-hide py-6">
+            {allHackathons
+              .filter((event) => event.status === "ongoing")
+              .map((hackathon) => (
+                <div
+                  key={hackathon._id}
+                  className="group cursor-pointer bg-white rounded-xl pb-2 shadow-lg border border-gray-200 max-w-[250px] shrink-0 overflow-hidden hover:scale-105 duration-200 transition-transform"
+                >
+                  <div className="overflow-hidden">
+                    <img src={hackathon.image} alt="live-hackathon-image" className="group-hover:scale-105 transition-transform duration-200"/>
+                  </div>
+                  <div className="mx-2">
+                    <h3 className="font-bold text-xl group-hover:text-green-900">{hackathon.title}</h3>
+                    <p className="text-gray-500 text-sm font-medium">
+                      <FontAwesomeIcon icon={faCalendarWeek} />{" "}
+                      {formatDate(hackathon.startDate)}
+                    </p>
+                    <p className="text-gray-500 text-sm font-medium">
+                      <FontAwesomeIcon icon={faPeopleGroup} /> 123
+                    </p>
+                    <Link to={`/hackathons/${hackathon._id}`}>
+                      <button className="mt-2 border border-gray-200 text-green-500 font-semibold w-full bg-gray-100 p-2 rounded-xl hover:bg-green-800 hover:text-white duration-200 hover:shadow-lg">
+                        Visit hackathon
+                      </button>
+                    </Link>
+                  </div>
+                </div>
+              ))}
           </div>
         </div>
       </section>

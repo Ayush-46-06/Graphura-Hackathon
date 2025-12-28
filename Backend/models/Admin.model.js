@@ -1,27 +1,82 @@
 import mongoose from "mongoose";
 import { ROLES } from "../config/roles.js";
 
-const adminSchema = mongoose.Schema({
+const adminSchema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
+      trim: true
     },
+
     email: {
-        type: String,
-        unique: true,
-        required: true
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true
     },
+
     password: {
-        type: String,
-        select: false,
-        required: true
+      type: String,
+      required: true,
+      select: false
     },
+
+    address: {
+      type: String,
+      required: true
+    },
+
+    contactNumber: {
+      type: String,
+      required: true
+    },
+
+    university: {
+      type: String,
+      required: true
+    },
+
+    college: {
+      type: String,
+      required: true
+    },
+
+    occupation: {
+      type: String,
+      default: null
+    },
+
+    company: {
+      type: String,
+      default: null
+    },
+
+    image: {
+      type: String,
+      default: null
+    },
+
     role: {
-        type: String,
-        enum: [ROLES.ADMIN, ROLES.USER], 
-        default: ROLES.ADMIN
+      type: String,
+      enum: [ROLES.ADMIN],
+      default: ROLES.ADMIN
+    },
+
+    isActive: {
+      type: Boolean,
+      default: true
+    },
+    yearOfStudy:{
+      type:String
+    },
+    courseName:{
+      type:String
     }
-}, { timestamps: true });
+  },
+  { timestamps: true }
+);
 
 const Admin = mongoose.model("Hackathon_Admin", adminSchema);
 export default Admin;

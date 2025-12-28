@@ -26,6 +26,6 @@ router.get("/users", getAllUsers);
 router.post("/hackathon/declare-result",validateBody(declareResultSchema),declareHackathonResult);
 
 
-router.get("/export/students", exportStudentsToSheet);
+router.post("/export/students", exportStudentsToSheet);
 
 export default router;

@@ -54,7 +54,7 @@ export default function Hero() {
             </div>
 
             {/* Stats */}
-            <div className="flex flex-wrap gap-8 pt-8 border-t border-white/20">
+            {/* <div className="flex flex-wrap gap-8 pt-8 border-t border-white/20">
               <div>
                 <p className="text-[#F8C62F] text-3xl font-bold">10k+</p>
                 <p className="text-white/70 text-sm">Video Courses</p>
@@ -67,7 +67,7 @@ export default function Hero() {
                 <p className="text-[#F8C62F] text-3xl font-bold">500+</p>
                 <p className="text-white/70 text-sm">Expert Instructors</p>
               </div>
-            </div>
+            </div> */}
           </div>
 
        
@@ -83,7 +83,7 @@ export default function Hero() {
             </div>
 
             
-            <div className="relative z-10 w-[420px] h-[420px] flex items-center justify-center">
+            <div className="relative pt-10 w-[475px] h-[475px] flex items-center justify-center">
               <img
                 src="https://ordainit.com/html/educeet/educeet/assets/img/hero/hero-1-1.png"
                 alt="Student learning"
@@ -92,7 +92,7 @@ export default function Hero() {
             </div>
 
             
-            <div className="absolute top-6 -right-4 lg:right-8 bg-white px-6 py-5 rounded-2xl shadow-2xl flex items-center gap-4 w-[280px] hover:scale-105 transition-transform animate-float">
+            <div className="absolute -top-9 -right-4 lg:-right-8 bg-white px-6 py-5 rounded-2xl shadow-2xl flex items-center gap-4 w-[280px] hover:scale-105 transition-transform animate-float">
               <div className="w-16 h-16 bg-gradient-to-br from-[#03594E] to-[#1AB69D] rounded-2xl flex items-center justify-center shadow-lg">
                 <Play className="w-7 h-7 text-white" />
               </div>
@@ -122,14 +122,15 @@ export default function Hero() {
             </div>
 
            
-            <div className="absolute top-1/2 -translate-y-1/2 -right-8 lg:right-0 bg-white px-5 py-4 rounded-2xl shadow-2xl hover:scale-105 transition-transform animate-float" style={{ animationDelay: '0.5s' }}>
+            <div className="absolute w-[260px] top-[65%] -translate-y-1/2 -right-2 lg:-right-25 bg-white px-6 py-5 rounded-2xl shadow-2xl hover:scale-105 transition-transform animate-float" style={{ animationDelay: '0.5s' }}>
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-gradient-to-br from-[#1AB69D] to-[#03594E] rounded-xl flex items-center justify-center">
                   <BookOpen className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <p className="text-lg font-bold text-[#0C121D]">98%</p>
                   <span className="text-xs text-gray-500">Success Rate</span>
+                  <p className="text-lg font-bold text-[#0C121D]">98%</p>
+                  
                 </div>
               </div>
             </div>
