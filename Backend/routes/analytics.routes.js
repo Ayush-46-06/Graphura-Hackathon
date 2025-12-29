@@ -24,44 +24,44 @@ const router = express.Router();
 router.use(authMiddleware);
 
 router.get(
-  "/admin/overview",
+  "/analytics/admin/overview",
   roleMiddleware(ROLES.ADMIN),
   adminDashboardOverview
 );
 
 router.get(
-  "/admin/registration-growth",
+  "/analytics/admin/registration-growth",
   roleMiddleware(ROLES.ADMIN),
   registrationGrowth
 );
 
 router.get(
-  "/admin/registration-completion",
+  "/analytics/admin/registration-completion",
   roleMiddleware(ROLES.ADMIN),
   registrationCompletion
 );
 
 router.get(
-  "/admin/hackathons-graph",
+  "/analytics/admin/hackathons-graph",
   roleMiddleware(ROLES.ADMIN),
   validateQuery(dashboardFilterSchema),
   hackathonGraphData
 );
 
 router.get(
-  "/admin/transactions/stats",
+  "/analytics/admin/transactions/stats",
   roleMiddleware(ROLES.ADMIN),
   transactionStats
 );
 
 router.get(
-  "/admin/transactions",
+  "/analytics/admin/transactions",
   roleMiddleware(ROLES.ADMIN),
   allTransactions
 );
 
 router.get(
-  "/admin/hackathons/details",
+  "/analytics/admin/hackathons/details",
   roleMiddleware(ROLES.ADMIN),
   hackathonDetailsAdmin
 );
@@ -69,13 +69,13 @@ router.get(
 
 
 router.get(
-  "/user/overview",
+  "/analytics/user/overview",
   roleMiddleware(ROLES.USER),
   userDashboardOverview
 );
 
 router.get(
-  "/user/suggestions",
+  "/analytics/user/suggestions",
   roleMiddleware(ROLES.USER),
   suggestedHackathons
 );

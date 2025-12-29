@@ -20,13 +20,13 @@ import { ROLES } from "../config/roles.js";
 const router = express.Router();
 
 
-router.post("/",authMiddleware,validateBody(createTransactionSchema),createTransaction);
+router.post("/transaction/",authMiddleware,validateBody(createTransactionSchema),createTransaction);
 
-router.get("/me", authMiddleware, getMyTransactions);
+router.get("/transaction/me", authMiddleware, getMyTransactions);
 
 
-router.get("/",authMiddleware,roleMiddleware(ROLES.ADMIN),getAllTransactions);
+router.get("/transaction/",authMiddleware,roleMiddleware(ROLES.ADMIN),getAllTransactions);
 
-router.put("/:id",authMiddleware,roleMiddleware(ROLES.ADMIN),validateBody(updateTransactionSchema),updateTransactionStatus);
+router.put("/transaction/:id",authMiddleware,roleMiddleware(ROLES.ADMIN),validateBody(updateTransactionSchema),updateTransactionStatus);
 
 export default router;

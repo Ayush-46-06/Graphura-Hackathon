@@ -16,16 +16,16 @@ const router = express.Router();
 
 router.use(authMiddleware, roleMiddleware(ROLES.ADMIN));
 
-router.get("/dashboard", adminDashboardOverview);
-router.get("/dashboard/graph",validateQuery(dashboardFilterSchema),hackathonGraphData);
-router.get("/dashboard/transactions", transactionStats);
+router.get("/admin/dashboard", adminDashboardOverview);
+router.get("/admin/dashboard/graph",validateQuery(dashboardFilterSchema),hackathonGraphData);
+router.get("/admin/dashboard/transactions", transactionStats);
 
 
-router.get("/users", getAllUsers);
+router.get("/admin/users", getAllUsers);
 
-router.post("/hackathon/declare-result",validateBody(declareResultSchema),declareHackathonResult);
+router.post("/admin/hackathon/declare-result",validateBody(declareResultSchema),declareHackathonResult);
 
 
-router.post("/export/students", exportStudentsToSheet);
+router.post("/admin/export/students", exportStudentsToSheet);
 
 export default router;

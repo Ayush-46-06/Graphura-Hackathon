@@ -7,13 +7,13 @@ import upload from "../middlewares/upload.middleware.js";
 const router = express.Router();
 
 router.post(
-  "/register",
+  "/auth/register",
   upload.single("image"),
   register
 );
 
 router.post(
-  "/login",
+  "/auth/login",
   validateBody(loginSchema),
   login
 );

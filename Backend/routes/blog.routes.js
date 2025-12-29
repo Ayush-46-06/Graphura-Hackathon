@@ -8,12 +8,12 @@ import { ROLES } from "../config/roles.js";
 import upload from "../middlewares/upload.middleware.js";
 const router = express.Router();
 
-router.get("/", getAllBlogs);
-router.get("/:id", getBlogById);
+router.get("/blog/", getAllBlogs);
+router.get("/blog/:id", getBlogById);
 
 
 router.post(
-  "/",
+  "/blog/",
   authMiddleware,
   roleMiddleware(ROLES.ADMIN),
   upload.single("image"),     
@@ -22,7 +22,7 @@ router.post(
 );
 
 router.put(
-  "/:id",
+  "/blog/:id",
   authMiddleware,
   roleMiddleware(ROLES.ADMIN),
   upload.single("image"),
@@ -30,6 +30,6 @@ router.put(
   updateBlog
 );
 
-router.delete("/:id",authMiddleware,roleMiddleware(ROLES.ADMIN),deleteBlog);
+router.delete("/blog/:id",authMiddleware,roleMiddleware(ROLES.ADMIN),deleteBlog);
 
 export default router;

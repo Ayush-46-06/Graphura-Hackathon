@@ -26,13 +26,13 @@ app.use(
 )
 
 
-app.use("/api/auth", authRoutes)
-app.use("/api/user", userRoutes)
-app.use("/api/hackathon", hackathonRoutes)
-app.use("/api/blog", blogRoutes)
-app.use("/api/analytics", analyticsRoutes)
-app.use("/api/transaction", transactionRoutes)
-app.use("/api/admin", adminRoutes);
+app.use("/api", authRoutes)
+app.use("/api", userRoutes)
+app.use("/api", hackathonRoutes)
+app.use("/api", blogRoutes)
+app.use("/api", analyticsRoutes)
+app.use("/api", transactionRoutes)
+app.use("/api", adminRoutes);
 
 app.get("/health", (_, res) => {
   res.status(200).json({ status: "OK" });

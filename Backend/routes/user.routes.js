@@ -6,15 +6,15 @@ import { validateBody } from "../middlewares/validate.middleware.js";
 import User from "../models/User.model.js"
 const router = express.Router();
 
-router.get("/profile", authMiddleware, getProfile);
-router.put("/profile", authMiddleware,validateBody(updateProfileSchema),updateProfile);
-router.get("/hackathons", authMiddleware, myHackathons);
+router.get("/user/profile", authMiddleware, getProfile);
+router.put("/user/profile", authMiddleware,validateBody(updateProfileSchema),updateProfile);
+router.get("/user/hackathons", authMiddleware, myHackathons);
 router.get(
-  "/certificate/:hackathonId",
+  "/user/certificate/:hackathonId",
   authMiddleware,
   downloadCertificate
 );
-router.get("/wallet", authMiddleware, async (req, res) => {
+router.get("/user/wallet", authMiddleware, async (req, res) => {
   const user = await User.findById(req.user._id).select("wallet");
   res.json({
     success: true,
