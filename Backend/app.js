@@ -10,7 +10,7 @@ import transactionRoutes from "./routes/transaction.routes.js"
 import adminRoutes from "./routes/admin.routes.js"
 import path from "path"
 import { fileURLToPath } from "url";
-
+import commentRoutes from "./routes/comment.routes.js"
 const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -32,6 +32,7 @@ app.use("/api", hackathonRoutes)
 app.use("/api", blogRoutes)
 app.use("/api", analyticsRoutes)
 app.use("/api", transactionRoutes)
+app.use("/api", commentRoutes)
 app.use("/api", adminRoutes);
 
 app.get("/health", (_, res) => {

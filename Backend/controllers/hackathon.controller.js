@@ -143,12 +143,28 @@ export const deleteHackathon = async (req, res) => {
 
 export const getAllHackathons = async (req, res) => {
   try {
-    const hackathons = await Hackathon.find()
-      .populate("judges", "name email occupation company image");
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const [hackathons, total] = await Promise.all([
+      Hackathon.find()
+        .populate("judges", "name email occupation company image")
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 }),
+
+      Hackathon.countDocuments()
+    ]);
 
     res.json({
       success: true,
-      count: hackathons.length,
+      pagination: {
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+        totalItems: total
+      },
       data: hackathons
     });
 
@@ -159,6 +175,7 @@ export const getAllHackathons = async (req, res) => {
     });
   }
 };
+
 
 
 

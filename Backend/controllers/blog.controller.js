@@ -45,9 +45,39 @@ export const deleteBlog = async (req, res) => {
 };
 
 export const getAllBlogs = async (req, res) => {
-  const blogs = await Blog.find();
-  res.json({ success: true, data: blogs });
+  try {
+    const page = Math.max(Number(req.query.page) || 1, 1);
+    const limit = Math.min(Number(req.query.limit) || 10, 50);
+    const skip = (page - 1) * limit;
+
+    const [blogs, total] = await Promise.all([
+      Blog.find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      Blog.countDocuments()
+    ]);
+
+    res.json({
+      success: true,
+      pagination: {
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+        totalItems: total
+      },
+      data: blogs
+    });
+
+  } catch (error) {
+    console.error("GET BLOGS ERROR:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch blogs"
+    });
+  }
 };
+
 
 export const getBlogById = async (req, res) => {
   const blog = await Blog.findById(req.params.id);
