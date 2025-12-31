@@ -26,6 +26,9 @@ import Results from "./components/Results/Results";
 import PastResults from "./components/Results/PastResults";
 import Error404Page from "./components/404ErrorPage";
 // import BlogDetailsPage from "./components/Blog/BlogDetailsPage";
+import Sponsor from "./components/Sponsor/Sponsor";
+import Career from "./components/Career/Career";
+
 
 /* ================== ROUTE GUARDS ================== */
 
@@ -78,6 +81,8 @@ function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/result" element={<Results />} />
         {/* <Route path="/blog" element={<BlogDetailsPage />} /> */}
+        <Route path="/sponsors" element={<Sponsor />} />
+        <Route path="/career" element={<Career />} />
         {/* Public Auth Routes */}
         {/* Auth */}
         <Route

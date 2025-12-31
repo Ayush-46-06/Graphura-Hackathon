@@ -79,7 +79,11 @@ const Hackathon = () => {
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-  const paginatedData = filteredData.slice(
+  const sortedData = [...filteredData].sort(
+    (a, b) => new Date(a.startDate) - new Date(b.startDate)
+  );
+
+  const paginatedData = sortedData.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -108,14 +112,14 @@ const Hackathon = () => {
     <div className="overflow-x-hidden">
       {/* Hero section */}
       <section>
-        <div className="bg-gradient-to-br from-[#f9f7f1] via-[#eef4e8] to-[#e6f1e3] mx-4 md:mx-8 my-5 p-5 rounded-xl shadow-md flex flex-col md:flex-row gap-5 md:justify-between lg:px-10 items-center lg:h-[400px]">
+        <div className="bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] mx-4 md:mx-8 mt-20 p-5 rounded-xl shadow-md flex flex-col md:flex-row gap-5 md:justify-between lg:px-10 items-center lg:h-[400px]">
           <div className="max-w-[300px] lg:max-w-[450px]">
             <h1 className="text-3xl lg:text-4xl xl:text-5xl font-extrabold">
               Build the Future.
               <br />
-              <span className="text-[#03594E]">Join a Hackathon.</span>
+              <span className="text-[#fab031]">Join a Hackathon.</span>
             </h1>
-            <p className="mt-1 lg:text-lg lg:max-w-[400px]">
+            <p className="text-white mt-1 lg:text-lg lg:max-w-[400px] lg:font-medium">
               Browse the best coding competitions and start building today.
               Connect with developers, win prizes, and launch your career.
             </p>
@@ -134,7 +138,7 @@ const Hackathon = () => {
       <section>
         <div className="my-10">
           <div className="flex flex-col gap-2 lg:flex-row lg:justify-end">
-            <div className="flex flex-col gap-2 mb-2 lg:flex-row lg:border border-gray-200 lg:shadow-lg lg:bg-gray-100 lg:rounded-[40px] lg:mr-10 p-3 lg:items-center">
+            <div className="flex flex-col gap-2 mb-2 lg:flex-row lg:border border-gray-200 lg:shadow-lg lg:rounded-[40px] lg:mr-10 p-3 lg:items-center">
               <p className="mx-4 md:mx-8 font-semibold text-lg">
                 We found <strong>46</strong> hackathons live now
               </p>
@@ -144,7 +148,7 @@ const Hackathon = () => {
                   placeholder="Search hackathons..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="bg-[#02b098] py-2 pl-8 pr-4 text-white placeholder:text-white focus:outline-none rounded-3xl"
+                  className="bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] py-2 pl-8 pr-4 text-white placeholder:text-white focus:outline-none rounded-3xl"
                 />
                 <FontAwesomeIcon
                   icon={faSearch}
@@ -243,7 +247,9 @@ const Hackathon = () => {
                     onClick={() => setActive(val)}
                     key={val}
                     className={`${
-                      active === val ? "bg-green-500 text-white" : "bg-gray-300"
+                      active === val
+                        ? "bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] text-white"
+                        : "bg-gray-300"
                     } px-5 py-2 shrink-0 rounded-3xl cursor-pointer`}
                   >
                     {val}
@@ -263,7 +269,7 @@ const Hackathon = () => {
       {/* hackathons list */}
       <section className="mx-4">
         <div className="flex gap-[75px]">
-          <div className="hidden shadow-xl p-4 border-2 border-gray-300 rounded-2xl lg:flex flex-col min-w-[220px] self-start">
+          <div className="hidden shadow-xl p-4 border-2 border-gray-300 rounded-2xl lg:flex flex-col min-w-[250px] self-start">
             <h3 className="text-xl font-semibold">
               <FontAwesomeIcon
                 icon={faFilter}
@@ -271,12 +277,14 @@ const Hackathon = () => {
               />
               Categories
             </h3>
-            <ul className="flex flex-col gap-1 mt-2 px-2">
+            <ul className="flex flex-col gap-1 mt-2 px-2 mr-5">
               {filterList.map((val) => (
                 <li
                   onClick={() => setActive(val)}
-                  className={`flex items-center cursor-pointer p-2 rounded-xl ${
-                    active === val ? "text-white bg-green-500" : ""
+                  className={`flex items-center cursor-pointer p-2 rounded-xl hover:bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] hover:text-white ${
+                    active === val
+                      ? "text-white bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]"
+                      : ""
                   }`}
                   key={val}
                 >
@@ -293,23 +301,23 @@ const Hackathon = () => {
             </ul>
           </div>
           {view === "grid" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 place-items-center lg:place-items-start w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 place-items-center lg:place-items-start w-full pb-5">
               {paginatedData.map((val) => (
                 <Link to={`/hackathons/${val._id}`} key={val._id}>
                   <div className="group relative mx-2 rounded-3xl shadow-lg overflow-hidden pb-3 border border-gray-200 max-w-[420px] hover:scale-105 hover:shadow-xl transition-transform duration-200">
-                    <div className="mb-4 overflow-hidden">
+                    <div className="mb-4 overflow-hidden h-[180px]">
                       <img
                         src={val.image}
                         alt="hackathon-image"
-                        className="group-hover:scale-110 transition-transform duration-200"
+                        className="group-hover:scale-110 transition-transform duration-200 h-full w-full object-cover"
                       />
                     </div>
                     <div className="mx-4  pb-3 border-b border-gray-300">
-                      <div className="flex flex-wrap gap-2 mt-2">
+                      <div className="flex flex-nowrap overflow-x-auto max-w-[250px] gap-2 mt-2 whitespace-nowrap scrollbar-hide">
                         {val.tags.map((tag, index) => (
                           <span
                             key={tag}
-                            className={`px-3 py-[3px] text-xs font-medium rounded-full border transition-colors
+                            className={`px-3 py-0.75 text-xs font-medium rounded-full border transition-colors
         ${index % 3 === 0 && "bg-green-50 text-green-700 border-green-300"}
         ${index % 3 === 1 && "bg-blue-50 text-blue-700 border-blue-300"}
         ${index % 3 === 2 && "bg-purple-50 text-purple-700 border-purple-300"}`}
@@ -322,7 +330,7 @@ const Hackathon = () => {
                       <h2 className="font-bold text-lg mt-2 truncate group-hover:text-green-800">
                         {val.title}
                       </h2>
-                      <p className="font-semibold text-gray-500 text-sm">
+                      <p className="font-semibold text-gray-500 text-sm line-clamp-3">
                         {val.description}
                       </p>
                     </div>
@@ -378,10 +386,10 @@ const Hackathon = () => {
                         {val.status === "completed" && (
                           <div className="flex flex-col">
                             <span className="text-gray-500 text-sm">
-                              Starts In
+                              Ended on
                             </span>
                             <span className="text-blue-500 font-medium text-sm">
-                              2d 14h
+                              {formatDate(val.endDate)}
                             </span>
                           </div>
                         )}
@@ -394,7 +402,7 @@ const Hackathon = () => {
           )}
 
           {view === "list" && (
-            <div className="md:mx-8 grid grid-cols-1 gap-6 place-items-center w-full">
+            <div className="md:mx-8 pb-5 grid grid-cols-1 gap-6 place-items-center lg:place-items-end w-full">
               {paginatedData.map((val) => (
                 <div
                   key={val._id}
@@ -479,15 +487,15 @@ const Hackathon = () => {
                         {val.status === "completed" && (
                           <div className="flex flex-col">
                             <span className="text-gray-500 text-sm md:text-base ">
-                              Starts In
+                              Ended On
                             </span>
                             <span className="text-blue-500 font-medium text-sm md:text-base ">
-                              2d 14h
+                              {formatDate(val.endDate)}
                             </span>
                           </div>
                         )}
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="hidden lg:flex items-center gap-2">
                         <div className="bg-purple-200 rounded-lg py-1.5 px-2">
                           <FontAwesomeIcon
                             icon={faCalendarDays}
@@ -506,8 +514,8 @@ const Hackathon = () => {
                     </div>
                   </div>
                   <span className="absolute top-2 left-2 bg-[#2c572f] text-[#39ff14] font-semibold py-1 px-3 rounded-2xl border border-[#39ff14] shadow-[0_0_8px_#39ff14,0_0_16px_#39ff14]">
-                      Free
-                    </span>
+                    Free
+                  </span>
                 </div>
               ))}
             </div>
