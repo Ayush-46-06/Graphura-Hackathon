@@ -11,6 +11,7 @@ import adminRoutes from "./routes/admin.routes.js"
 import path from "path"
 import { fileURLToPath } from "url";
 import commentRoutes from "./routes/comment.routes.js"
+import contactRoutes from "./routes/contact.routes.js"
 const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,7 +26,7 @@ app.use(
   express.static(path.join(__dirname, "uploads", "certificates"))
 )
 
-
+app.use("/api", contactRoutes)
 app.use("/api", authRoutes)
 app.use("/api", userRoutes)
 app.use("/api", hackathonRoutes)
