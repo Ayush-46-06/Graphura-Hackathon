@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 
 // 🔥 HERO ASSETS
 import heroImg from "../../assets/blogs/blog-hero.png";
-import breadcrumbBg from "../../assets/blogs/breadcrumb-1-bg.png";
-import dotsImg from "../../assets/blogs/breadcrumb-1-2.png";
-import brushImg from "../../assets/blogs/breadcrumb-1-1.png";
+// import breadcrumbBg from "../../assets/blogs/breadcrumb-1-bg.png";
+import brushImg from "../../assets/blogs/breadcrumb-1-2.png";
+import dotsImg from "../../assets/blogs/breadcrumb-1-1.png";
 import circleImg from "../../assets/blogs/breadcrumb-circle.png";
 
 const BLOGS_PER_PAGE = 9;
@@ -49,29 +49,22 @@ const AllBlog = () => {
   return (
     <div className="bg-[#f8fafb]">
       {/* ================= HERO SECTION ================= */}
-      <section
-        className="relative overflow-hidden"
-        style={{
-          backgroundImage: `url(${breadcrumbBg})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <div className="container mx-auto px-4 py-16 md:py-24">
+      <section className="relative overflow-hidden min-h-[70vh] bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]">
+        <div className="container mx-auto px-4 pt-30 pb-28 md:pt-36">
           <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-12">
             {/* LEFT */}
             <div className="relative z-10 text-center md:text-left max-w-xl">
               <img
-                src={dotsImg}
+                src={brushImg}
                 alt=""
-                className="hidden md:block absolute left-0 top-4"
+                className="hidden md:block absolute w-full h-5 left-0 top-10"
               />
 
               <h1
                 className="text-4xl sm:text-5xl font-extrabold mb-6"
                 style={{
                   fontFamily: "var(--it-ff-heading)",
-                  color: "#0C121D",
+                  color: "#e0e0e0ff",
                 }}
               >
                 Graphothon Blogs
@@ -81,7 +74,7 @@ const AllBlog = () => {
                 className="text-base sm:text-lg leading-relaxed"
                 style={{
                   fontFamily: "var(--it-ff-body)",
-                  color: "#6C757D",
+                  color: "#d4d4d4ff",
                 }}
               >
                 Drop in. Team up. Build fast. Outplay the competition. A
@@ -90,9 +83,9 @@ const AllBlog = () => {
               </p>
 
               <img
-                src={brushImg}
+                src={dotsImg}
                 alt=""
-                className="hidden md:block absolute -left-20 bottom-0"
+                className="hidden md:block absolute -left-20 bottom-22"
               />
             </div>
 

@@ -23,7 +23,9 @@ import PartnerPage from "./components/Partner/PartnerPage";
 
 import About from "./components/About";
 import Results from "./components/Results/Results";
-
+import PastResults from "./components/Results/PastResults";
+import Error404Page from "./components/404ErrorPage";
+// import BlogDetailsPage from "./components/Blog/BlogDetailsPage";
 
 /* ================== ROUTE GUARDS ================== */
 
@@ -40,9 +42,11 @@ const AdminRoute = ({ children }) => {
 
   if (!token) return <Navigate to="/login" replace />;
 
-  return role === "admin"
-    ? children
-    : <Navigate to="/user/dashboard" replace />;
+  return role === "admin" ? (
+    children
+  ) : (
+    <Navigate to="/user/dashboard" replace />
+  );
 };
 
 // 🌐 Public (login/signup)
@@ -52,9 +56,11 @@ const PublicRoute = ({ children }) => {
 
   if (!token) return children;
 
-  return role === "admin"
-    ? <Navigate to="/admin/dashboard" replace />
-    : <Navigate to="/user/dashboard" replace />;
+  return role === "admin" ? (
+    <Navigate to="/admin/dashboard" replace />
+  ) : (
+    <Navigate to="/user/dashboard" replace />
+  );
 };
 function App() {
   return (
@@ -70,6 +76,8 @@ function App() {
         <Route path="/dashboards" element={<AdminDashboard />} />
         <Route path="/partner" element={<PartnerPage />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/result" element={<Results />} />
+        {/* <Route path="/blog" element={<BlogDetailsPage />} /> */}
         {/* Public Auth Routes */}
         {/* Auth */}
         <Route
@@ -112,12 +120,7 @@ function App() {
         />
 
         {/* 404 */}
-        <Route
-          path="*"
-          element={
-            <h1 className="text-white text-center mt-20">404 - Not Found</h1>
-          }
-        />
+        <Route path="*" element={<Error404Page />} />
       </Routes>
     </Router>
   );
