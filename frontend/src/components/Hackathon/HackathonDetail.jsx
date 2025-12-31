@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
@@ -86,6 +86,38 @@ const HackathonDetail = () => {
     });
   };
 
+  const handleRegister = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("Please login first");
+        return;
+      }
+
+      const res = await axios.post(
+        "http://localhost:5001/api/hackathon/register",
+        {
+          hackathonId: data._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      alert(res.data.message);
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+      alert(error.response?.data?.message || "Registration failed");
+    }
+  };
+
+  const isEnrollmentClosed =
+    data.lastEnrollmentDate && new Date() > new Date(data.lastEnrollmentDate);
+
   return (
     <div>
       {/* Breadcrumb */}
@@ -107,7 +139,7 @@ const HackathonDetail = () => {
 
       {/* hackathon details */}
       <section>
-        <div className="mx-4 lg:mx-8 lg:flex gap-[5%]">
+        <div className="mx-4 lg:mx-8 lg:flex gap-[5%] mt-15">
           <div className="pb-4 w-full">
             <div className=" relative mt-2 rounded-2xl overflow-hidden max-h-[250px] lg:max-h-[320px]">
               <img
@@ -116,50 +148,63 @@ const HackathonDetail = () => {
                 className="w-full h-full object-cover"
               />
               <div className="absolute bg-black/35 inset-0 flex flex-col justify-center items-center">
-              <h1 className="font-bold text-xl text-white md:text-2xl lg:text-3xl xl:text-4xl mb-5">{data.title}</h1>
-            <p className="text-white font-medium text-center md:text-lg lg:text-xl">{data.description}</p>
+                <h1 className="font-bold text-xl text-white md:text-2xl lg:text-3xl xl:text-4xl mb-5">
+                  {data.title}
+                </h1>
+                <p className="text-white font-medium text-center md:text-lg lg:text-xl px-4">
+                  {data.description}
+                </p>
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-4 md:gap-6 mt-5">
               <div className="border border-gray-200 shadow-md p-2 flex flex-col rounded-xl justify-between lg:items-center lg:justify-start">
                 <div className="flex flex-col lg:flex-row lg:gap-2 lg:items-center justify-center">
-                <span>
-                  <FontAwesomeIcon
-                    icon={faHourglassHalf}
-                    className="text-green-500"
-                  />
-                </span>
-                <span className="text-gray-500 text-sm font-medium lg:text-lg">
-                  ENROLLMENT ENDS
-                </span>
+                  <span>
+                    <FontAwesomeIcon
+                      icon={faHourglassHalf}
+                      className="text-green-500"
+                    />
+                  </span>
+                  <span className="text-gray-500 text-sm font-medium lg:text-lg">
+                    ENROLLMENT ENDS
+                  </span>
                 </div>
-                <span className="font-bold lg:text-lg">30th Dec</span>
+                <span className="font-bold lg:text-lg">
+                  {formatDate(data.lastEnrollmentDate)}
+                </span>
               </div>
               <div className="border border-gray-200 shadow-md p-2 flex flex-col rounded-xl lg:items-center lg:justify-start">
                 <div className="flex flex-col lg:flex-row lg:gap-2 lg:items-center justify-center">
-                <span>
-                  <FontAwesomeIcon
-                    icon={faPeopleGroup}
-                    className="text-green-500"
-                  />
-                </span>
-                <span className="text-gray-500 text-sm font-medium lg:text-lg">
-                  STUDENT ENROLLED
-                </span>
+                  <span>
+                    <FontAwesomeIcon
+                      icon={faPeopleGroup}
+                      className="text-green-500"
+                    />
+                  </span>
+                  <span className="text-gray-500 text-sm font-medium lg:text-lg">
+                    STUDENT ENROLLED
+                  </span>
                 </div>
-                <span className="font-bold lg:text-lg">1234</span>
+                <span className="font-bold lg:text-lg">
+                  {data.participants.length}
+                </span>
               </div>
               <div className="border border-gray-200 shadow-md p-2 flex flex-col rounded-xl lg:items-center lg:justify-start">
                 <div className="flex flex-col lg:flex-row lg:gap-2 lg:items-center justify-center">
-                <span>
-                  <FontAwesomeIcon icon={faRocket} className="text-green-500" />
-                </span>
-                <span className="text-gray-500 text-sm font-medium lg:text-lg">
-                  STARTS ON
-                </span>
+                  <span>
+                    <FontAwesomeIcon
+                      icon={faRocket}
+                      className="text-green-500"
+                    />
+                  </span>
+                  <span className="text-gray-500 text-sm font-medium lg:text-lg">
+                    STARTS ON
+                  </span>
                 </div>
-                <span className="mt-auto font-bold lg:text-lg">31st Dec</span>
+                <span className="mt-auto font-bold lg:text-lg">
+                  {formatDate(data.startDate)}
+                </span>
               </div>
             </div>
             <div>
@@ -216,23 +261,51 @@ const HackathonDetail = () => {
                 </div>
               )}
               {active === "Judges" && (
-                <div className="mt-4 flex flex-col items-center">
-                  <h3 className="font-bold text-xl w-full lg:text-2xl">Meet the Judges</h3>
-                  {data?.judges?.map((judge) => (
-                    <div
-                      key={judge._id}
-                      className="flex items-center gap-4 p-4 border border-gray-200 rounded-2xl shadow-lg mt-2 max-w-[450px] w-full"
-                    >
-                      <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center font-semibold text-green-700">
-                        {judge.name.charAt(0)}
-                      </div>
+                <div className="mt-4">
+                  <h3 className="font-bold text-xl w-full lg:text-2xl">
+                    Meet the Judges
+                  </h3>
+                  <div className="flex flex-wrap gap-4 w-full justify-center">
+                    {data?.judges?.map((judge) => (
+                      <div
+                        key={judge._id}
+                        className="flex flex-col max-w-[250px] items-center gap-2 p-4 border border-gray-200 rounded-2xl shadow-lg mt-2 w-full"
+                      >
+                        <div className="w-20 h-20 rounded-full overflow-hidden">
+                          <img src={judge.image} alt="" />
+                        </div>
 
-                      <div>
-                        <p className="font-semibold">{judge.name}</p>
-                        <p className="text-sm text-gray-500">{judge.email}</p>
+                        <div>
+                          <p className="font-semibold text-center">
+                            {judge.name}
+                          </p>
+                          <p className="text-sm text-green-800 font-medium text-center">
+                            {judge.occupation}
+                          </p>
+                          <p className="text-sm text-gray-500 text-center">
+                            {judge.company}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                </div>
+              )}
+              {active === "Sponsors" && (
+                <div className="mt-4">
+                  <h3 className="font-bold text-xl lg:text-2xl">
+                    Our Proud Sponsors
+                  </h3>
+                  <div className="flex flex-wrap gap-6 mt-4">
+                    {data?.sponsors?.map((sponsor) => (
+                      <div
+                        key={sponsor._id}
+                        className="max-w-[200px] border border-gray-300 rounded-xl p-2"
+                      >
+                        <img src={sponsor} alt="sponsor-logo" />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
               {active === "Prizes" && (
@@ -328,36 +401,46 @@ const HackathonDetail = () => {
 
           {/* hackathon detail card */}
           <div className="flex justify-center lg:self-start lg:sticky lg:top-0">
-          <div className="mt-2 rounded-2xl overflow-hidden pb-4 shadow-xl w-[300px]">
-            <div>
-              <img src={data.image} alt="hackathon-image" />
+            <div className="mt-2 rounded-2xl overflow-hidden pb-4 shadow-xl w-[300px]">
+              <div>
+                <img src={data.image} alt="hackathon-image" />
+              </div>
+              <ul className="py-2 px-4 flex flex-col gap-2 border-b border-gray-300">
+                <li className="flex justify-between font-semibold">
+                  <span className="text-gray-500">Duration:</span>
+                  <span>24 hrs</span>
+                </li>
+                <li className="flex justify-between font-semibold">
+                  <span className="text-gray-500">Enrolled:</span>
+                  <span>{data.participants.length}</span>
+                </li>
+                <li className="flex justify-between font-semibold">
+                  <span className="text-gray-500">Certificate:</span>
+                  <span>Available</span>
+                </li>
+                <li className="flex justify-between font-semibold">
+                  <span className="text-gray-500">Language:</span>
+                  <span>English</span>
+                </li>
+              </ul>
+              <div className="flex justify-center bg-gradient-to-br from-[#F8C62F] to-[#FE8235] hover:scale-105 hover:shadow-lg duration-200 transition-transform text-white mx-4 mt-4 py-2 rounded-2xl cursor-pointer">
+                <button
+                  onClick={handleRegister}
+                  className="font-semibold cursor-pointer"
+                  disabled={isEnrollmentClosed}
+                >
+                  {isEnrollmentClosed ? "Registration Closed" : "Apply Now"}
+                </button>
+              </div>
+              <div className="mt-2 flex justify-around">
+                <span className="bg-gray-200 py-1.5 px-3 rounded-xl text-gray-600 font-semibold cursor-pointer">
+                  <FontAwesomeIcon icon={faShareNodes} /> Share
+                </span>
+                <span className="bg-gray-200 py-1.5 px-3 rounded-xl text-gray-600 font-semibold cursor-pointer">
+                  <FontAwesomeIcon icon={faRobot} /> AI Chat
+                </span>
+              </div>
             </div>
-            <ul className="py-2 px-4 flex flex-col gap-2 border-b border-gray-300">
-              <li className="flex justify-between font-semibold">
-                <span className="text-gray-500">Duration:</span>
-                <span>24 hrs</span>
-              </li>
-              <li className="flex justify-between font-semibold">
-                <span className="text-gray-500">Enrolled:</span>
-                <span>123</span>
-              </li>
-              <li className="flex justify-between font-semibold">
-                <span className="text-gray-500">Certificate:</span>
-                <span>Available</span>
-              </li>
-              <li className="flex justify-between font-semibold">
-                <span className="text-gray-500">Language:</span>
-                <span>English</span>
-              </li>
-            </ul>
-            <div className="flex justify-center bg-green-500 text-white mx-4 mt-4 py-2 rounded-3xl">
-              <Link className="font-semibold">Apply Now</Link>
-            </div>
-            <div className="mt-2 flex justify-around">
-              <span className="bg-gray-200 py-1.5 px-3 rounded-xl text-gray-600 font-semibold"><FontAwesomeIcon icon={faShareNodes} /> Share</span>
-              <span className="bg-gray-200 py-1.5 px-3 rounded-xl text-gray-600 font-semibold"><FontAwesomeIcon icon={faRobot} /> AI Chat</span>
-            </div>
-          </div>
           </div>
         </div>
       </section>
@@ -366,7 +449,9 @@ const HackathonDetail = () => {
       <section>
         <div className="mt-8 pb-5">
           <div className="flex justify-between mx-4 lg:mx-8">
-            <span className="font-bold lg:text-xl">100+ Latest Hackathons Live Now</span>
+            <span className="font-bold lg:text-xl">
+              100+ Latest Hackathons Live Now
+            </span>
             <span
               className="font-semibold text-green-500 lg:text-xl cursor-pointer"
               onClick={() => navigate("/hackathons")}
@@ -382,11 +467,17 @@ const HackathonDetail = () => {
                   key={hackathon._id}
                   className="group cursor-pointer bg-white rounded-xl pb-2 shadow-lg border border-gray-200 max-w-[250px] shrink-0 overflow-hidden hover:scale-105 duration-200 transition-transform"
                 >
-                  <div className="overflow-hidden">
-                    <img src={hackathon.image} alt="live-hackathon-image" className="group-hover:scale-105 transition-transform duration-200"/>
+                  <div className="overflow-hidden h-[150px]">
+                    <img
+                      src={hackathon.image}
+                      alt="live-hackathon-image"
+                      className="group-hover:scale-105 transition-transform duration-200 h-full w-full object-cover"
+                    />
                   </div>
                   <div className="mx-2">
-                    <h3 className="font-bold text-xl group-hover:text-green-900">{hackathon.title}</h3>
+                    <h3 className="font-bold text-xl group-hover:text-green-900">
+                      {hackathon.title}
+                    </h3>
                     <p className="text-gray-500 text-sm font-medium">
                       <FontAwesomeIcon icon={faCalendarWeek} />{" "}
                       {formatDate(hackathon.startDate)}
@@ -395,7 +486,7 @@ const HackathonDetail = () => {
                       <FontAwesomeIcon icon={faPeopleGroup} /> 123
                     </p>
                     <Link to={`/hackathons/${hackathon._id}`}>
-                      <button className="mt-2 border border-gray-200 text-green-500 font-semibold w-full bg-gray-100 p-2 rounded-xl hover:bg-green-800 hover:text-white duration-200 hover:shadow-lg">
+                      <button className="mt-2 border border-gray-200 text-green-500 font-semibold w-full bg-gray-100 p-2 rounded-xl hover:bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] hover:text-white duration-200 hover:shadow-lg">
                         Visit hackathon
                       </button>
                     </Link>

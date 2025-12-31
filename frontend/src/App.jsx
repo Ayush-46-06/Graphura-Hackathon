@@ -23,6 +23,8 @@ import PartnerPage from "./components/Partner/PartnerPage";
 
 import About from "./components/About";
 import Results from "./components/Results/Results";
+import Sponsor from "./components/Sponsor/Sponsor";
+import Career from "./components/Career/Career";
 
 
 /* ================== ROUTE GUARDS ================== */
@@ -70,6 +72,8 @@ function App() {
         <Route path="/dashboards" element={<AdminDashboard />} />
         <Route path="/partner" element={<PartnerPage />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/sponsors" element={<Sponsor />} />
+        <Route path="/career" element={<Career />} />
         {/* Public Auth Routes */}
         {/* Auth */}
         <Route
