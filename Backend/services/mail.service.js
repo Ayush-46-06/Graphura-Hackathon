@@ -556,3 +556,63 @@ export const sendWinnerResultMail = async ({
     throw error;
   }
 };
+
+
+export const sendResetPasswordMail = async ({
+  userEmail,
+  userName,
+  resetLink
+}) => {
+  const client = SibApiV3Sdk.ApiClient.instance;
+  client.authentications["api-key"].apiKey = config.BREVO_API_KEY;
+
+  const emailApi = new SibApiV3Sdk.TransactionalEmailsApi();
+
+  await emailApi.sendTransacEmail({
+    sender: {
+      email: config.BREVO_SENDER_EMAIL,
+      name: config.BREVO_SENDER_NAME
+    },
+    to: [{ email: userEmail }],
+    subject: "🔐 Reset Your Password",
+    htmlContent: `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 480px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 32px; border-radius: 12px 12px 0 0; text-align: center;">
+          <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 600;">🔐 Password Reset</h1>
+        </div>
+        
+        <div style="background: white; padding: 32px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+          <h2 style="color: #333; margin-top: 0;">Hello ${userName},</h2>
+          
+          <p style="color: #666; font-size: 16px; line-height: 1.6;">
+            You requested to reset your password. Click the button below to create a new one.
+          </p>
+          
+          <div style="text-align: center; margin: 32px 0;">
+            <a href="${resetLink}" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);">
+              🔑 Reset Password
+            </a>
+          </div>
+          
+          <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; margin: 24px 0;">
+            <p style="color: #ff6b6b; margin: 0; font-size: 14px; font-weight: 500;">
+              ⏳ This link expires in <strong>15 minutes</strong> for your security.
+            </p>
+          </div>
+          
+          <p style="color: #999; font-size: 14px; line-height: 1.5; border-top: 1px solid #eee; padding-top: 16px; margin-bottom: 0;">
+            If you didn't request this, you can safely ignore this email.
+            <br><br>
+            <small style="color: #ccc;">This is an automated message, please do not reply.</small>
+          </p>
+        </div>
+        
+        <div style="text-align: center; margin-top: 24px;">
+          <p style="color: #999; font-size: 12px;">
+            Sent with ❤️ from ${config.BREVO_SENDER_NAME}
+          </p>
+        </div>
+      </div>
+    `
+  });
+};

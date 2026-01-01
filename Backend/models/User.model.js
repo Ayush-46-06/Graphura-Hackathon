@@ -76,6 +76,12 @@ const userSchema = mongoose.Schema(
     },
     yearOfStudy:{
       type:String
+    },
+    resetPasswordToken:{
+      type:String
+    },
+    resetPasswordExpire:{
+      type:Date
     }
   },
   { timestamps: true }
