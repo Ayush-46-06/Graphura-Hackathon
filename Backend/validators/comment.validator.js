@@ -1,8 +1,5 @@
 import joi from "joi";
 
-/* =========================
-   ADD / REPLY COMMENT
-   ========================= */
 export const addCommentSchema = joi.object({
   hackathonId: joi
     .string()

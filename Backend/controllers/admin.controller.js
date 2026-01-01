@@ -1,42 +1,42 @@
 import User from "../models/User.model.js";
 import Hackathon from "../models/Hackathon.model.js";
+import Registration from "../models/Registration.model.js";
 import Certificate from "../models/Certificate.model.js";
 import googleSheetService from "../services/googleSheet.service.js";
-import Registration from "../models/Registration.model.js";
-
-import cloudinary from "../config/cloudinary.js";
-import streamifier from "streamifier";
+import { sendWinnerResultMail } from "../services/mail.service.js";
 
 import PDFDocument from "pdfkit";
 import path from "path";
 
-/* ❌ OLD LOCAL FS CODE (NO LONGER USED)
-import fs from "fs-extra";
-*/
-
-
+/* ================= GET ALL USERS ================= */
 export const getAllUsers = async (req, res) => {
   const users = await User.find().select("-password");
   res.json({ success: true, data: users });
 };
 
+/* ================= EXPORT USERS ================= */
+export const exportStudentsToSheet = async (req, res) => {
+  const users = await User.find().select("name email university");
+  await googleSheetService.exportUsers(users);
+  res.json({ success: true, message: "Students exported to Google Sheet" });
+};
+
+/* ================= PRIZE SPLIT ================= */
 const getPrizeSplit = (totalPrize, count) => {
   if (count === 1) return [totalPrize];
-  if (count === 2)
-    return [
-      Math.floor(totalPrize * 0.6),
-      Math.floor(totalPrize * 0.4)
-    ];
-  if (count === 3)
-    return [
-      Math.floor(totalPrize * 0.5),
-      Math.floor(totalPrize * 0.3),
-      Math.floor(totalPrize * 0.2)
-    ];
+  if (count === 2) return [
+    Math.floor(totalPrize * 0.6),
+    Math.floor(totalPrize * 0.4)
+  ];
+  if (count === 3) return [
+    Math.floor(totalPrize * 0.5),
+    Math.floor(totalPrize * 0.3),
+    Math.floor(totalPrize * 0.2)
+  ];
   return [];
 };
 
-
+/* ================= DECLARE RESULT ================= */
 export const declareHackathonResult = async (req, res) => {
   try {
     const { hackathonId, winners } = req.body;
@@ -63,48 +63,35 @@ export const declareHackathonResult = async (req, res) => {
       });
     }
 
-
-    const invalidUsers = [];
+    /* -------- Registration check -------- */
     for (const userId of winners) {
       const registered = await Registration.findOne({
         user: userId,
         hackathon: hackathonId
       });
-      if (!registered) invalidUsers.push(userId);
+      if (!registered) {
+        return res.status(400).json({
+          success: false,
+          message: "Some users are not registered"
+        });
+      }
     }
-
-    if (invalidUsers.length > 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Some users are not registered",
-        invalidUsers
-      });
-    }
-
 
     const prizeSplit = getPrizeSplit(hackathon.prizePool, winners.length);
     const winnerDetails = [];
 
-
+    /* ================= MAIN LOOP ================= */
     for (let i = 0; i < winners.length; i++) {
-      const userId = winners[i];
-      const user = await User.findById(userId);
+      const user = await User.findById(winners[i]);
       if (!user) continue;
 
-
+      /* Wallet */
       user.wallet += prizeSplit[i];
       await user.save();
 
-      const certificateId = `${Date.now()}${Math.floor(100000 + Math.random() * 900000)}`;
+      const certificateId = `${Date.now()}-${user._id}`;
 
-
-      /*
-      const dir = path.join(process.cwd(), "uploads", "certificates", hackathonId);
-      await fs.ensureDir(dir);
-      const filePath = path.join(dir, `${userId}.pdf`);
-      */
-
-
+      /* -------- PDF GENERATION -------- */
       const pdfBuffer = await new Promise((resolve, reject) => {
         const doc = new PDFDocument({
           size: "A4",
@@ -119,8 +106,7 @@ export const declareHackathonResult = async (req, res) => {
 
         doc.image(
           path.join(process.cwd(), "assets", "certificate-template.jpg"),
-          0,
-          0,
+          0, 0,
           { width: doc.page.width, height: doc.page.height }
         );
 
@@ -137,53 +123,32 @@ export const declareHackathonResult = async (req, res) => {
           i === 1 ? "Second Place" :
           "Third Place";
 
-        doc.font("Helvetica-Bold")
-          .fontSize(14)
-          .text(`${place} - ${hackathon.title}`, 0, 517, {
-            align: "center"
-          });
-
-        doc.fontSize(9)
-          .text(`Certificate ID: ${certificateId}`, 40, doc.page.height - 50);
-
-        doc.fontSize(9)
-          .text(
-            `Issued on: ${new Date().toDateString()}`,
-            doc.page.width - 220,
-            doc.page.height - 50
-          );
+        doc.fontSize(14)
+          .text(`${place} – ${hackathon.title}`, 0, 520, { align: "center" });
 
         doc.end();
       });
 
-      const uploadResult = await new Promise((resolve, reject) => {
-  const uploadStream = cloudinary.uploader.upload_stream(
-    {
-      folder: `certificates/${hackathonId}`,
-    resource_type: "image", // ✅ IMPORTANT
-      public_id: userId,
-      format: "pdf"
-    },
-    (error, result) => {
-      if (error) reject(error);
-      else resolve(result);
-    }
-  );
+      /* -------- EMAIL WITH ATTACHMENT -------- */
+      await sendWinnerResultMail({
+        userName: user.name,
+        userEmail: user.email,
+        hackathonTitle: hackathon.title,
+        rank: i + 1,
+        prizeAmount: prizeSplit[i],
+        pdfBuffer
+      });
 
-  streamifier.createReadStream(pdfBuffer).pipe(uploadStream);
-});
-
-
-
+      /* -------- SAVE CERTIFICATE (FIXED) -------- */
       await Certificate.create({
-        user: userId,
+        user: user._id,
         hackathon: hackathonId,
-        certificateUrl: uploadResult.secure_url,
-        certificateId
+        certificateId,
+        certificateUrl: `sent-via-email://${certificateId}`
       });
 
       winnerDetails.push({
-        user: userId,
+        user: user._id,
         rank: i + 1,
         prizeAmount: prizeSplit[i]
       });
@@ -196,8 +161,7 @@ export const declareHackathonResult = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Results declared successfully",
-      prizeSplit,
+      message: "Results declared & certificates mailed successfully",
       winnerDetails
     });
 
@@ -205,18 +169,7 @@ export const declareHackathonResult = async (req, res) => {
     console.error("DECLARE RESULT ERROR:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to declare result",
-      error: error.message
+      message: "Failed to declare result"
     });
   }
-};
-
-export const exportStudentsToSheet = async (req, res) => {
-  const users = await User.find().select("name email university");
-  await googleSheetService.exportUsers(users);
-
-  res.json({
-    success: true,
-    message: "Students exported to Google Sheet"
-  });
 };
