@@ -313,18 +313,20 @@ const Hackathon = () => {
                       />
                     </div>
                     <div className="mx-4  pb-3 border-b border-gray-300">
-                      <div className="flex flex-nowrap overflow-x-auto max-w-[250px] gap-2 mt-2 whitespace-nowrap scrollbar-hide">
-                        {val.tags.map((tag, index) => (
-                          <span
-                            key={tag}
-                            className={`px-3 py-0.75 text-xs font-medium rounded-full border transition-colors
+                      <div className="mt-2 w-full overflow-hidden">
+                        <div className="flex flex-nowrap gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
+                          {val.tags.map((tag, index) => (
+                            <span
+                              key={tag}
+                              className={`px-3 py-0.75 text-xs font-medium rounded-full border transition-colors line-clamp-1
         ${index % 3 === 0 && "bg-green-50 text-green-700 border-green-300"}
         ${index % 3 === 1 && "bg-blue-50 text-blue-700 border-blue-300"}
         ${index % 3 === 2 && "bg-purple-50 text-purple-700 border-purple-300"}`}
-                          >
-                            {tag}
-                          </span>
-                        ))}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
                       </div>
 
                       <h2 className="font-bold text-lg mt-2 truncate group-hover:text-green-800">
