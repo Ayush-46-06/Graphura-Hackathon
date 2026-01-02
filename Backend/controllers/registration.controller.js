@@ -64,27 +64,62 @@ export const registerForHackathon = async (req, res) => {
 
 
 export const getParticipantsCount = async (req, res) => {
-  const { hackathonId } = req.params;
+  try {
+    const { hackathonId } = req.params;
 
-  const count = await Registration.countDocuments({
-    hackathon: hackathonId
-  });
+    const count = await Registration.countDocuments({
+      hackathon: hackathonId
+    });
 
-  res.json({
-    success: true,
-    data: { count }
-  });
+    res.status(200).json({
+      success: true,
+      data: { count }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch participants count",
+      error: error.message
+    });
+  }
 };
+
 
 export const getParticipantsList = async (req, res) => {
-  const { hackathonId } = req.params;
+  try {
+    const { hackathonId } = req.params;
 
-  const participants = await Registration.find({
-    hackathon: hackathonId
-  }).populate("user", "name email university").populate("hackathon", "title");
+    const hackathon = await Hackathon
+      .findById(hackathonId)
+      .select("title");
 
-  res.json({
-    success: true,
-    data: participants
-  });
+    if (!hackathon) {
+      return res.status(404).json({
+        success: false,
+        message: "Hackathon not found"
+      });
+    }
+
+    const participants = await Registration.find({
+      hackathon: hackathonId
+    })
+      .populate("user", "name email university");
+
+    res.status(200).json({
+      success: true,
+      data: {
+        hackathon,
+        participants, // [] if none
+        count: participants.length
+      }
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch participants",
+      error: error.message
+    });
+  }
 };
+
