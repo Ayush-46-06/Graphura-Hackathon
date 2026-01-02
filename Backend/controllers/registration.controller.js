@@ -6,7 +6,7 @@ export const registerForHackathon = async (req, res) => {
     const { hackathonId } = req.body;
     const userId = req.user._id;
 
-    // 🔹 Fetch hackathon
+
     const hackathon = await Hackathon.findById(hackathonId);
 
     if (!hackathon) {
@@ -16,7 +16,6 @@ export const registerForHackathon = async (req, res) => {
       });
     }
 
-    // 🔥 IMPORTANT: Status check
     if (hackathon.status === "completed") {
       return res.status(400).json({
         success: false,
@@ -24,15 +23,6 @@ export const registerForHackathon = async (req, res) => {
       });
     }
 
-    // (Optional) Agar tum ongoing bhi block karna chahte ho
-    // if (hackathon.status === "ongoing") {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Hackathon already started"
-    //   });
-    // }
-
-    // 🔹 Already registered check
     const exists = await Registration.findOne({
       user: userId,
       hackathon: hackathonId
@@ -45,13 +35,13 @@ export const registerForHackathon = async (req, res) => {
       });
     }
 
-    // 🔹 Register user
+
     await Registration.create({
       user: userId,
       hackathon: hackathonId
     });
 
-    // 🔹 Add to participants
+
     await Hackathon.findByIdAndUpdate(
       hackathonId,
       { $addToSet: { participants: userId } }
@@ -91,7 +81,7 @@ export const getParticipantsList = async (req, res) => {
 
   const participants = await Registration.find({
     hackathon: hackathonId
-  }).populate("user", "name email university");
+  }).populate("user", "name email university").populate("hackathon", "title");
 
   res.json({
     success: true,
