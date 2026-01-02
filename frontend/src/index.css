@@ -71,3 +71,70 @@
   width: max-content;
   animation: marquee-scroll 12s linear infinite;
 }
+
+/* Hide scrollbar but keep scroll */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE & Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+/* Logo slider animation */
+@keyframes logo-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.logo-slider {
+  display: flex;
+  width: max-content;
+  animation: logo-scroll 25s linear infinite;
+}
+
+.logo-slider:hover {
+  animation-play-state: paused;
+}
+
+
+/* Intern review slider animations */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.review-scroll-left {
+  display: flex;
+  width: max-content;
+  animation: scroll-left 30s linear infinite;
+}
+
+.review-scroll-right {
+  display: flex;
+  width: max-content;
+  animation: scroll-right 30s linear infinite;
+}
+
+.review-scroll-left:hover,
+.review-scroll-right:hover {
+  animation-play-state: paused;
+}

@@ -14,12 +14,20 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const Sponsor = () => {
-   const formRef = useRef(null);
+  const formRef = useRef(null);
+  const logos = [
+    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
+    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
+    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
+    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
+    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
+    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
+  ];
   return (
     <div>
       {/* hero section */}
       <section>
-        <div className="px-4 lg:px-8 pt-20 pb-10 mt-10 flex flex-col gap-10 items-center lg:flex-row lg:justify-between bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]">
+        <div className="px-4 lg:px-8 pt-20 pb-15 mt-10 flex flex-col gap-10 items-center lg:flex-row lg:justify-between bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]">
           <div className="max-w-[500px]">
             <div className="flex flex-wrap justify-center lg:justify-start">
               <h1 className="text-3xl lg:text-4xl xl:text-5xl font-extrabold">
@@ -35,7 +43,12 @@ const Sponsor = () => {
               future-ready innovators. Your involvement drives real, measurable
               impact.
             </p>
-            <Link className="w-full flex justify-center lg:justify-start" onClick={()=>formRef.current?.scrollIntoView({behavior: "smooth"})}>
+            <Link
+              className="w-full flex justify-center lg:justify-start"
+              onClick={() =>
+                formRef.current?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
               <button className="bg-gradient-to-br from-[#F8C62F] to-[#FE8235] rounded-lg text-md max-w-[350px] font-bold w-full py-3 hover:scale-105 hover:shadow-lg duration-200 transition-transform">
                 Join as a Sponsor
               </button>
@@ -52,7 +65,22 @@ const Sponsor = () => {
 
       {/* Our Sponsors */}
       <section>
-        <div className="mx-4 lg:mx-8"></div>
+        <div className="px-4 lg:px-8 mt-20 bg-gray-200 pt-5 pb-10">
+          <h1 className="text-xl font-extrabold w-full text-center mb-4 md:text-2xl lg:text-3xl">
+            Truster by our Partners
+          </h1>
+          <div className="flex flex-wrap justify-center gap-10 mt-8">
+            {logos.map((logo, index) => (
+              <div key={index} className="w-35">
+                <img
+                  src={logo}
+                  alt={`Partner Logo ${index + 1}`}
+                  className="object-contain"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Benefits of Sponsoring Us section */}
