@@ -1,14 +1,19 @@
 import Registration from "../models/Registration.model.js";
 import Hackathon from "../models/Hackathon.model.js";
-
+import {sendHackathonRegistrationMail} from "../services/mail.service.js"
 export const registerForHackathon = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(403).json({
+        success: false,
+        message: "Only users can register for hackathons"
+      });
+    }
+
     const { hackathonId } = req.body;
     const userId = req.user._id;
 
-
     const hackathon = await Hackathon.findById(hackathonId);
-
     if (!hackathon) {
       return res.status(404).json({
         success: false,
@@ -41,11 +46,21 @@ export const registerForHackathon = async (req, res) => {
       hackathon: hackathonId
     });
 
-
     await Hackathon.findByIdAndUpdate(
       hackathonId,
       { $addToSet: { participants: userId } }
     );
+
+    // ✅ SEND MAIL (non-blocking recommended)
+    sendHackathonRegistrationMail({
+      userName: req.user.name,
+      userEmail: req.user.email,
+      hackathonTitle: hackathon.title,
+      startDate: hackathon.startDate,
+      endDate: hackathon.endDate
+    }).catch(err => {
+      console.error("MAIL ERROR:", err);
+    });
 
     res.status(201).json({
       success: true,
@@ -60,6 +75,7 @@ export const registerForHackathon = async (req, res) => {
     });
   }
 };
+
 
 
 
@@ -122,4 +138,3 @@ export const getParticipantsList = async (req, res) => {
     });
   }
 };
-

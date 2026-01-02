@@ -46,26 +46,11 @@ export const deleteBlog = async (req, res) => {
 
 export const getAllBlogs = async (req, res) => {
   try {
-    const page = Math.max(Number(req.query.page) || 1, 1);
-    const limit = Math.min(Number(req.query.limit) || 10, 50);
-    const skip = (page - 1) * limit;
+    const blogs = await Blog.find()
+      .sort({ createdAt: -1 });
 
-    const [blogs, total] = await Promise.all([
-      Blog.find()
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit),
-      Blog.countDocuments()
-    ]);
-
-    res.json({
+    res.status(200).json({
       success: true,
-      pagination: {
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-        totalItems: total
-      },
       data: blogs
     });
 
@@ -77,6 +62,7 @@ export const getAllBlogs = async (req, res) => {
     });
   }
 };
+
 
 
 export const getBlogById = async (req, res) => {
