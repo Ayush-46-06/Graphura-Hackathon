@@ -173,7 +173,7 @@ export const forgotPassword = async (req, res) => {
 
     await user.save({ validateBeforeSave: false });
 
-    const resetLink = `http://localhost:5173/reset-password/${resetToken}`;
+    const resetLink = `${config.FRONTEND_URL}/reset-password/${resetToken}`;
 
     await sendResetPasswordMail({
       userEmail: user.email,
