@@ -12,6 +12,7 @@ import path from "path"
 import { fileURLToPath } from "url";
 import commentRoutes from "./routes/comment.routes.js"
 import contactRoutes from "./routes/contact.routes.js"
+import reviewRoutes from "./routes/review.routes.js"
 const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -27,6 +28,7 @@ app.use(
 )
 
 app.use("/api", contactRoutes)
+app.use("/api", reviewRoutes)
 app.use("/api", authRoutes)
 app.use("/api", userRoutes)
 app.use("/api", hackathonRoutes)
