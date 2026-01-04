@@ -73,6 +73,12 @@ const adminSchema = new mongoose.Schema(
     },
     courseName:{
       type:String
+    },
+    resetPasswordToken:{
+      type:String
+    },
+    resetPasswordExpire:{
+      type:Date
     }
   },
   { timestamps: true }

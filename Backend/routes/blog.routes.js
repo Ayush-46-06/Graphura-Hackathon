@@ -8,12 +8,12 @@ import { ROLES } from "../config/roles.js";
 import upload from "../middlewares/upload.middleware.js";
 const router = express.Router();
 
-router.get("/blog/", getAllBlogs);
+router.get("/blog", getAllBlogs);
 router.get("/blog/:id", getBlogById);
 
 
 router.post(
-  "/blog/",
+  "/blog",
   authMiddleware,
   roleMiddleware(ROLES.ADMIN),
   upload.single("image"),     

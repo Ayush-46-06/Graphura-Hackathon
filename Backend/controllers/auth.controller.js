@@ -149,12 +149,16 @@ export const login = async (req, res) => {
 };
 
 
+
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user) {
+    let account =
+      (await User.findOne({ email })) ||
+      (await Admin.findOne({ email }));
+
+    if (!account) {
       return res.json({
         success: true,
         message: "If email exists, reset link sent"
@@ -168,20 +172,21 @@ export const forgotPassword = async (req, res) => {
       .update(resetToken)
       .digest("hex");
 
-    user.resetPasswordToken = hashedToken;
-    user.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
 
-    await user.save({ validateBeforeSave: false });
+    account.resetPasswordToken = hashedToken;
+    account.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
+
+    await account.save({ validateBeforeSave: false });
 
     const resetLink = `${config.FRONTEND_URL}/reset-password/${resetToken}`;
 
     await sendResetPasswordMail({
-      userEmail: user.email,
-      userName: user.name,
+      userEmail: account.email,
+      userName: account.name,
       resetLink
     });
 
-    res.json({
+    return res.json({
       success: true,
       message: "Reset password link sent to email"
     });
@@ -220,23 +225,29 @@ export const resetPassword = async (req, res) => {
       .update(token)
       .digest("hex");
 
-    const user = await User.findOne({
-      resetPasswordToken: hashedToken,
-      resetPasswordExpire: { $gt: Date.now() }
-    }).select("+password");
+  
+    let account =
+      (await User.findOne({
+        resetPasswordToken: hashedToken,
+        resetPasswordExpire: { $gt: Date.now() }
+      }).select("+password")) ||
+      (await Admin.findOne({
+        resetPasswordToken: hashedToken,
+        resetPasswordExpire: { $gt: Date.now() }
+      }).select("+password"));
 
-    if (!user) {
+    if (!account) {
       return res.status(400).json({
         success: false,
         message: "Invalid or expired token"
       });
     }
 
-    user.password = await bcrypt.hash(newPassword, 10);
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
+    account.password = await bcrypt.hash(newPassword, 10);
+    account.resetPasswordToken = undefined;
+    account.resetPasswordExpire = undefined;
 
-    await user.save();
+    await account.save();
 
     res.json({
       success: true,
