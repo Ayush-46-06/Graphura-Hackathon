@@ -90,10 +90,13 @@ const hackathonSchema = new mongoose.Schema(
     lastEnrollmentDate: Date,
 
  
-    sponsors: {
-      type: [String],
-      default: []
-    },
+   sponsors: [
+  {
+    name: String,
+    logo: String
+  }
+],
+
 
     judges: [
       {

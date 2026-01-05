@@ -29,19 +29,18 @@ import { ROLES } from "../config/roles.js";
 const router = express.Router();
 
 
-router.get("/hackathon/", getAllHackathons);
+router.get("/hackathon", getAllHackathons);
 router.get("/hackathon/:id", getHackathonById);
 
-
 router.post(
-  "/hackathon/",
+  "/hackathon",
   authMiddleware,
   roleMiddleware(ROLES.ADMIN),
+  validateBody(createHackathonSchema),
   upload.fields([
     { name: "image", maxCount: 1 },
     { name: "sponsors", maxCount: 10 }
   ]),
-  validateBody(createHackathonSchema),
   createHackathon
 );
 
@@ -50,6 +49,10 @@ router.put(
   authMiddleware,
   roleMiddleware(ROLES.ADMIN),
   validateBody(updateHackathonSchema),
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "sponsors", maxCount: 10 }
+  ]),
   updateHackathon
 );
 
@@ -60,14 +63,12 @@ router.delete(
   deleteHackathon
 );
 
-
 router.post(
   "/hackathon/register",
   authMiddleware,
   validateBody(registerHackathonSchema),
   registerForHackathon
 );
-
 
 router.get(
   "/hackathon/:hackathonId/participants/count",
@@ -81,4 +82,4 @@ router.get(
   getParticipantsList
 );
 
-export default router;
+export default router

@@ -13,6 +13,7 @@ import { fileURLToPath } from "url";
 import commentRoutes from "./routes/comment.routes.js"
 import contactRoutes from "./routes/contact.routes.js"
 import reviewRoutes from "./routes/review.routes.js"
+import sponsorRoutes from "./routes/sponsors.routes.js"
 const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -26,7 +27,7 @@ app.use(
   "/certificates",
   express.static(path.join(__dirname, "uploads", "certificates"))
 )
-
+app.use("/api", sponsorRoutes)
 app.use("/api", contactRoutes)
 app.use("/api", reviewRoutes)
 app.use("/api", authRoutes)

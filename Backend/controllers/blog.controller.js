@@ -1,29 +1,54 @@
 import Blog from "../models/Blog.model.js";
 
 export const createBlog = async (req, res) => {
-  const imageUrl = req.file?.path;
+  try {
+    const imageUrl = req.file?.path;
 
-  if (!imageUrl) {
-    return res.status(400).json({
+    if (!imageUrl) {
+      return res.status(400).json({
+        success: false,
+        message: "Blog image is required",
+      });
+    }
+
+    const { title, content, category, publishedAt } = req.body;
+
+    if (!title || !content || !category) {
+      return res.status(400).json({
+        success: false,
+        message: "Title, content and category are required",
+      });
+    }
+
+    if (!req.admin?._id) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const blog = await Blog.create({
+      title,
+      content,
+      category,
+      image: imageUrl,
+      publishedAt: publishedAt || new Date(),
+      createdBy: req.admin._id,
+    });
+
+    res.status(201).json({
+      success: true,
+      data: blog,
+    });
+  } catch (error) {
+    console.error("CREATE BLOG ERROR:", error);
+    res.status(500).json({
       success: false,
-      message: "Blog image is required",
+      message: "Internal server error",
     });
   }
-
-  const blog = await Blog.create({
-    title: req.body.title,
-    content: req.body.content,
-    category: req.body.category,
-    image: imageUrl,
-    publishedAt: req.body.publishedAt,
-    createdBy: req.admin._id,
-  });
-
-  res.status(201).json({
-    success: true,
-    data: blog,
-  });
 };
+
 
 export const updateBlog = async (req, res) => {
   const updateData = { ...req.body };

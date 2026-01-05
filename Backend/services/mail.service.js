@@ -616,3 +616,30 @@ export const sendResetPasswordMail = async ({
     `
   });
 };
+
+
+
+
+export const sendSponsorInterestMail = async (data) => {
+  const client = SibApiV3Sdk.ApiClient.instance;
+  const apiKey = client.authentications["api-key"];
+  apiKey.apiKey = config.BREVO_API_KEY;
+
+  const emailApi = new SibApiV3Sdk.TransactionalEmailsApi();
+
+  await emailApi.sendTransacEmail({
+    sender: {
+      email: config.BREVO_SENDER_EMAIL,
+      name: config.BREVO_SENDER_NAME
+    },
+    to: [{ email: "abhihivarkar783@gmail.com" }],
+    subject: "New Sponsorship Interest – Graphura",
+    htmlContent: `
+      <h3>New Sponsorship Inquiry</h3>
+      <p><b>Name:</b> ${data.firstName} ${data.lastName}</p>
+      <p><b>Email:</b> ${data.email}</p>
+      <p><b>Company HQ:</b> ${data.companyHQ}</p>
+      <p><b>Message:</b><br/>${data.message}</p>
+    `
+  });
+};
