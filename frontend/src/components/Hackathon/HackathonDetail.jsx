@@ -3,17 +3,21 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
+import { faWhatsapp, faTelegram } from "@fortawesome/free-brands-svg-icons";
 import {
   faArrowRight,
   faAward,
   faCalendarWeek,
+  faCheck,
   faCircleCheck,
+  faCopy,
   faMedal,
   faPeopleGroup,
   faRobot,
   faRocket,
   faShareNodes,
   faTrophy,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { faHourglassHalf } from "@fortawesome/free-solid-svg-icons";
 
@@ -24,6 +28,11 @@ const HackathonDetail = () => {
   const [loading, setLoading] = useState(true);
   const [active, setActive] = useState("Overview");
   const [allHackathons, setAllHackathons] = useState([]);
+  const [share, setShare] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [commentText, setCommentText] = useState("");
+  const currentUrl = window.location.href;
 
   useEffect(() => {
     const fetchHackathon = async () => {
@@ -57,6 +66,52 @@ const HackathonDetail = () => {
     fetchAllHackathons();
   }, []);
 
+  // fetching comments
+  const token = localStorage.getItem("token");
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5001/api/comment/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setComments(res.data.data);
+        console.log(res.data.data);
+      } catch (err) {
+        console.error("error fetching comments", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchComments();
+  }, [id]);
+
+  // post comments
+  const postComment = async () => {
+    try {
+      const res = await axios.post(
+        "http://localhost:5001/api/comment",
+        {
+          hackathonId: id,
+          text: commentText,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // add new comment on top
+      setComments([res.data.data, ...comments]);
+      setCommentText("");
+    } catch (err) {
+      console.error("Error posting comment", err);
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (!data) return <p>Hackathon not found</p>;
 
@@ -66,6 +121,7 @@ const HackathonDetail = () => {
     "Judges",
     "Sponsors",
     "Prizes",
+    "Comments",
   ];
 
   const rules = [
@@ -117,6 +173,14 @@ const HackathonDetail = () => {
 
   const isEnrollmentClosed =
     data.lastEnrollmentDate && new Date() > new Date(data.lastEnrollmentDate);
+
+  // copying link
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(currentUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+  const shareText = "Check out this hackathon on Graphura!";
 
   return (
     <div>
@@ -318,8 +382,8 @@ const HackathonDetail = () => {
                     Prizes & Awards
                   </h3>
                   {/* 1st Prize Winner */}
-                  <div className="flex flex-col gap-6 mt-2 items-center w-full">
-                    <div className="relative max-w-sm w-full rounded-2xl p-5 bg-gradient-to-br from-yellow-300 via-yellow-100 to-yellow-500 shadow-[0_10px_30px_rgba(234,179,8,0.6)] border border-yellow-600">
+                  <div className="flex gap-6 mt-2 justify-center w-full flex-wrap">
+                    <div className="relative rounded-2xl p-5 bg-gradient-to-br from-yellow-300 via-yellow-100 to-yellow-500 shadow-[0_10px_30px_rgba(234,179,8,0.6)] border border-yellow-600">
                       <div className="flex items-center gap-3 mb-3">
                         <span className="w-10 h-10 flex items-center justify-center rounded-full bg-yellow-600 shadow-inner">
                           <FontAwesomeIcon
@@ -346,7 +410,7 @@ const HackathonDetail = () => {
                     </div>
 
                     {/* 2nd Prize Winner */}
-                    <div className="relative max-w-sm w-full rounded-2xl p-5 bg-gradient-to-br from-gray-300 via-gray-100 to-gray-400 shadow-[0_10px_30px_rgba(156,163,175,0.6)] border border-gray-500">
+                    <div className="relative rounded-2xl p-5 bg-gradient-to-br from-gray-300 via-gray-100 to-gray-400 shadow-[0_10px_30px_rgba(156,163,175,0.6)] border border-gray-500">
                       <div className="flex items-center gap-3 mb-3">
                         <span className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-500 shadow-inner">
                           <FontAwesomeIcon
@@ -370,7 +434,7 @@ const HackathonDetail = () => {
                     </div>
 
                     {/* 3rd Prize Winner */}
-                    <div className="relative max-w-sm w-full rounded-2xl p-5 bg-gradient-to-br from-[#8C6239] via-[#ec9645] to-[#7A4A2E] shadow-[0_10px_30px_rgba(120,74,46,0.6)] border border-[#6E3B1F]">
+                    <div className="relative rounded-2xl p-5 bg-gradient-to-br from-[#8C6239] via-[#ec9645] to-[#7A4A2E] shadow-[0_10px_30px_rgba(120,74,46,0.6)] border border-[#6E3B1F]">
                       <div className="flex items-center gap-3 mb-3">
                         <span className="w-10 h-10 flex items-center justify-center rounded-full bg-[#6E3B1F] shadow-inner">
                           <FontAwesomeIcon
@@ -394,6 +458,48 @@ const HackathonDetail = () => {
                       <span className="absolute inset-0 rounded-2xl ring-2 ring-[#B87333]/40 pointer-events-none"></span>
                     </div>
                   </div>
+                </div>
+              )}
+              {active === "Comments" && (
+                <div className="mt-4">
+                  <div className="flex gap-3 mb-6">
+                    <textarea
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                      placeholder="Write a comment..."
+                      className="flex-1 border border-gray-300 rounded-lg p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-green-400"
+                      rows={2}
+                    />
+                    <button
+                      onClick={postComment}
+                      className="bg-green-600 text-white px-4 rounded-lg font-semibold hover:bg-green-700"
+                    >
+                      Post
+                    </button>
+                  </div>
+
+                  {/* COMMENTS LIST */}
+                  {loading ? (
+                    <p className="text-gray-500 text-sm">Loading comments...</p>
+                  ) : comments.length === 0 ? (
+                    <p className="text-gray-500 text-sm">No comments yet</p>
+                  ) : (
+                    <div className="space-y-4">
+                      {comments.map((comment) => (
+                        <div
+                          key={comment._id}
+                          className="border border-gray-200 rounded-lg p-3"
+                        >
+                          <p className="text-sm text-gray-800">
+                            {comment.text}
+                          </p>
+                          <span className="text-xs text-gray-400">
+                            {new Date(comment.createdAt).toLocaleString()}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -423,7 +529,7 @@ const HackathonDetail = () => {
                   <span>English</span>
                 </li>
               </ul>
-              <div className="flex justify-center bg-gradient-to-br from-[#F8C62F] to-[#FE8235] hover:scale-105 hover:shadow-lg duration-200 transition-transform text-white mx-4 mt-4 py-2 rounded-2xl cursor-pointer">
+              <div className="flex justify-center bg-yellow-400 hover:bg-yellow-500 hover:scale-105 hover:shadow-lg duration-200 transition-transform text-white mx-6 mt-4 py-2 rounded-2xl cursor-pointer">
                 <button
                   onClick={handleRegister}
                   className="font-semibold cursor-pointer"
@@ -433,8 +539,81 @@ const HackathonDetail = () => {
                 </button>
               </div>
               <div className="mt-2 flex justify-around">
-                <span className="bg-gray-200 py-1.5 px-3 rounded-xl text-gray-600 font-semibold cursor-pointer">
+                <span
+                  onClick={() => setShare(true)}
+                  className="bg-gray-200 py-1.5 px-3 rounded-xl text-gray-600 font-semibold cursor-pointer"
+                >
                   <FontAwesomeIcon icon={faShareNodes} /> Share
+                  {share && (
+                    <div className="fixed inset-0 z-50 bg-gradient-to-br from-[#03594e85] via-[#03594e83] to-[#1ab69c88] flex justify-center items-center">
+                      <div
+                        className="bg-white py-5 px-8 flex flex-col rounded-2xl shadow-2xl border-r-6 border-b-6 border-yellow-500"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <p className="flex justify-between">
+                          <span className="text-lg">Share</span>
+                          <FontAwesomeIcon
+                            icon={faXmark}
+                            className="text-xl"
+                            onClick={() => setShare(false)}
+                          />
+                        </p>
+                        <p className="text-gray-400 text-sm">
+                          Share this with your friends
+                        </p>
+                        <div className="relative flex gap-5 justify-center mt-5 border-b pb-10 border-gray-200">
+                          <a
+                            href={`https://wa.me/?text=${encodeURIComponent(
+                              `${shareText} ${currentUrl}`
+                            )}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#25D366] text-4xl"
+                          >
+                            <FontAwesomeIcon
+                              icon={faWhatsapp}
+                              className="hover:rotate-y-360 transition-transform duration-500"
+                            />
+                          </a>
+
+                          <a
+                            href={`https://t.me/share/url?url=${encodeURIComponent(
+                              currentUrl
+                            )}&text=${encodeURIComponent(shareText)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#229ED9] text-4xl"
+                          >
+                            <FontAwesomeIcon
+                              icon={faTelegram}
+                              className="hover:rotate-y-360 transition-transform duration-500"
+                            />
+                          </a>
+                          <span className="absolute bg-white text-sm -bottom-2 px-2">
+                            OR COPY LINK
+                          </span>
+                        </div>
+                        <div className="mt-5 flex items-center gap-3 bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 max-w-xl pt-2">
+                          <input
+                            type="text"
+                            value={currentUrl}
+                            readOnly
+                            className="flex-1 bg-transparent outline-none text-gray-500 text-sm truncate"
+                          />
+
+                          <button
+                            onClick={handleCopy}
+                            className="text-gray-400 hover:text-gray-700 transition"
+                          >
+                            <FontAwesomeIcon
+                              icon={copied ? faCheck : faCopy}
+                              className="cursor-pointer"
+                            />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </span>
                 <span className="bg-gray-200 py-1.5 px-3 rounded-xl text-gray-600 font-semibold cursor-pointer">
                   <FontAwesomeIcon icon={faRobot} /> AI Chat
@@ -486,7 +665,7 @@ const HackathonDetail = () => {
                       <FontAwesomeIcon icon={faPeopleGroup} /> 123
                     </p>
                     <Link to={`/hackathons/${hackathon._id}`}>
-                      <button className="mt-2 border border-gray-200 text-green-500 font-semibold w-full bg-gray-100 p-2 rounded-xl hover:bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] hover:text-white duration-200 hover:shadow-lg">
+                      <button className="mt-2 border border-gray-200 text-green-500 font-semibold w-full bg-gray-100 p-2 rounded-xl hover:bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] hover:text-white duration-200 hover:shadow-lg cursor-pointer">
                         Visit hackathon
                       </button>
                     </Link>

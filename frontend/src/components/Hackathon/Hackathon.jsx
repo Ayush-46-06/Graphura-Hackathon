@@ -111,20 +111,24 @@ const Hackathon = () => {
   return (
     <div className="overflow-x-hidden">
       {/* Hero section */}
-      <section>
-        <div className="bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] mx-4 md:mx-8 mt-20 p-5 rounded-xl shadow-md flex flex-col md:flex-row gap-5 md:justify-between lg:px-10 items-center lg:h-[400px]">
-          <div className="max-w-[300px] lg:max-w-[450px]">
-            <h1 className="text-3xl lg:text-4xl xl:text-5xl font-extrabold">
+      <section className="bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] pt-20 pb-5 flex justify-center">
+        <div className="relative mx-4 md:mx-8 flex flex-col md:flex-row gap-5 md:justify-between items-center lg:h-[400px] max-w-[1280px] w-full">
+          {/* spinner */}
+          {/* <div className="absolute z-10 left-15 top-15 w-70 h-70 slow-spin border border-[#078d7b]"></div> */}
+
+          <div className="relative z-10 max-w-[300px] lg:max-w-[450px]">
+            <h1 className="text-3xl lg:text-4xl xl:text-5xl font-extrabold text-white">
               Build the Future.
               <br />
-              <span className="text-[#fab031]">Join a Hackathon.</span>
+              <span className="text-[#F8C62F]">Join a Hackathon.</span>
             </h1>
             <p className="text-white mt-1 lg:text-lg lg:max-w-[400px] lg:font-medium">
               Browse the best coding competitions and start building today.
               Connect with developers, win prizes, and launch your career.
             </p>
           </div>
-          <div className="rounded-xl overflow-hidden w-full max-w-[400px] lg:max-w-[500px]">
+
+          <div className="rounded-xl overflow-hidden w-full max-w-[400px] lg:max-w-[500px] animate-float">
             <img
               src="https://res.cloudinary.com/drq2a0262/image/upload/v1766129810/hackathon_bljdtw.png"
               alt="hackathon-image"
@@ -135,24 +139,24 @@ const Hackathon = () => {
       </section>
 
       {/* search and filter hackathons*/}
-      <section>
-        <div className="my-10">
+      <section className="flex justify-center">
+        <div className="my-10 w-full">
           <div className="flex flex-col gap-2 lg:flex-row lg:justify-end">
             <div className="flex flex-col gap-2 mb-2 lg:flex-row lg:border border-gray-200 lg:shadow-lg lg:rounded-[40px] lg:mr-10 p-3 lg:items-center">
               <p className="mx-4 md:mx-8 font-semibold text-lg">
                 We found <strong>46</strong> hackathons live now
               </p>
-              <div className="mx-2 md:mx-8 relative flex lg:items-center">
+              <div className="md:mx-8 relative flex lg:items-center">
                 <input
                   type="text"
                   placeholder="Search hackathons..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] py-2 pl-8 pr-4 text-white placeholder:text-white focus:outline-none rounded-3xl"
+                  className="bg-gray-100 py-2 pl-10 pr-4 text-black placeholder:text-black focus:outline-none rounded-3xl shadow-xl border border-gray-300"
                 />
                 <FontAwesomeIcon
                   icon={faSearch}
-                  className="text-white top-3 left-2 absolute"
+                  className="text-black top-3 left-3 absolute"
                 />
                 <span className="bg-[#03594E] w-10 h-10 lg:w-8 lg:h-8  flex items-center justify-center rounded-full mx-2 cursor-pointer">
                   <FontAwesomeIcon
@@ -196,10 +200,10 @@ const Hackathon = () => {
       ${view === "list" ? "translate-x-9" : "translate-x-0"}`}
                   />
 
-                  {/* GRID icon (left) */}
+                  {/* GRID icon  */}
                   <button
                     onClick={() => setView("grid")}
-                    className="relative z-10 w-8 h-8 flex items-center justify-center"
+                    className="relative z-10 w-8 h-8 flex items-center justify-center cursor-pointer"
                   >
                     <span className="grid grid-cols-2 gap-[3px]">
                       <span
@@ -225,10 +229,10 @@ const Hackathon = () => {
                     </span>
                   </button>
 
-                  {/* LIST icon (right) */}
+                  {/* LIST icon  */}
                   <button
                     onClick={() => setView("list")}
-                    className="relative ml-1 z-10 w-8 h-8 flex items-center justify-center"
+                    className="relative ml-1 z-10 w-8 h-8 flex items-center justify-center cursor-pointer"
                   >
                     <FontAwesomeIcon
                       icon={faList}
@@ -260,16 +264,16 @@ const Hackathon = () => {
           </div>
         </div>
         {showCalendar && (
-          <div className="fixed top-20 right-10 z-50 bg-white shadow-xl rounded-xl overflow-hidden">
+          <div className="fixed top-20 right-2 z-50 bg-white shadow-xl rounded-xl overflow-hidden">
             <Calendar selectRange={true} onChange={handleChange} />
           </div>
         )}
       </section>
 
       {/* hackathons list */}
-      <section className="mx-4">
-        <div className="flex gap-[75px]">
-          <div className="hidden shadow-xl p-4 border-2 border-gray-300 rounded-2xl lg:flex flex-col min-w-[250px] self-start">
+      <section className="mx-4 flex justify-center">
+        <div className="flex gap-[75px] w-full mx-2">
+          <div className="hidden shadow-[0_20px_40px_rgba(0,0,0,0.25)] hover:shadow-[0_30px_60px_rgba(0,0,0,0.35)] hover:-translate-y-2 transition-all duration-300 p-4 border-2 ml-2 border-gray-300 rounded-2xl lg:flex flex-col min-w-[250px] self-start lg:sticky lg:top-0">
             <h3 className="text-xl font-semibold">
               <FontAwesomeIcon
                 icon={faFilter}
@@ -281,7 +285,7 @@ const Hackathon = () => {
               {filterList.map((val) => (
                 <li
                   onClick={() => setActive(val)}
-                  className={`flex items-center cursor-pointer p-2 rounded-xl hover:bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] hover:text-white ${
+                  className={`flex items-center cursor-pointer p-2 rounded-xl hover:-translate-y-1 hover:shadow-md transition-all duration-300 ease-out ${
                     active === val
                       ? "text-white bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]"
                       : ""
@@ -301,10 +305,10 @@ const Hackathon = () => {
             </ul>
           </div>
           {view === "grid" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 place-items-center lg:place-items-start w-full pb-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 place-items-center lg:place-items-start w-full pb-5">
               {paginatedData.map((val) => (
                 <Link to={`/hackathons/${val._id}`} key={val._id}>
-                  <div className="group relative mx-2 rounded-3xl shadow-lg overflow-hidden pb-3 border border-gray-200 max-w-[420px] hover:scale-105 hover:shadow-xl transition-transform duration-200">
+                  <div className="group relative mx-2 rounded-3xl shadow-lg overflow-hidden pb-3 border border-gray-200 max-w-[350px] hover:scale-105 hover:shadow-xl transition-transform duration-200">
                     <div className="mb-4 overflow-hidden h-[180px]">
                       <img
                         src={val.image}
@@ -406,119 +410,115 @@ const Hackathon = () => {
           {view === "list" && (
             <div className="md:mx-8 pb-5 grid grid-cols-1 gap-6 place-items-center lg:place-items-end w-full">
               {paginatedData.map((val) => (
-                <div
+                <Link
+                  to={`/hackathons/${val._id}`}
                   key={val._id}
-                  className="group cursor-pointer relative w-full sm:max-w-[600px] lg:max-w-[800px] 2xl:max-w-[1000px] rounded-3xl shadow-lg flex items-stretch border border-gray-200 overflow-hidden hover:scale-105 hover:shadow-xl transition-transform duration-200"
+                  className="w-full block"
                 >
-                  {/* LEFT IMAGE */}
-                  <div className="overflow-hidden w-[130px] md:w-[180px] xl:w-[250px] 2xl:w-[300px] flex-shrink-0">
-                    <img
-                      src={val.image}
-                      alt="hackathon-image"
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
-                    />
-                  </div>
-
-                  {/* RIGHT CONTENT */}
-                  <div className="px-2 py-2 w-full">
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {val.tags.map((tag, index) => (
-                        <span
-                          key={tag}
-                          className={`px-3 py-[3px] text-xs font-medium rounded-full border transition-colors
-        ${index % 3 === 0 && "bg-green-50 text-green-700 border-green-300"}
-        ${index % 3 === 1 && "bg-blue-50 text-blue-700 border-blue-300"}
-        ${index % 3 === 2 && "bg-purple-50 text-purple-700 border-purple-300"}`}
-                        >
-                          {tag}
-                        </span>
-                      ))}
+                  <div className="group cursor-pointer relative w-full rounded-3xl shadow-lg flex items-stretch border border-gray-200 overflow-hidden hover:scale-105 hover:shadow-xl transition-transform duration-200">
+                    {/* LEFT IMAGE */}
+                    <div className="overflow-hidden h-[175px] w-[130px] md:w-[180px] xl:w-[250px] 2xl:w-[300px]  flex-shrink-0">
+                      <img
+                        src={val.image}
+                        alt="hackathon-image"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
+                      />
                     </div>
-                    <h2 className="font-bold text-sm truncate md:text-lg xl:text-xl group-hover:text-green-800">
-                      {val.title}
-                    </h2>
-                    <p className="font-semibold text-gray-500 text-xs line-clamp-2 md:text-sm xl:text-base">
-                      {val.description}
-                    </p>
 
-                    <div className="mx-4 flex justify-between mt-2 border-t border-gray-300 pt-2">
-                      <div className="flex items-center gap-2">
-                        <div className="bg-green-200 rounded-lg py-1.5 px-2">
-                          <FontAwesomeIcon
-                            icon={faPeopleGroup}
-                            className="text-green-500"
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-gray-500 text-sm md:text-base">
-                            Participants
+                    {/* RIGHT CONTENT */}
+                    <div className="px-4 py-2 w-full flex flex-col h-full">
+                      {/* TAGS */}
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {val.tags.map((tag, index) => (
+                          <span
+                            key={tag}
+                            className={`px-3 py-[3px] text-xs font-medium rounded-full border
+          ${index % 3 === 0 && "bg-green-50 text-green-700 border-green-300"}
+          ${index % 3 === 1 && "bg-blue-50 text-blue-700 border-blue-300"}
+          ${
+            index % 3 === 2 && "bg-purple-50 text-purple-700 border-purple-300"
+          }`}
+                          >
+                            {tag}
                           </span>
-                          <span className="text-green-400 font-medium text-sm md:text-base">
-                            {val.participants.length}
-                          </span>
-                        </div>
+                        ))}
                       </div>
-                      <div className="flex items-center gap-2">
-                        <div className="bg-blue-200 rounded-lg py-1.5 px-2">
-                          <FontAwesomeIcon
-                            icon={faClock}
-                            className="text-blue-600"
-                          />
-                        </div>
 
-                        {val.status === "upcoming" && (
+                      {/* TITLE */}
+                      <h2 className="font-bold text-sm truncate md:text-lg xl:text-xl group-hover:text-green-800 mt-2">
+                        {val.title}
+                      </h2>
+
+                      {/* DESCRIPTION */}
+                      <p className="mb-2 font-semibold text-gray-500 text-xs line-clamp-1 md:text-sm xl:text-base">
+                        {val.description}
+                      </p>
+
+                      <div className="flex justify-between mt-auto border-t border-gray-300 pt-3">
+                        {/* PARTICIPANTS */}
+                        <div className="flex flex-col md:flex-row items-center gap-2">
+                          <div className="bg-green-200 rounded-lg py-1.5 px-2">
+                            <FontAwesomeIcon
+                              icon={faPeopleGroup}
+                              className="text-green-500"
+                            />
+                          </div>
                           <div className="flex flex-col">
-                            <span className="text-gray-500 text-sm md:text-base">
-                              Starts On
+                            <span className="text-gray-500 text-sm">
+                              Participants
                             </span>
-                            <span className="text-blue-500 font-medium text-sm md:text-base">
-                              {formatDate(val.startDate)}
+                            <span className="text-green-400 font-medium text-sm">
+                              {val.participants.length}
                             </span>
                           </div>
-                        )}
-                        {val.status === "ongoing" && (
+                        </div>
+
+                        {/* DATE */}
+                        <div className="flex flex-col md:flex-row items-center gap-2">
+                          <div className="bg-blue-200 rounded-lg py-1.5 px-2">
+                            <FontAwesomeIcon
+                              icon={faClock}
+                              className="text-blue-600"
+                            />
+                          </div>
+
                           <div className="flex flex-col">
-                            <span className="text-gray-500 text-sm md:text-base">
-                              Ends On
+                            <span className="text-gray-500 text-sm">
+                              {val.status === "completed"
+                                ? "Ended On"
+                                : "Ends On"}
                             </span>
-                            <span className="text-blue-500 font-medium text-sm md:text-base">
+                            <span className="text-blue-500 font-medium text-sm">
                               {formatDate(val.endDate)}
                             </span>
                           </div>
-                        )}
-                        {val.status === "completed" && (
+                        </div>
+
+                        {/* ENROLL BY */}
+                        <div className="hidden xl:flex items-center gap-2">
+                          <div className="bg-purple-200 rounded-lg py-1.5 px-2">
+                            <FontAwesomeIcon
+                              icon={faCalendarDays}
+                              className="text-purple-700"
+                            />
+                          </div>
                           <div className="flex flex-col">
-                            <span className="text-gray-500 text-sm md:text-base ">
-                              Ended On
+                            <span className="text-gray-500 text-sm">
+                              Enrolls By
                             </span>
-                            <span className="text-blue-500 font-medium text-sm md:text-base ">
-                              {formatDate(val.endDate)}
+                            <span className="text-purple-600 font-medium text-sm">
+                              {formatDate(val.lastEnrollmentDate)}
                             </span>
                           </div>
-                        )}
-                      </div>
-                      <div className="hidden lg:flex items-center gap-2">
-                        <div className="bg-purple-200 rounded-lg py-1.5 px-2">
-                          <FontAwesomeIcon
-                            icon={faCalendarDays}
-                            className="text-purple-700"
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-gray-500 text-sm md:text-base">
-                            Enrolls By
-                          </span>
-                          <span className="text-purple-600 font-medium text-sm md:text-base">
-                            {formatDate(val.lastEnrollmentDate)}
-                          </span>
                         </div>
                       </div>
                     </div>
+
+                    <span className="absolute top-2 left-2 bg-[#2c572f] text-[#39ff14] font-semibold py-1 px-3 rounded-2xl border border-[#39ff14] shadow-[0_0_8px_#39ff14,0_0_16px_#39ff14]">
+                      Free
+                    </span>
                   </div>
-                  <span className="absolute top-2 left-2 bg-[#2c572f] text-[#39ff14] font-semibold py-1 px-3 rounded-2xl border border-[#39ff14] shadow-[0_0_8px_#39ff14,0_0_16px_#39ff14]">
-                    Free
-                  </span>
-                </div>
+                </Link>
               ))}
             </div>
           )}

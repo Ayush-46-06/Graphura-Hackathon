@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { motion } from "framer-motion";
 import {
   faBullhorn,
   faComments,
@@ -23,17 +24,28 @@ const Sponsor = () => {
     "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
     "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
   ];
+
+  const left = {
+    hidden: { opacity: 0, x: -80 },
+    show: { opacity: 1, x: 0 },
+  };
+
+  const right = {
+    hidden: { opacity: 0, x: 80 },
+    show: { opacity: 1, x: 0 },
+  };
+
   return (
     <div>
       {/* hero section */}
-      <section>
-        <div className="px-4 lg:px-8 pt-20 pb-15 mt-10 flex flex-col gap-10 items-center lg:flex-row lg:justify-between bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]">
+      <section className="bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] flex justify-center">
+        <div className="w-full px-4 lg:px-8 pt-20 pb-15 mt-10 flex flex-col gap-10 items-center lg:flex-row lg:justify-between max-w-[1280px] animate-fading-in">
           <div className="max-w-[500px]">
             <div className="flex flex-wrap justify-center lg:justify-start">
-              <h1 className="text-3xl lg:text-4xl xl:text-5xl font-extrabold">
+              <h1 className="text-3xl lg:text-4xl xl:text-5xl font-extrabold text-white">
                 Invest in Ideas.
               </h1>
-              <h1 className="text-3xl lg:text-4xl xl:text-5xl font-extrabold text-[#fab031]">
+              <h1 className="text-3xl lg:text-4xl xl:text-5xl font-extrabold text-[#F8C62F]">
                 Invest in the Future.
               </h1>
             </div>
@@ -49,7 +61,7 @@ const Sponsor = () => {
                 formRef.current?.scrollIntoView({ behavior: "smooth" })
               }
             >
-              <button className="bg-gradient-to-br from-[#F8C62F] to-[#FE8235] rounded-lg text-md max-w-[350px] font-bold w-full py-3 hover:scale-105 hover:shadow-lg duration-200 transition-transform">
+              <button className="bg-yellow-400 hover:bg-yellow-500 rounded-lg text-md max-w-[350px] font-bold w-full py-3 hover:scale-105 hover:shadow-lg duration-200 transition-transform cursor-pointer">
                 Join as a Sponsor
               </button>
             </Link>
@@ -64,8 +76,8 @@ const Sponsor = () => {
       </section>
 
       {/* Our Sponsors */}
-      <section>
-        <div className="px-4 lg:px-8 mt-20 bg-gray-200 pt-5 pb-10">
+      <section className="flex justify-cente mt-20">
+        <div className="px-4 lg:px-8 pt-5 pb-10 w-full max-w-[1280px]">
           <h1 className="text-xl font-extrabold w-full text-center mb-4 md:text-2xl lg:text-3xl">
             Truster by our Partners
           </h1>
@@ -84,12 +96,19 @@ const Sponsor = () => {
       </section>
 
       {/* Benefits of Sponsoring Us section */}
-      <section>
-        <div className="mx-4 lg:mx-8 mt-[100px] pb-5 flex flex-col gap-10 lg:gap-20">
+      <section className="flex justify-center">
+        <div className="mx-4 lg:mx-8 mt-[100px] pb-5 flex flex-col gap-10 lg:gap-20 w-full max-w-[1280px]">
           <h1 className="text-xl font-extrabold w-full text-center mb-4 md:text-2xl lg:text-3xl">
             Benefits of Sponsoring Us section
           </h1>
-          <div className="flex flex-col items-center lg:flex-row lg:justify-between">
+          <motion.div
+            variants={left}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.35 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="flex flex-col items-center lg:flex-row lg:justify-between"
+          >
             <div className="max-w-[700px] lg:max-w-[400px] xl:max-w-[500px]">
               <span className="block w-full">
                 <FontAwesomeIcon
@@ -114,8 +133,15 @@ const Sponsor = () => {
                 alt="brand-visibility-image"
               />
             </div>
-          </div>
-          <div className="flex flex-col items-center lg:flex-row-reverse lg:justify-between">
+          </motion.div>
+          <motion.div
+            variants={right}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.35 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="flex flex-col items-center lg:flex-row-reverse lg:justify-between"
+          >
             <div className="max-w-[700px] lg:max-w-[400px] xl:max-w-[500px]">
               <span className="block w-full">
                 <FontAwesomeIcon
@@ -139,8 +165,15 @@ const Sponsor = () => {
                 alt="emerging-talent-image"
               />
             </div>
-          </div>
-          <div className="flex flex-col items-center lg:flex-row lg:justify-between">
+          </motion.div>
+          <motion.div
+            variants={left}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.35 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="flex flex-col items-center lg:flex-row lg:justify-between"
+          >
             <div className="max-w-[700px] lg:max-w-[400px] xl:max-w-[500px]">
               <span className="block w-full">
                 <FontAwesomeIcon
@@ -164,22 +197,22 @@ const Sponsor = () => {
                 alt="innovation-image"
               />
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Why Sponsors Love Working With Us */}
-      <section className="bg-gray-200 mt-20 pb-10">
-        <div className="mx-4 lg:mx-8">
+      <section className="bg-gray-200 mt-20 pb-10 flex justify-center">
+        <div className="mx-4 lg:mx-8 max-w-[1280px] w-full">
           <h1 className="text-xl font-extrabold w-full text-center pt-10 mb-8 md:text-2xl lg:text-3xl">
             Why Sponsors Love Working With Us
           </h1>
           <div className="mt-5 flex flex-wrap gap-8 justify-center">
-            <div className="bg-white p-5 rounded-2xl w-full max-w-[350px] shadow-md cursor-pointer hover:scale-105 hover:shadow-xl duration-200 transition-transform">
+            <div className="group bg-white p-5 rounded-2xl w-full max-w-[350px] shadow-sm cursor-pointer hover:scale-105 hover:shadow-lg duration-200 transition-transform">
               <span className="block w-full">
                 <FontAwesomeIcon
                   icon={faHandshake}
-                  className="text-green-500 bg-green-200 py-3 px-2.5 rounded-full"
+                  className="text-green-500 bg-green-200 py-3 px-2.5 rounded-full group-hover:rotate-y-360 transition-transform duration-500"
                 />
               </span>
               <h2 className="text-lg font-bold">
@@ -195,11 +228,11 @@ const Sponsor = () => {
                 effortless collaboration.
               </p>
             </div>
-            <div className="bg-white p-5 rounded-2xl w-full max-w-[350px] shadow-md cursor-pointer hover:scale-105 hover:shadow-xl duration-200 transition-transform">
+            <div className="group bg-white p-5 rounded-2xl w-full max-w-[350px] shadow-md cursor-pointer hover:scale-105 hover:shadow-xl duration-200 transition-transform">
               <span className="block w-full">
                 <FontAwesomeIcon
                   icon={faEye}
-                  className="text-green-500 bg-green-200 py-3 px-2.5 rounded-full"
+                  className="text-green-500 bg-green-200 py-3 px-2.5 rounded-full group-hover:rotate-y-360 transition-transform duration-500"
                 />
               </span>
               <h2 className="text-lg font-bold">High-Impact Brand Exposure</h2>
@@ -210,11 +243,11 @@ const Sponsor = () => {
                 institutions, and industry leaders.
               </p>
             </div>
-            <div className="bg-white p-5 rounded-2xl w-full max-w-[350px] shadow-md cursor-pointer hover:scale-105 hover:shadow-xl duration-200 transition-transform">
+            <div className="group bg-white p-5 rounded-2xl w-full max-w-[350px] shadow-md cursor-pointer hover:scale-105 hover:shadow-xl duration-200 transition-transform">
               <span className="block w-full">
                 <FontAwesomeIcon
                   icon={faGem}
-                  className="text-green-500 bg-green-200 py-3 px-2.5 rounded-full"
+                  className="text-green-500 bg-green-200 py-3 px-2.5 rounded-full group-hover:rotate-y-360 transition-transform duration-500"
                 />
               </span>
               <h2 className="text-lg font-bold">
@@ -227,11 +260,11 @@ const Sponsor = () => {
                 future hiring opportunities.
               </p>
             </div>
-            <div className="bg-white p-5 rounded-2xl w-full max-w-[350px] shadow-md cursor-pointer hover:scale-105 hover:shadow-xl duration-200 transition-transform">
+            <div className="group bg-white p-5 rounded-2xl w-full max-w-[350px] shadow-md cursor-pointer hover:scale-105 hover:shadow-xl duration-200 transition-transform">
               <span className="block w-full">
                 <FontAwesomeIcon
                   icon={faLeaf}
-                  className="text-green-500 bg-green-200 py-3 px-2.5 rounded-full"
+                  className="text-green-500 bg-green-200 py-3 px-2.5 rounded-full group-hover:rotate-y-360 transition-transform duration-500"
                 />
               </span>
               <h2 className="text-lg font-bold">
@@ -244,11 +277,11 @@ const Sponsor = () => {
                 long-term value.
               </p>
             </div>
-            <div className="bg-white p-5 rounded-2xl w-full max-w-[350px] shadow-md cursor-pointer hover:scale-105 hover:shadow-xl duration-200 transition-transform">
+            <div className="group bg-white p-5 rounded-2xl w-full max-w-[350px] shadow-md cursor-pointer hover:scale-105 hover:shadow-xl duration-200 transition-transform">
               <span className="block w-full">
                 <FontAwesomeIcon
                   icon={faComments}
-                  className="text-green-500 bg-green-200 py-3 px-2.5 rounded-full"
+                  className="text-green-500 bg-green-200 py-3 px-2.5 rounded-full group-hover:rotate-y-360 transition-transform duration-500"
                 />
               </span>
               <h2 className="text-lg font-bold">Strong Community Engagement</h2>
@@ -259,11 +292,11 @@ const Sponsor = () => {
                 connections and networking opportunities.
               </p>
             </div>
-            <div className="bg-white p-5 rounded-2xl w-full max-w-[350px] shadow-md cursor-pointer hover:scale-105 hover:shadow-xl duration-200 transition-transform">
+            <div className="group bg-white p-5 rounded-2xl w-full max-w-[350px] shadow-md cursor-pointer hover:scale-105 hover:shadow-xl duration-200 transition-transform">
               <span className="block w-full">
                 <FontAwesomeIcon
                   icon={faSliders}
-                  className="text-green-500 bg-green-200 py-3 px-2.5 rounded-full"
+                  className="text-green-500 bg-green-200 py-3 px-2.5 rounded-full group-hover:rotate-y-360 transition-transform duration-500"
                 />
               </span>
               <h2 className="text-lg font-bold">
@@ -281,9 +314,9 @@ const Sponsor = () => {
       </section>
 
       {/* Become a Sponsor Today - Form */}
-      <section ref={formRef}>
-        <div className="pt-10 px-4 pb-5 flex justify-center bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]">
-          <form className="p-4 rounded-xl shadow-green-700 shadow-md border border-gray-200 max-w-[700px] lg:max-w-[900px] flex flex-col items-center bg-white">
+      <section className="flex justify-center bg-gray-200" ref={formRef}>
+        <div className="pt-10 px-4 pb-5 flex justify-center w-full max-w-[1280px]">
+          <form className="p-4 rounded-xl shadow-md border border-gray-200 max-w-[700px] lg:max-w-[900px] flex flex-col items-center bg-white">
             <h1 className="text-xl font-extrabold w-full text-center pt-5 md:text-2xl lg:text-3xl">
               Become a Sponsor Today
             </h1>
@@ -355,19 +388,19 @@ const Sponsor = () => {
             </div>
             <div className="mt-5 w-full">
               <label
-                htmlFor="textarea"
+                htmlFor="message"
                 className="font-semibold text-gray-800 p-1"
               >
                 What do you expect from your collaboration with us?
               </label>
               <textarea
-                name="textarea"
+                name="message"
                 placeholder="We are Looking for talent acquisition opportunities..."
                 className="mt-1 border w-full h-40 border-gray-300 py-2.5 px-4 bg-gray-100 rounded-xl focus:outline-green-500"
                 required
               ></textarea>
             </div>
-            <button className="mt-5 bg-gradient-to-br from-[#F8C62F] to-[#FE8235] hover:scale-105 hover:shadow-lg duration-200 transition-transform rounded-lg text-md max-w-[350px] font-bold w-full py-3">
+            <button className="cursor-pointer mt-5 bg-yellow-400 hover:bg-yellow-500 hover:scale-105 hover:shadow-lg duration-200 transition-transform rounded-lg text-md max-w-[350px] font-bold w-full py-3">
               Apply to Sponsor
             </button>
           </form>
