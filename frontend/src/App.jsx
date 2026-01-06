@@ -23,6 +23,7 @@ import PartnerPage from "./components/Partner/PartnerPage";
 
 import About from "./components/About";
 import Results from "./components/Results/Results";
+import FAQ from "./components/FAQ";
 import PastResults from "./components/Results/PastResults";
 import Error404Page from "./components/404ErrorPage";
 // import BlogDetailsPage from "./components/Blog/BlogDetailsPage";
@@ -72,6 +73,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/faq" element={<FAQ />} />
         <Route path="/results" element={<Results />} />
         <Route path="/all-blog" element={<AllBlog />} />
         <Route path="/hackathons" element={<Hackathon />} />

@@ -14,7 +14,7 @@ export default function ResultModal({ hackathon, onClose }) {
     { rank: 3, team: "Neural Ninjas", score: 92.8 },
   ];
 
-  // 🔥 Percentage-based distribution (frontend-only logic)
+  // Percentage-based distribution (frontend-only logic)
   const total = result.total;
 
   const top10 = Math.ceil(total * 0.1);
@@ -44,43 +44,18 @@ export default function ResultModal({ hackathon, onClose }) {
           {hackathon.title} – Result
         </h2>
 
-        {/* A. YOUR PERFORMANCE */}
+        {/* A. HACKATHON DESCRIPTION */}
         <div className="bg-[#E6F4F1] p-6 rounded-xl mb-10">
-          <h3 className="font-semibold mb-4">Your Performance</h3>
+          <h3 className="font-semibold mb-4">About This Hackathon</h3>
 
-          <div className="flex gap-12">
-            <div>
-              <p className="text-sm text-gray-500">Your Rank</p>
-              <p className="text-2xl font-bold">
-                {result.rank} / {result.total}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-sm text-gray-500">Score</p>
-              <p className="text-2xl font-bold">{result.score}</p>
-            </div>
-          </div>
+          <p className="text-gray-700 leading-relaxed text-sm md:text-base">
+            {hackathon.description ||
+              "This hackathon challenged participants to collaborate, innovate, and build impactful solutions within a limited timeframe. Teams were evaluated on innovation, execution quality, feasibility, and overall presentation, encouraging both technical and creative problem-solving approaches."}
+          </p>
         </div>
 
-        {/* B. RANK DISTRIBUTION */}
-        <div className="mb-12">
-          <h4 className="font-semibold mb-4">
-            Rank Distribution
-            <span className="ml-2 text-xs text-gray-500">
-              (percentage based)
-            </span>
-          </h4>
-
-          <BarChart width={500} height={250} data={distribution}>
-            <XAxis dataKey="label" />
-            <YAxis allowDecimals={false} />
-            <Tooltip />
-            <Bar dataKey="count" fill="#03594E" radius={[6, 6, 0, 0]} />
-          </BarChart>
-        </div>
-
-        {/* C. LEADERBOARD */}
+      
+        {/* B. LEADERBOARD */}
         <div>
           <h4 className="font-semibold mb-4">Top Performers</h4>
 

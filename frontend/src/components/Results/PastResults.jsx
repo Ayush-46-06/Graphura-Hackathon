@@ -80,26 +80,33 @@ export default function PastResults({ pastHackathons }) {
 
             {/* PODIUM */}
             <div className="grid grid-cols-3 gap-4 mt-6 mb-8">
-              {hack.winners.map((img, i) => (
+              {[1, 0, 2].map((i) => (
                 <div key={i} className="text-center">
-                  <div className="aspect-square rounded-xl overflow-hidden bg-white border border-[#DDEAE7] transition-all duration-300 group-hover:scale-[1.03]">
+                  <div
+                    className={`
+                      aspect-square
+                      rounded-xl
+                      overflow-hidden
+                      bg-white
+                      transition-all duration-300
+                      group-hover:scale-[1.03]
+                      ${i === 0 ? "border-2 border-[#F8C62F]" : "border border-[#DDEAE7]"}
+                    `}
+                  >
                     <img
-                      src={img}
+                      src={hack.winners[i]}
                       alt="Winner"
                       className="w-full h-full object-cover"
                     />
                   </div>
 
                   <p className="mt-3 text-[10px] uppercase tracking-wide text-[#6C757D] font-medium">
-                    {i === 0
-                      ? "Winner"
-                      : i === 1
-                      ? "2nd Runner Up"
-                      : "3rd Runner Up"}
+                    {i === 0 ? "Winner" : i === 1 ? "2nd Runner Up" : "3rd Runner Up"}
                   </p>
                 </div>
               ))}
             </div>
+
 
             {/* META */}
             <div className="flex justify-between items-center text-sm text-[#6C757D] mb-6">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const statsData = [
   { value: 1090, label: "Our Online Courses", icon: "/1.svg" },
@@ -8,11 +8,27 @@ const statsData = [
 
 ];
 
-
 const StatCard = ({ value, label, index }) => {
   const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const hasAnimated = useRef(false);
 
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          animateCount();
+        }
+      },
+      { threshold: 0.4 }
+    );
+
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const animateCount = () => {
     let start = 0;
     const end = value;
     const duration = 1200;
@@ -27,12 +43,11 @@ const StatCard = ({ value, label, index }) => {
         setCount(start);
       }
     }, 16);
-
-    return () => clearInterval(timer);
-  }, [value]);
+  };
 
   return (
     <div
+      ref={ref}
       className={`
         group relative flex items-center gap-4 p-8 py-12
         border-r border-white/20 last:border-none
@@ -45,8 +60,12 @@ const StatCard = ({ value, label, index }) => {
       `}
     >
       {/* Icon */}
-      <div  className="text-4xl text-white/90 ">
-      <img src={statsData[index].icon} alt="" className="group-hover:[transform:rotateY(360deg)] transition-transform duration-500 ease-in-out" />
+      <div className="text-4xl text-white/90">
+        <img
+          src={statsData[index].icon}
+          alt=""
+          className="group-hover:[transform:rotateY(360deg)] transition-transform duration-500 ease-in-out"
+        />
       </div>
 
       {/* Text */}
@@ -60,6 +79,7 @@ const StatCard = ({ value, label, index }) => {
     </div>
   );
 };
+
 
 const StatsSection = () => {
   return (
