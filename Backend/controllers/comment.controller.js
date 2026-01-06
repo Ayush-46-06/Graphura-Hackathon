@@ -3,6 +3,14 @@ import Hackathon from "../models/Hackathon.model.js";
 
 export const addComment = async (req, res) => {
   try {
+    // 🚫 ADMIN RESTRICTION
+    if (!req.user) {
+      return res.status(403).json({
+        success: false,
+        message: "Admins are not allowed to add comments"
+      });
+    }
+
     const { hackathonId, text, parentCommentId } = req.body;
     const userId = req.user._id;
 
@@ -53,16 +61,37 @@ export const addComment = async (req, res) => {
 };
 
 
+
 export const getHackathonComments = async (req, res) => {
   try {
     const { hackathonId } = req.params;
 
-    const comments = await Comment.find({
-      hackathon: hackathonId,
-      isDeleted: false
-    })
-      .populate("user", "name image")
-      .sort({ createdAt: 1 });
+ const comments = await Comment.find({
+  hackathon: hackathonId,
+  isDeleted: false,
+  parentComment: null
+})
+.populate("user", "name image")
+.populate({
+  path: "replies",
+  match: { isDeleted: false },
+  populate: [
+    {
+      path: "user",
+      select: "name image"
+    },
+    {
+      path: "replies",
+      match: { isDeleted: false },
+      populate: {
+        path: "user",
+        select: "name image"
+      }
+    }
+  ]
+})
+.sort({ createdAt: 1 });
+
 
     res.status(200).json({
       success: true,
@@ -83,6 +112,13 @@ export const getHackathonComments = async (req, res) => {
 
 export const updateComment = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(403).json({
+        success: false,
+        message: "Admins cannot edit comments"
+      });
+    }
+
     const { commentId } = req.params;
     const { text } = req.body;
     const userId = req.user._id;
@@ -124,6 +160,13 @@ export const updateComment = async (req, res) => {
 
 export const deleteComment = async (req, res) => {
   try {
+    if (!req.user) {
+      return res.status(403).json({
+        success: false,
+        message: "Admins cannot delete comments"
+      });
+    }
+
     const { commentId } = req.params;
     const userId = req.user._id;
 
@@ -160,3 +203,4 @@ export const deleteComment = async (req, res) => {
     });
   }
 };
+
