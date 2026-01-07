@@ -13,6 +13,7 @@ import {
   faSliders,
   faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
+import Navbar from "../Navbar";
 
 const Sponsor = () => {
   const formRef = useRef(null);
@@ -37,6 +38,7 @@ const Sponsor = () => {
 
   return (
     <div>
+      <Navbar />
       {/* hero section */}
       <section className="bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] flex justify-center">
         <div className="w-full px-4 lg:px-8 pt-20 pb-15 mt-10 flex flex-col gap-10 items-center lg:flex-row lg:justify-between max-w-[1280px] animate-fading-in">

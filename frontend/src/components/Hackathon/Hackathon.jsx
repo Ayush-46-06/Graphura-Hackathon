@@ -13,6 +13,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import Navbar from "../Navbar";
 
 const Hackathon = () => {
   const [view, setView] = useState("grid");
@@ -110,6 +111,7 @@ const Hackathon = () => {
 
   return (
     <div className="overflow-x-hidden">
+      <Navbar />
       {/* Hero section */}
       <section className="bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] pt-20 pb-5 flex justify-center">
         <div className="relative mx-4 md:mx-8 flex flex-col md:flex-row gap-5 md:justify-between items-center lg:h-[400px] max-w-[1280px] w-full">

@@ -3,7 +3,7 @@ import { Play, Users, BookOpen, Award } from 'lucide-react';
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden min-h-screen bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]">
+    <section className="relative overflow-hidden pt-10 min-h-screen bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]">
      
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-[#1AB69D]/20 rounded-full blur-3xl animate-pulse"></div>

@@ -3,6 +3,7 @@ import Graph from "../Career/Graph";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import Navbar from "../Navbar";
 
 const Career = () => {
   const [open, setOpen] = useState(null);
@@ -161,6 +162,7 @@ const Career = () => {
 
   return (
     <div className="pb-15 overflow-hidden">
+      <Navbar />
       {/* hero section */}
       <section className="pt-18 bg-linear-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] flex justify-center">
         <div className="relative px-4 lg:px-8 pt-15 pb-35 md:pb-40 lg:pb-50 flex flex-col gap-3 lg:gap-5 items-center w-full max-w-[1280px] animate-fading-in">

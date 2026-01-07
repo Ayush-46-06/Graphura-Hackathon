@@ -8,6 +8,7 @@ import heroImg from "../../assets/blogs/blog-hero.png";
 import brushImg from "../../assets/blogs/breadcrumb-1-2.png";
 import dotsImg from "../../assets/blogs/breadcrumb-1-1.png";
 import circleImg from "../../assets/blogs/breadcrumb-circle.png";
+import Navbar from "../Navbar";
 
 const BLOGS_PER_PAGE = 9;
 const API_URL = "http://localhost:5001/api/blog";
@@ -48,6 +49,7 @@ const AllBlog = () => {
 
   return (
     <div className="bg-[#f8fafb]">
+      <Navbar />
       {/* ================= HERO SECTION ================= */}
       <section className="relative overflow-hidden min-h-[70vh] bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]">
         <div className="container mx-auto px-4 pt-30 pb-28 md:pt-36">

@@ -1,6 +1,10 @@
 import { useState } from "react";
 import UserSidebar from "./UserComponents/UserSidebar";
 import Profile from "./UserComponents/Profile";
+import ExploreEvents from "./UserComponents/AllHackathon";
+import MyHackathons from "./UserComponents/MyHackathons";
+import Certificates from "./UserComponents/Certificates";
+
 
 const UserDashboard = () => {
   const [active, setActive] = useState("profile");
@@ -9,6 +13,15 @@ const UserDashboard = () => {
     switch (active) {
       case "profile":
         return <Profile />;
+
+      case "explore":
+        return <ExploreEvents />;
+
+      case "myHackathons":
+        return <MyHackathons />;
+
+     
+
       default:
         return (
           <div className="p-6 text-gray-600">

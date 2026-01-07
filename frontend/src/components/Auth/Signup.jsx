@@ -8,7 +8,7 @@ const Signup = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const [form, setForm] = useState({
+ const [form, setForm] = useState({
     firstName: "",
     lastName: "",
     email: "",
@@ -17,6 +17,8 @@ const Signup = () => {
     contactNumber: "",
     university: "",
     college: "",
+    courseName: "",     // ✅ added
+    yearOfStudy: "",    // ✅ added
     role: "user",
     adminSecret: "",
     agree: false,
@@ -54,8 +56,11 @@ const Signup = () => {
         contactNumber: form.contactNumber,
         university: form.university,
         college: form.college,
+        courseName: form.courseName,     // ✅ added
+        yearOfStudy: form.yearOfStudy,   // ✅ added
         role: form.role,
       };
+
 
       if (form.role === "admin") {
         payload.adminSecret = form.adminSecret;
@@ -133,9 +138,9 @@ const Signup = () => {
         <div className="w-full max-w-lg">
 
           <div className="text-center mb-8">
-            <div className="inline-block mb-4 px-4 py-2 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-full border border-indigo-500/30 backdrop-blur-sm">
+            {/* <div className="inline-block mb-4 px-4 py-2 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-full border border-indigo-500/30 backdrop-blur-sm">
               <span className="text-indigo-300 font-semibold text-sm">✨ Get Started Free</span>
-            </div>
+            </div> */}
             
             <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-3">
               Create an account
@@ -143,7 +148,7 @@ const Signup = () => {
 
             <p className="text-gray-400">
               Already have an account?{" "}
-              <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-semibold transition">
+              <Link to="/login" className="text-[#C2B067] hover:scale-3d font-semibold transition">
                 Login
               </Link>
             </p>
@@ -159,7 +164,7 @@ const Signup = () => {
                   <input
                     type="text"
                     name="firstName"
-                    placeholder="First name"
+                    placeholder=" First name"
                     value={form.firstName}
                     onChange={handleChange}
                     required
@@ -170,7 +175,7 @@ const Signup = () => {
                   <input
                     type="text"
                     name="lastName"
-                    placeholder="Last name"
+                    placeholder=" Last name"
                     value={form.lastName}
                     onChange={handleChange}
                     required
@@ -181,7 +186,7 @@ const Signup = () => {
 
        
               <div className="relative group">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">📧</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></span>
                 <input
                   type="email"
                   name="email"
@@ -195,7 +200,7 @@ const Signup = () => {
 
           
               <div className="relative group">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔒</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></span>
                 <input
                   type="password"
                   name="password"
@@ -209,7 +214,7 @@ const Signup = () => {
               </div>
 
               <div className="relative group">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">👤</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></span>
                 <select
                   name="role"
                   value={form.role}
@@ -225,7 +230,7 @@ const Signup = () => {
              
               {form.role === "admin" && (
                 <div className="relative group animate-slideDown">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-red-400">🔑</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-red-400"></span>
                   <input
                     type="password"
                     name="adminSecret"
@@ -238,35 +243,52 @@ const Signup = () => {
                   <p className="text-xs text-red-400 mt-1 ml-1">⚠️ Admin access requires secret key</p>
                 </div>
               )}
-
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <input
+                  type="text"
+                  name="courseName"
+                  placeholder=" Course Name"
+                  value={form.courseName}
+                  onChange={handleChange}
+                  className="w-full bg-white/5 border border-gray-600 rounded-xl p-3 text-white"
+                />
+                <input
+                  type="text"
+                  name="yearOfStudy"
+                  placeholder=" Year of Study"
+                  value={form.yearOfStudy}
+                  onChange={handleChange}
+                  className="w-full bg-white/5 border border-gray-600 rounded-xl p-3 text-white"
+                />
+              </div>
           
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <input
                   type="text"
                   name="contactNumber"
-                  placeholder="📱 Contact Number"
+                  placeholder=" Contact Number"
                   value={form.contactNumber}
                   onChange={handleChange}
                   required
                   className="w-full bg-white/5 border border-gray-600 focus:border-indigo-500 rounded-xl p-3 text-white placeholder-gray-400 transition duration-300 focus:ring-2 focus:ring-indigo-500/30 outline-none"
                 />
-
+                
                 <input
                   type="text"
                   name="address"
-                  placeholder="📍 Address"
+                  placeholder=" Address"
                   value={form.address}
                   onChange={handleChange}
                   required
                   className="w-full bg-white/5 border border-gray-600 focus:border-indigo-500 rounded-xl p-3 text-white placeholder-gray-400 transition duration-300 focus:ring-2 focus:ring-indigo-500/30 outline-none"
                 />
               </div>
-
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <input
                   type="text"
                   name="university"
-                  placeholder="🎓 University"
+                  placeholder=" University"
                   value={form.university}
                   onChange={handleChange}
                   required
@@ -276,7 +298,7 @@ const Signup = () => {
                 <input
                   type="text"
                   name="college"
-                  placeholder="🏫 College"
+                  placeholder=" College"
                   value={form.college}
                   onChange={handleChange}
                   required
@@ -295,7 +317,7 @@ const Signup = () => {
                   className="mt-1 w-5 h-5 rounded border-gray-600 text-indigo-500 focus:ring-indigo-500 focus:ring-2 cursor-pointer"
                 />
                 <span className="group-hover:text-white transition">
-                  I agree to the <span className="text-indigo-400 font-semibold">Terms & Conditions</span> and <span className="text-indigo-400 font-semibold">Privacy Policy</span>
+                  I agree to the <span className="text-[#C2B067] font-semibold">Terms & Conditions</span> and <span className="text-[#C2B067] font-semibold">Privacy Policy</span>
                 </span>
               </label>
 
@@ -303,7 +325,7 @@ const Signup = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 py-3.5 rounded-xl font-bold text-white shadow-lg shadow-indigo-500/30 transition duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="w-full bg-gradient-to-br from-[#F8C62F] to-[#FE8235] hover:scale-3d py-3.5 rounded-xl font-bold text-white shadow-sm shadow-yellow-100 transition duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">

@@ -42,16 +42,23 @@ export default function First() {
       </section> */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold text-[#0C121D] mb-4 bg-gradient-to-br from-[#F8C62F] to-[#FE8235]">
-            Choose Your Mission
-            <span className="relative inline-block ml-2">
-              <span className=" w-full h-2 text-2xl text-[#F8C62F]/60 ">
-                From creative sprints to data combat — pick the battlefield that
-                suits your skill.
-              </span>
-            </span>
-          </h2>
+          {/* SMALL PILL LABEL */}
+          <div className="inline-block mb-4 px-5 py-1.5 rounded-full border border-green-200 text-green-700 text-sm font-medium">
+            Categories
+          </div>
 
+          {/* MAIN HEADING */}
+          <h1 className="text-4xl md:text-5xl font-extrabold text-[#0C121D] leading-tight">
+            Choose Your Mission
+          </h1>
+
+          {/* SUB HEADING / DESCRIPTION */}
+          <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-500">
+            From creative sprints to data combat — pick the battlefield that
+            suits your skill.
+          </p>
+
+          {/* CARDS GRID */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
             {/* Card 1 */}
             <div className="group bg-[#F3F8F7] border border-[#0E766E] rounded-2xl p-10 transition hover:-translate-y-2">

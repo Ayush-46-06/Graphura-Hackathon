@@ -23,7 +23,7 @@ const Login = () => {
     const response = await axios.post(API_URL, form);
     const data = response.data;
 
-    console.log("LOGIN RESPONSE:", data);
+    // console.log("LOGIN RESPONSE:", data);
 
     if (!data.success) {
       throw new Error(data.message);
@@ -63,9 +63,9 @@ const Login = () => {
 
           
           <div className="text-center mb-8">
-            <div className="inline-block mb-4 px-4 py-2  bg-gradient-to-br from-[#F8C62F] to-[#FE8235] rounded-full border border-indigo-500/30 backdrop-blur-sm">
+            {/* <div className="inline-block mb-4 px-4 py-2  bg-gradient-to-br from-[#F8C62F] to-[#FE8235] rounded-full border border-indigo-500/30 backdrop-blur-sm">
               <span className="text-white font-semibold text-sm">👋 Welcome Back</span>
-            </div>
+            </div> */}
 
             <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-3">
               Sign in to your account
@@ -86,7 +86,7 @@ const Login = () => {
             <form onSubmit={handleSubmit} className="space-y-5">
               
               <div className="relative group">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg">📧</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></span>
                 <input
                   type="email"
                   name="email"
@@ -100,7 +100,7 @@ const Login = () => {
 
               
               <div className="relative group">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg">🔒</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></span>
                 <input
                   type="password"
                   name="password"

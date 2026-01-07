@@ -3,10 +3,12 @@ import heroImage1 from "../../assets/partnerPage/Hero-image-Partners.avif";
 import innovationAndImpact from "../../assets/partnerPage/innovationAndImpact.avif";
 import collaboration from "../../assets/partnerPage/Collaboration.avif";
 import brandVisibility from "../../assets/partnerPage/BrandVisibility.avif";
+import Navbar from "../Navbar";
 
 export default function PartnerPage() {
   return (
     <div className="w-full bg-white text-gray-900">
+      <Navbar />
       {/* HERO SECTION */}
       <section className="relative overflow-hidden bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] pt-10">
         {/* floating circles */}

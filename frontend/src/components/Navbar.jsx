@@ -13,7 +13,7 @@ const navItems = [
       { name: "Pricing", path: "/pricing" },
     ],
   },
-  { name: "Courses", path: "/courses" },
+  { name: "Hackathons", path: "/hackathons" },
   { name: "Blog", path: "/all-blog" },
   { name: "Partners", path: "/partner" },
   { name: "Contact", path: "/contact" },
@@ -23,13 +23,12 @@ const Navbar = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  
   return (
     <>
-      
-      <nav className="fixed top-0 w-full z-50 bg-white backdrop-blur-md">
-        <div className="max-w-screen px-6 py-4 flex justify-between items-center">
-          
-          
+      <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-7xl">
+        <div className="bg-white backdrop-blur-md rounded-full shadow-lg px-8 py-4 flex justify-between items-center">
+          {/* LOGO */}
           <Link to="/" className="flex items-center gap-2">
             <img src="/Hackathon_.svg" alt="Graphura" className="h-10" />
           </Link>
@@ -48,7 +47,7 @@ const Navbar = () => {
                     <IoIosArrowDown size={16} />
 
                     {openDropdown === index && (
-                      <div className="absolute left-0 top-8 bg-white border border-white/10 shadow-lg rounded-md p-3 w-44">
+                      <div className="absolute left-0 top-10 bg-white shadow-xl rounded-xl p-3 w-44">
                         <ul className="flex flex-col gap-2 text-sm text-black">
                           {item.dropdown.map((sub, i) => (
                             <li key={i}>
@@ -65,22 +64,23 @@ const Navbar = () => {
                     )}
                   </div>
                 ) : (
-                  <Link to={item.path} className="hover:text-yellow-300 transition">
+                  <Link
+                    to={item.path}
+                    className="hover:text-yellow-300 transition"
+                  >
                     {item.name}
                   </Link>
                 )}
-                
               </div>
-              
             ))}
+
+            {/* LOGIN BUTTON */}
             <Link to="/login">
-              <button className="bg-yellow-400 hover:bg-yellow-500 transition text-gray-900 font-semibold px-6 py-2 rounded-lg">
+              <button className="bg-yellow-400 hover:bg-yellow-500 transition text-gray-900 font-semibold px-6 py-2 rounded-full">
                 Login
               </button>
             </Link>
           </div>
-
-          
 
           {/* MOBILE TOGGLER */}
           <button
@@ -92,7 +92,6 @@ const Navbar = () => {
         </div>
       </nav>
 
-      
       {mobileOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-40"
@@ -109,9 +108,14 @@ const Navbar = () => {
           ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
         `}
       >
-        <div className="p-6 flex justify-between items-center border-b">
+        <div className="p-6 flex justify-between items-center border-b relative">
           <img src="/Hackathon_.svg" alt="Graphura" className="h-8" />
-          <button onClick={() => setMobileOpen(false)} className="text-2xl">
+          <button
+            onClick={() => setMobileOpen(false)}
+            className={`absolute -right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#03594E] text-xl hover:bg-gray-100 transition-all duration-300 ease-in-out shadow-lg ${
+              mobileOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
+          >
             <IoMdClose />
           </button>
         </div>
@@ -129,7 +133,9 @@ const Navbar = () => {
                   >
                     {item.name}
                     <IoIosArrowDown
-                      className={`transition ${openDropdown === index ? "rotate-180" : ""}`}
+                      className={`transition ${
+                        openDropdown === index ? "rotate-180" : ""
+                      }`}
                     />
                   </button>
 
@@ -160,7 +166,6 @@ const Navbar = () => {
             </div>
           ))}
 
-        
           <Link to="/login" onClick={() => setMobileOpen(false)}>
             <button className="mt-4 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold px-6 py-2 rounded-lg w-full">
               Login

@@ -120,7 +120,7 @@ const CTASection = () => {
               </div>
 
               {/* Yellow Book/Folder Element */}
-              <motion.div
+              {/* <motion.div
                 initial={{ rotate: -10, scale: 0.8 }}
                 whileInView={{ rotate: 0, scale: 1 }}
                 viewport={{ once: true }}
@@ -128,13 +128,13 @@ const CTASection = () => {
                 className="absolute -bottom-8 -right-4 w-32 h-40 bg-yellow-400 rounded-lg shadow-xl transform rotate-12"
               >
                 <div className="w-full h-full border-4 border-yellow-500 rounded-lg"></div>
-              </motion.div>
+              </motion.div> */}
             </div>
           </motion.div>
         </div>
       </div>
 
-      {/* Scroll to Top Button */}
+      {/* Scroll to Top Button
       <motion.button
         initial={{ opacity: 0, scale: 0 }}
         whileInView={{ opacity: 1, scale: 1 }}
@@ -157,7 +157,7 @@ const CTASection = () => {
             d="M5 10l7-7m0 0l7 7m-7-7v18"
           />
         </svg>
-      </motion.button>
+      </motion.button> */}
     </section>
   );
 };
