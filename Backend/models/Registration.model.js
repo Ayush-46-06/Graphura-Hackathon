@@ -1,25 +1,61 @@
 import mongoose from "mongoose";
 
-const registraionSchema = mongoose.Schema(
+const registrationSchema = mongoose.Schema(
   {
+  
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Hackathon_User",
-      required: true,
+      required: true
     },
+
     hackathon: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Hackathon",
-      required: true,
+      required: true
     },
+
     status: {
       type: String,
       enum: ["pending", "completed"],
-      default: "pending",
+      default: "pending"
     },
+
+
+
+    participationType: {
+      type: String,
+      enum: ["solo", "team"],
+      default: "solo"
+    },
+
+   
+    teamLeader: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Hackathon_User"
+    },
+
+    
+    teamMembers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Hackathon_User"
+      }
+    ],
+
+  
+    paymentStatus: {
+      type: String,
+      enum: ["free", "pending", "paid"],
+      default: "free"
+    },
+
+    razorpayOrderId: String,
+    razorpayPaymentId: String,
+    razorpaySignature: String
   },
   { timestamps: true }
 );
 
-const  Registration = mongoose.model("Registration",registraionSchema)
-export default Registration
+const Registration = mongoose.model("Registration", registrationSchema);
+export default Registration;

@@ -3,7 +3,7 @@ import Hackathon from "../models/Hackathon.model.js";
 
 export const addComment = async (req, res) => {
   try {
-    // 🚫 ADMIN RESTRICTION
+    
     if (!req.user) {
       return res.status(403).json({
         success: false,

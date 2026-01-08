@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-
 const winnerDetailSchema = new mongoose.Schema(
   {
     user: {
@@ -21,29 +20,13 @@ const winnerDetailSchema = new mongoose.Schema(
   { _id: false }
 );
 
-
 const hackathonSchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-      required: true,
-      trim: true
-    },
-
-    description: {
-      type: String,
-      required: true
-    },
-
-    image: {
-      type: String,
-      required: true
-    },
-
-    prizePool: {
-      type: Number,
-      required: true
-    },
+    
+    title: { type: String, required: true, trim: true },
+    description: { type: String, required: true },
+    image: { type: String, required: true },
+    prizePool: { type: Number, required: true },
 
     category: {
       type: String,
@@ -79,7 +62,6 @@ const hackathonSchema = new mongoose.Schema(
       }
     ],
 
-
     winnerDetails: {
       type: [winnerDetailSchema],
       default: []
@@ -89,14 +71,12 @@ const hackathonSchema = new mongoose.Schema(
     prizeDetails: String,
     lastEnrollmentDate: Date,
 
- 
-   sponsors: [
-  {
-    name: String,
-    logo: String
-  }
-],
-
+    sponsors: [
+      {
+        name: String,
+        logo: String
+      }
+    ],
 
     judges: [
       {
@@ -104,12 +84,35 @@ const hackathonSchema = new mongoose.Schema(
         ref: "Hackathon_Admin"
       }
     ],
-    comments:[
+
+    comments: [
       {
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Comment"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment"
       }
-    ]
+    ],
+
+    isPaid: {
+      type: Boolean,
+      default: false
+    },
+
+    entryFee: {
+      type: Number,
+      default: 0
+    },
+
+   
+    participationType: {
+      type: String,
+      enum: ["solo", "team"],
+      default: "solo"
+    },
+
+    maxTeamSize: {
+      type: Number,
+      default: 1
+    }
   },
   { timestamps: true }
 );

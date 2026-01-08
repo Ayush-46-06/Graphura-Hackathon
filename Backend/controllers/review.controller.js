@@ -35,7 +35,7 @@ export const addReview = async (req, res) => {
 
 export const getAllReview =async (req,res) =>{
     try{
-        const review =await Review.find().populate("user", "name image")
+        const review =await Review.find().populate("user", "name image occupation")
         res.json({
             success:true,
             message:"get all reviews successfully",
