@@ -12,10 +12,29 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-export const getOverview = () => API.get("/dashboard/overview");
+/* ==========================
+   ADMIN DASHBOARD ENDPOINTS
+========================== */
 
+// OVERVIEW
+export const getOverview = () => API.get("/analytics/admin/overview");
+
+// GRAPH (day / month / year)
 export const getHackathonGraph = (filter = "month") =>
-  API.get(`/analytics/hackathons?filter=${filter}`);
+  API.get(`/analytics/admin/hackathons-graph?filter=${filter}`);
 
+// TRANSACTION STATS
 export const getTransactionStats = () =>
-  API.get("/analytics/transactions");
+  API.get("/analytics/admin/transactions/stats");
+
+// (OPTIONAL) ALL TRANSACTIONS TABLE
+export const getAllTransactions = () =>
+  API.get("/analytics/admin/transactions");
+
+// REGISTRATION GROWTH
+export const getRegistrationGrowth = () =>
+  API.get("/analytics/admin/registration-growth");
+
+// REGISTRATION COMPLETION %
+export const getRegistrationCompletion = () =>
+  API.get("/analytics/admin/registration-completion");

@@ -67,7 +67,7 @@ const AllBlog = () => {
                   color: "#e0e0e0ff",
                 }}
               >
-                Graphothon Blogs
+                Graphura Hackathon Blogs
               </h1>
 
               <p
@@ -85,7 +85,7 @@ const AllBlog = () => {
               <img
                 src={dotsImg}
                 alt=""
-                className="hidden md:block absolute -left-20 bottom-22"
+                className="hidden md:block absolute -left-20 bottom-40"
               />
             </div>
 
