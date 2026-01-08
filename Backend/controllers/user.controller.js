@@ -11,16 +11,32 @@ export const getProfile = async (req, res) => {
 };
 
 export const updateProfile = async (req, res) => {
-  const user = await User.findByIdAndUpdate(
-    req.user._id,
-    req.body,
-    { new: true , runValidators:true}
-  ).select("-password");
+  try {
+    const updateData = { ...req.body };
 
-  res.json({
-    success: true,
-    data: user
-  });
+    // ✅ image upload handle
+    if (req.file) {
+      updateData.image = req.file.path;
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      updateData,
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    res.json({
+      success: true,
+      data: user
+    });
+
+  } catch (error) {
+    console.error("UPDATE PROFILE ERROR:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update profile"
+    });
+  }
 };
 
 

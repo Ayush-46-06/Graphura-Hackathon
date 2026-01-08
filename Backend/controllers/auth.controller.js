@@ -4,7 +4,11 @@ import User from "../models/User.model.js";
 import Admin from "../models/Admin.model.js";
 import { config } from "../config/env.js";
 import {sendResetPasswordMail} from "../services/mail.service.js"
+import College from "../models/College.model.js";
 import crypto from "crypto"
+
+
+
 export const register = async (req, res) => {
   try {
     const {
@@ -14,7 +18,7 @@ export const register = async (req, res) => {
       address,
       contactNumber,
       university,
-      college,
+      collegeUniqueId,   
       occupation,
       company,
       role,
@@ -25,7 +29,7 @@ export const register = async (req, res) => {
 
     const image = req.file ? req.file.path : null;
 
-  
+    
     const userExists = await User.findOne({ email });
     const adminExists = await Admin.findOne({ email });
 
@@ -36,10 +40,9 @@ export const register = async (req, res) => {
       });
     }
 
-
     const hashedPassword = await bcrypt.hash(password, 10);
 
-
+    
     if (role === "admin") {
       if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET_KEY) {
         return res.status(403).json({
@@ -55,7 +58,6 @@ export const register = async (req, res) => {
         address,
         contactNumber,
         university,
-        college,
         occupation: occupation || null,
         company: company || null,
         image,
@@ -69,6 +71,17 @@ export const register = async (req, res) => {
       });
     }
 
+    const college = await College.findOne({
+      uniqueId: collegeUniqueId,
+      isActive: true
+    });
+
+    if (!college) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid college unique ID"
+      });
+    }
 
     await User.create({
       name,
@@ -77,7 +90,10 @@ export const register = async (req, res) => {
       address,
       contactNumber,
       university,
-      college,
+
+      collegeName: college.name,           
+      collegeUniqueId: college.uniqueId,  
+
       occupation: occupation || null,
       company: company || null,
       image,
@@ -100,22 +116,49 @@ export const register = async (req, res) => {
 };
 
 
+
+
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    let account = await User.findOne({ email }).select("+password");
-    let role = "user";
+    let account = null;
+    let role = null;
 
+    /* ================= ADMIN ================= */
+    account = await Admin.findOne({ email }).select("+password");
+    if (account) role = "admin";
+
+    /* ================= USER (IMPORTANT FIRST) ================= */
     if (!account) {
-      account = await Admin.findOne({ email }).select("+password");
-      role = "admin";
+      account = await User.findOne({
+        $or: [
+          { email: email.toLowerCase() },
+          { collegeUniqueId: email.toUpperCase() }
+        ]
+      }).select("+password");
+
+      if (account) role = "user";
     }
 
+    /* ================= COLLEGE ================= */
     if (!account) {
+      account = await College.findOne({
+        $or: [
+          { email: email.toLowerCase() },
+          { uniqueId: email.toUpperCase() }
+        ]
+      }).select("+password");
+
+      if (account) role = "college";
+    }
+
+  
+
+    if (!account || !account.password) {
       return res.status(400).json({
         success: false,
-        message: "Email not found"
+        message: "Invalid credentials"
       });
     }
 
@@ -123,7 +166,7 @@ export const login = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({
         success: false,
-        message: "Incorrect password"
+        message: "Invalid credentials"
       });
     }
 
@@ -147,7 +190,6 @@ export const login = async (req, res) => {
     });
   }
 };
-
 
 
 export const forgotPassword = async (req, res) => {

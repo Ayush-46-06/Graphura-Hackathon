@@ -14,6 +14,8 @@ import commentRoutes from "./routes/comment.routes.js"
 import contactRoutes from "./routes/contact.routes.js"
 import reviewRoutes from "./routes/review.routes.js"
 import sponsorRoutes from "./routes/sponsors.routes.js"
+
+import collegeRoutes from "./routes/college.routes.js"
 const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -37,6 +39,7 @@ app.use("/api", blogRoutes)
 app.use("/api", analyticsRoutes)
 app.use("/api", transactionRoutes)
 app.use("/api", commentRoutes)
+app.use("/api", collegeRoutes)
 app.use("/api", adminRoutes);
 
 app.get("/health", (_, res) => {

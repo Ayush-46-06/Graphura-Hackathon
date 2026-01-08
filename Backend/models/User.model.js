@@ -1,9 +1,14 @@
 import mongoose from "mongoose";
 import { ROLES, ROLE_ARRAY } from "../config/roles.js";
 
-const userSchema = mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, trim: true },
+  
+    name: {
+      type: String,
+      required: true,
+      trim: true
+    },
 
     email: {
       type: String,
@@ -16,10 +21,15 @@ const userSchema = mongoose.Schema(
     password: {
       type: String,
       required: true,
-      select: false,
-      trim: true
+      select: false
     },
 
+    image: {
+      type: String,
+      default: null
+    },
+
+  
     address: {
       type: String,
       required: true
@@ -30,17 +40,34 @@ const userSchema = mongoose.Schema(
       required: true
     },
 
+
     university: {
       type: String,
       required: true
     },
 
-    college: {
+    collegeName: {
       type: String,
       required: true
     },
 
+ 
+    collegeUniqueId: {
+      type: String,
+      required: true,
+      uppercase: true,
+      trim: true
+    },
 
+    courseName: {
+      type: String
+    },
+
+    yearOfStudy: {
+      type: String
+    },
+
+ 
     occupation: {
       type: String,
       default: null
@@ -51,11 +78,7 @@ const userSchema = mongoose.Schema(
       default: null
     },
 
-    image: {
-      type: String,
-      default: null
-    },
-
+   
     role: {
       type: String,
       enum: ROLE_ARRAY,
@@ -71,18 +94,10 @@ const userSchema = mongoose.Schema(
       type: Number,
       default: 0
     },
-    courseName:{
-      type:String
-    },
-    yearOfStudy:{
-      type:String
-    },
-    resetPasswordToken:{
-      type:String
-    },
-    resetPasswordExpire:{
-      type:Date
-    }
+
+  
+    resetPasswordToken: String,
+    resetPasswordExpire: Date
   },
   { timestamps: true }
 );
