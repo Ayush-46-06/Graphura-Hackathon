@@ -193,7 +193,9 @@ export const sendHackathonRegistrationMail = async ({
   userEmail,
   hackathonTitle,
   startDate,
-  endDate
+  startTime = "10:00 AM",
+  mode = "Online",
+  duration = "48 Hours"
 }) => {
   try {
     const client = SibApiV3Sdk.ApiClient.instance;
@@ -202,111 +204,84 @@ export const sendHackathonRegistrationMail = async ({
 
     const emailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
-    const formattedStartDate = new Date(startDate).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-    
-    const formattedEndDate = new Date(endDate).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    const formattedStartDate = new Date(startDate).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
     });
 
     const emailPayload = {
       sender: {
         email: config.BREVO_SENDER_EMAIL,
-        name: config.BREVO_SENDER_NAME
+        name: "Graphura"
       },
       to: [{ email: userEmail }],
-      subject: `✅ Registration Confirmed: ${hackathonTitle}`,
+      subject: "Hackathon Registration Confirmation | Graphura",
       htmlContent: `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <style>
-            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-          </style>
-        </head>
-        <body style="font-family: 'Poppins', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.6;">
           
-          <!-- Header -->
-          <div style="text-align: center; padding: 30px 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 700;">🚀 Registration Confirmed!</h1>
-            <p style="color: rgba(255,255,255,0.9); margin-top: 10px; font-size: 16px;">You're officially in the competition</p>
-          </div>
-          
-          <!-- Main Content -->
-          <div style="padding: 40px 30px; background: #ffffff; border-radius: 0 0 10px 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
-            
-            <!-- Greeting -->
-            <div style="margin-bottom: 30px;">
-              <h2 style="color: #2d3748; margin-bottom: 10px; font-size: 24px;">Hello ${userName},</h2>
-              <p style="color: #4a5568; font-size: 16px;">Congratulations! Your registration for the hackathon has been successfully processed.</p>
-            </div>
-            
-            <!-- Event Card -->
-            <div style="background: linear-gradient(135deg, #f6f9ff 0%, #f0f4ff 100%); border-left: 4px solid #667eea; padding: 25px; border-radius: 8px; margin: 30px 0;">
-              <div style="display: flex; align-items: center; margin-bottom: 15px;">
-                <div style="background: #667eea; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-                  <span style="color: white; font-size: 20px;">⚡</span>
-                </div>
-                <h3 style="color: #2d3748; margin: 0; font-size: 22px; font-weight: 600;">${hackathonTitle}</h3>
-              </div>
-              
-              <!-- Event Details -->
-              <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px;">
-                <div style="display: flex; align-items: center;">
-                  <div style="background: #e6fffa; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-                    <span style="color: #319795;">📅</span>
-                  </div>
-                  <div>
-                    <div style="color: #4a5568; font-weight: 500; font-size: 14px;">START DATE</div>
-                    <div style="color: #2d3748; font-weight: 600; font-size: 16px;">${formattedStartDate}</div>
-                  </div>
-                </div>
-                
-                <div style="display: flex; align-items: center;">
-                  <div style="background: #fff5f5; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-                    <span style="color: #fc8181;">⏰</span>
-                  </div>
-                  <div>
-                    <div style="color: #4a5568; font-weight: 500; font-size: 14px;">END DATE</div>
-                    <div style="color: #2d3748; font-weight: 600; font-size: 16px;">${formattedEndDate}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Call to Action -->
-            <div style="text-align: center; margin: 40px 0; padding: 25px; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 10px;">
-              <h3 style="color: #92400e; margin-bottom: 15px; font-size: 20px;">Ready to Innovate? 🚀</h3>
-              <p style="color: #78350f; margin-bottom: 20px;">Start brainstorming ideas, forming teams, and preparing for an incredible journey of creation and innovation.</p>
-              <a href="#" style="display: inline-block; background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 50px; font-weight: 600; font-size: 16px; transition: transform 0.2s;">View Event Details</a>
-            </div>
-            
-            <!-- Footer -->
-            <div style="margin-top: 40px; padding-top: 30px; border-top: 1px solid #e2e8f0; text-align: center;">
-              <p style="color: #718096; margin-bottom: 20px;">Need assistance? We're here to help!</p>
-              <a href="mailto:support@graphura.com" style="color: #667eea; text-decoration: none; font-weight: 500;">support@graphura.com</a>
-              <p style="color: #a0aec0; margin-top: 30px; font-size: 14px;">© ${new Date().getFullYear()} Graphura. All rights reserved.</p>
-            </div>
-            
-          </div>
-          
-        </body>
-        </html>
+          <p>Dear <strong>${userName}</strong>,</p>
+
+          <p>
+            Thank you for registering for the <strong>Graphura Hackathon</strong>.
+            We are pleased to confirm your successful registration.
+          </p>
+
+          <p><strong>Below are the important details of the hackathon:</strong></p>
+
+          <table cellpadding="6" cellspacing="0" border="0">
+            <tr>
+              <td><strong>Hackathon Name:</strong></td>
+              <td>${hackathonTitle}</td>
+            </tr>
+            <tr>
+              <td><strong>Start Date:</strong></td>
+              <td>${formattedStartDate}</td>
+            </tr>
+            <tr>
+              <td><strong>Start Time:</strong></td>
+              <td>${startTime} (IST)</td>
+            </tr>
+            <tr>
+              <td><strong>Mode:</strong></td>
+              <td>${mode}</td>
+            </tr>
+            <tr>
+              <td><strong>Duration:</strong></td>
+              <td>${duration}</td>
+            </tr>
+          </table>
+
+          <p>
+            Please ensure that you are available and prepared before the start time.
+            Additional details regarding rules, problem statements, and submission
+            guidelines will be shared shortly.
+          </p>
+
+          <p>
+            For any queries or assistance, feel free to reach out to us at
+            <a href="mailto:support@graphura.com">support@graphura.com</a>.
+          </p>
+
+          <p>
+            We look forward to your participation and wish you all the best for the hackathon.
+          </p>
+
+          <p>
+            Warm regards,<br>
+            <strong>Team Graphura</strong><br>
+            Graphura India Private Limited<br>
+            <a href="https://graphura.com">www.graphura.com</a>
+          </p>
+
+        </div>
       `
     };
 
     await emailApi.sendTransacEmail(emailPayload);
+
   } catch (error) {
     console.error("❌ Hackathon Registration Mail Error:", error);
-    
   }
 };
 
@@ -315,8 +290,12 @@ export const sendWinnerResultMail = async ({
   userName,
   userEmail,
   hackathonTitle,
+  startDate,
+  startTime = "10:00 AM",
+  mode = "Online",
+  duration = "48 Hours",
+  theme = "Problem Statement",
   rank,
-  prizeAmount,
   pdfBuffer
 }) => {
   try {
@@ -326,233 +305,109 @@ export const sendWinnerResultMail = async ({
 
     const emailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
-    console.log("📧 Sending winner certificate to:", userEmail);
+    const formattedStartDate = new Date(startDate).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
 
-    await emailApi.sendTransacEmail({
+    const emailPayload = {
       sender: {
         email: config.BREVO_SENDER_EMAIL,
-        name: config.BREVO_SENDER_NAME
+        name: "Graphura"
       },
       to: [{ email: userEmail }],
-      subject: `🏆 Congratulations! You Won ${hackathonTitle}`,
+      subject: "Congratulations! You Are a Winner – Graphura Hackathon",
       htmlContent: `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Winner Announcement</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
-</head>
-<body style="margin:0; padding:0; font-family: 'Poppins', Arial, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
-  
-  <!-- Email Container -->
-  <div style="max-width: 680px; margin: 40px auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);">
-    
-    <!-- Hero Section -->
-    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 60px 40px; text-align: center; position: relative; overflow: hidden;">
-      <!-- Confetti Animation Effect -->
-      <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.1; background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSIyIiBmaWxsPSJ3aGl0ZSIvPjwvc3ZnPg=='); background-size: 40px 40px;"></div>
-      
-      <!-- Trophy Icon -->
-<div style="text-align: center;">
-  <div style="
-    width: 120px;
-    height: 120px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 30px;
-    border: 8px solid rgba(255, 255, 255, 0.3);
-  ">
-    <span style="
-      font-size: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
-    ">🏆</span>
-  </div>
-</div>
-      
-      <h1 style="font-family: 'Montserrat', sans-serif; font-size: 42px; font-weight: 800; color: white; margin: 0 0 15px 0; letter-spacing: -0.5px;">
-        YOU'RE A WINNER!
-      </h1>
-      <p style="font-size: 20px; color: rgba(255, 255, 255, 0.95); margin: 0; font-weight: 300;">
-        Celebrating Your Achievement in
-      </p>
-      <h2 style="font-family: 'Montserrat', sans-serif; font-size: 32px; color: white; margin: 15px 0 0 0; font-weight: 700;">
-        ${hackathonTitle}
-      </h2>
-    </div>
+        <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; line-height: 1.6;">
 
-    <!-- Content Section -->
-    <div style="padding: 60px 40px; color: #333;">
-      
-      <!-- Greeting -->
-      <div style="margin-bottom: 40px;">
-        <h2 style="font-family: 'Montserrat', sans-serif; font-size: 28px; color: #2d3748; margin: 0 0 20px 0;">
-          Congratulations, <span style="color: #764ba2;">${userName}</span>! 🎉
-        </h2>
-        <p style="font-size: 18px; line-height: 1.6; color: #4a5568; margin: 0;">
-          Your exceptional talent, creativity, and dedication have been recognized by our judges. We're thrilled to announce your outstanding achievement!
-        </p>
-      </div>
+          <p>Dear <strong>${userName}</strong>,</p>
 
-      <!-- Achievement Badge -->
-      <div style="background: linear-gradient(135deg, #fff9e6 0%, #ffeaa7 100%); border-radius: 20px; padding: 30px; margin: 40px 0; text-align: center; border: 3px dashed #f1c40f; position: relative;">
-        <div style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: #f1c40f; color: white; padding: 8px 24px; border-radius: 30px; font-weight: 700; font-size: 16px;">
-          RANK ACHIEVED
+          <p>
+            <strong>Congratulations! 🎉</strong><br>
+            We are delighted to inform you that you have emerged as a 
+            <strong>Winner of the Graphura Hackathon</strong>.
+          </p>
+
+          <p>
+            Your performance, innovation, and problem-solving approach truly
+            stood out among all participants.
+          </p>
+
+          <p><strong>Below are the official details of the hackathon for your reference:</strong></p>
+
+          <table cellpadding="6" cellspacing="0" border="0">
+            <tr>
+              <td><strong>Hackathon Name:</strong></td>
+              <td>${hackathonTitle}</td>
+            </tr>
+            <tr>
+              <td><strong>Organized By:</strong></td>
+              <td>Graphura India Private Limited</td>
+            </tr>
+            <tr>
+              <td><strong>Hackathon Start Date:</strong></td>
+              <td>${formattedStartDate}</td>
+            </tr>
+            <tr>
+              <td><strong>Start Time:</strong></td>
+              <td>${startTime} (IST)</td>
+            </tr>
+            <tr>
+              <td><strong>Mode:</strong></td>
+              <td>${mode}</td>
+            </tr>
+            <tr>
+              <td><strong>Duration:</strong></td>
+              <td>${duration}</td>
+            </tr>
+            <tr>
+              <td><strong>Theme / Problem Statement:</strong></td>
+              <td>${theme}</td>
+            </tr>
+          </table>
+
+          <p>
+            Based on the evaluation criteria, your submission was selected as one
+            of the top entries. We sincerely appreciate the effort, dedication,
+            and creativity you demonstrated throughout the hackathon.
+          </p>
+
+          <p><strong>Prize Details:</strong></p>
+          <ul>
+            <li><strong>Position:</strong> ${rank}</li>
+          </ul>
+
+          <p>
+            Once again, congratulations on your achievement.
+            We look forward to seeing you participate in more initiatives
+            organized by Graphura.
+          </p>
+
+          <p>
+            Warm regards,<br>
+            <strong>Team Graphura</strong><br>
+            Graphura India Private Limited<br>
+            <a href="https://graphura.com">www.graphura.com</a>
+          </p>
+
         </div>
-        <div style="font-family: 'Montserrat', sans-serif; font-size: 72px; font-weight: 800; color: #e67e22; margin: 10px 0;">
-          #${rank}
-        </div>
-        <p style="font-size: 20px; color: #d35400; margin: 0; font-weight: 600;">
-          Top Performer
-        </p>
-      </div>
-
-      <!-- Details Grid -->
-      <div style="background: #f8f9ff; border-radius: 20px; padding: 40px; margin: 40px 0;">
-        <h3 style="font-family: 'Montserrat', sans-serif; font-size: 22px; color: #2d3748; margin: 0 0 30px 0; text-align: center;">
-          🏆 Your Winning Details
-        </h3>
-        
-        <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
-          <!-- Hackathon Info -->
-          <div style="display: flex; align-items: center; padding: 15px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
-            <div style="width: 50px; height: 50px; background: #e3f2fd; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
-              <div style="font-size: 24px;">🚀</div>
-            </div>
-            <div>
-              <div style="font-size: 14px; color: #718096; font-weight: 600; margin-bottom: 5px;">HACKATHON</div>
-              <div style="font-size: 18px; color: #2d3748; font-weight: 700;">${hackathonTitle}</div>
-            </div>
-          </div>
-
-          <!-- Prize Info -->
-          <div style="display: flex; align-items: center; padding: 15px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
-            <div style="width: 50px; height: 50px; background: #f3e5f5; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
-              <div style="font-size: 24px;">💰</div>
-            </div>
-            <div>
-              <div style="font-size: 14px; color: #718096; font-weight: 600; margin-bottom: 5px;">PRIZE AMOUNT</div>
-              <div style="font-size: 28px; color: #27ae60; font-weight: 800;">₹${prizeAmount}</div>
-            </div>
-          </div>
-
-          <!-- Date & Time -->
-          <div style="display: flex; align-items: center; padding: 15px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
-            <div style="width: 50px; height: 50px; background: #e8f5e9; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 20px;">
-              <div style="font-size: 24px;">📅</div>
-            </div>
-            <div>
-              <div style="font-size: 14px; color: #718096; font-weight: 600; margin-bottom: 5px;">ACHIEVEMENT DATE</div>
-              <div style="font-size: 18px; color: #2d3748; font-weight: 700;">
-                ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-              </div>
-              <div style="font-size: 16px; color: #718096; margin-top: 2px;">
-                ${new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Certificate Section -->
-      <div style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border-radius: 20px; padding: 40px; margin: 40px 0; text-align: center; border: 2px solid #667eea30;">
-        <div style="font-size: 48px; margin-bottom: 20px;">📜</div>
-        <h3 style="font-family: 'Montserrat', sans-serif; font-size: 26px; color: #2d3748; margin: 0 0 15px 0;">
-          Official Winner Certificate
-        </h3>
-        <p style="font-size: 18px; line-height: 1.6; color: #4a5568; margin: 0 0 25px 0;">
-          Your digital certificate is attached with this email. Download it and share your achievement with the world! This certificate is a testament to your hard work and exceptional skills.
-        </p>
-        <div style="background: #667eea; color: white; display: inline-block; padding: 16px 32px; border-radius: 50px; font-weight: 700; font-size: 16px; letter-spacing: 0.5px;">
-          📎 Certificate Attached
-        </div>
-      </div>
-
-      <!-- Next Steps -->
-      <div style="margin: 40px 0 0 0; padding: 30px; background: #f0f4ff; border-radius: 20px;">
-        <h3 style="font-family: 'Montserrat', sans-serif; font-size: 22px; color: #2d3748; margin: 0 0 20px 0;">
-          🎯 What's Next?
-        </h3>
-        <ul style="font-size: 17px; line-height: 1.8; color: #4a5568; margin: 0; padding-left: 20px;">
-          <li style="margin-bottom: 10px;">Our team will contact you within 48 hours regarding prize distribution</li>
-          <li style="margin-bottom: 10px;">Share your achievement on LinkedIn and Twitter using #${hackathonTitle.replace(/\s+/g, '')}Winners</li>
-          <li>Stay tuned for upcoming hackathons and events</li>
-        </ul>
-      </div>
-
-      <!-- Final Message -->
-      <div style="text-align: center; margin: 50px 0 30px 0; padding: 30px; background: linear-gradient(135deg, #f8f9ff 0%, #eef1ff 100%); border-radius: 20px;">
-        <div style="font-size: 48px; margin-bottom: 20px;">🚀</div>
-        <h3 style="font-family: 'Montserrat', sans-serif; font-size: 24px; color: #2d3748; margin: 0 0 15px 0;">
-          Keep Innovating, Keep Winning!
-        </h3>
-        <p style="font-size: 18px; line-height: 1.6; color: #4a5568; margin: 0;">
-          Your success inspires us all. We can't wait to see what you'll build next!
-        </p>
-      </div>
-
-      <!-- Signature -->
-      <div style="border-top: 2px solid #e2e8f0; padding-top: 40px; text-align: center;">
-        <p style="font-size: 18px; color: #4a5568; margin: 0 0 5px 0;">
-          With immense pride and admiration,
-        </p>
-        <p style="font-family: 'Montserrat', sans-serif; font-size: 28px; color: #764ba2; font-weight: 700; margin: 0;">
-          Team Graphura
-        </p>
-        <p style="font-size: 16px; color: #718096; margin-top: 10px;">
-          Empowering Innovators Worldwide
-        </p>
-      </div>
-
-    </div>
-
-    <!-- Footer -->
-    <div style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%); color: #cbd5e1; padding: 40px; text-align: center;">
-      <div style="font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 700; color: white; margin-bottom: 20px;">
-        Graphura
-      </div>
-      <p style="font-size: 15px; line-height: 1.6; margin: 0 0 25px 0; max-width: 400px; margin-left: auto; margin-right: auto;">
-        Building the future, one hackathon at a time. Join our community of innovators.
-      </p>
-      <div style="margin: 30px 0;">
-        <a href="#" style="display: inline-block; margin: 0 10px; color: #cbd5e1; text-decoration: none; font-size: 14px;">Website</a>
-        <a href="#" style="display: inline-block; margin: 0 10px; color: #cbd5e1; text-decoration: none; font-size: 14px;">Events</a>
-        <a href="#" style="display: inline-block; margin: 0 10px; color: #cbd5e1; text-decoration: none; font-size: 14px;">Community</a>
-        <a href="#" style="display: inline-block; margin: 0 10px; color: #cbd5e1; text-decoration: none; font-size: 14px;">Contact</a>
-      </div>
-      <div style="border-top: 1px solid #4a5568; padding-top: 20px; font-size: 14px; color: #a0aec0;">
-        © ${new Date().getFullYear()} Graphura. All rights reserved.<br>
-        <div style="margin-top: 10px; font-size: 13px;">
-          This is an automated message. Please do not reply to this email.
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-</body>
-</html>
       `,
       attachment: [
         {
           content: pdfBuffer.toString("base64"),
-          name: `Certificate-${hackathonTitle}.pdf`,
+          name: `Winner-Certificate-${hackathonTitle}.pdf`,
           type: "application/pdf"
         }
       ]
-    });
+    };
 
-    console.log("✅ Winner mail sent successfully");
+    await emailApi.sendTransacEmail(emailPayload);
+
+    console.log("✅ Winner result mail sent successfully");
 
   } catch (error) {
-    console.error("❌ Winner mail error:", error.message);
+    console.error("❌ Winner mail error:", error);
     throw error;
   }
 };
@@ -643,3 +498,4 @@ export const sendSponsorInterestMail = async (data) => {
     `
   });
 };
+
