@@ -16,7 +16,7 @@ const Signup = () => {
     address: "",
     contactNumber: "",
     university: "",
-    college: "",
+    collegeName: "",
     courseName: "",     // ✅ added
     yearOfStudy: "",    // ✅ added
     role: "user",
@@ -55,7 +55,7 @@ const Signup = () => {
         address: form.address,
         contactNumber: form.contactNumber,
         university: form.university,
-        college: form.college,
+        collegeName: form.collegeName,
         courseName: form.courseName,     // ✅ added
         yearOfStudy: form.yearOfStudy,   // ✅ added
         role: form.role,
@@ -297,9 +297,9 @@ const Signup = () => {
 
                 <input
                   type="text"
-                  name="college"
-                  placeholder=" College"
-                  value={form.college}
+                  name="collegeName"
+                  placeholder=" collegeName"
+                  value={form.collegeName}
                   onChange={handleChange}
                   required
                   className="w-full bg-white/5 border border-gray-600 focus:border-indigo-500 rounded-xl p-3 text-white placeholder-gray-400 transition duration-300 focus:ring-2 focus:ring-indigo-500/30 outline-none"

@@ -1,11 +1,13 @@
 import mongoose from "mongoose";
-
+import {ROLES} from "../config/roles.js"
 const collegeSchema = new mongoose.Schema(
   {
     name: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
+      unique: true,
+      lowercase:true
     },
 
     email: {
@@ -22,18 +24,14 @@ const collegeSchema = new mongoose.Schema(
       select: false
     },
 
-    uniqueId: {
-      type: String,
-      required: true,
-      unique: true,
-      uppercase: true,
-      trim: true
-    },
-
     city: {
       type: String,
       trim: true
     },
+role: {
+    type: String,
+    default: ROLES.COLLEGE
+  },
 
     state: {
       type: String,

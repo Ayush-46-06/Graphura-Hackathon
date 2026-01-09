@@ -1,19 +1,19 @@
 import { useState } from "react";
 
 const usersData = [
-  { name: "Ayush", email: "ayush@gmail.com", college: "MDU" },
-  { name: "Neha", email: "neha@gmail.com", college: "DU" },
-  { name: "Rohit", email: "rohit@gmail.com", college: "MDU" },
+  { name: "Ayush", email: "ayush@gmail.com", collegeName: "MDU" },
+  { name: "Neha", email: "neha@gmail.com", collegeName: "DU" },
+  { name: "Rohit", email: "rohit@gmail.com", collegeName: "MDU" },
 ];
 
 const Users = () => {
   const [search, setSearch] = useState("");
-  const [college, setCollege] = useState("");
+  const [collegeName, setCollegeName] = useState("");
 
   const filtered = usersData.filter(
     (u) =>
       u.name.toLowerCase().includes(search.toLowerCase()) &&
-      (college ? u.college === college : true)
+      (collegeName ? u.collegeName === collegeName : true)
   );
 
   return (
@@ -31,8 +31,8 @@ const Users = () => {
 
         <select
           className="border p-2 rounded"
-          value={college}
-          onChange={(e) => setCollege(e.target.value)}
+          value={collegeName}
+          onChange={(e) => setCollegeName(e.target.value)}
         >
           <option value="">All Colleges</option>
           <option value="MDU">MDU</option>
@@ -54,7 +54,7 @@ const Users = () => {
             <tr key={i} className="border-b">
               <td className="py-2">{u.name}</td>
               <td>{u.email}</td>
-              <td>{u.college}</td>
+              <td>{u.collegeName}</td>
             </tr>
           ))}
         </tbody>

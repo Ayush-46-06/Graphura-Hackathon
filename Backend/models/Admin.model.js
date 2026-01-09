@@ -38,9 +38,9 @@ const adminSchema = new mongoose.Schema(
       required: true
     },
 
-    college: {
+    collegeName: {
       type: String,
-      required: true
+      default:null
     },
 
     occupation: {

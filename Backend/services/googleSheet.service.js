@@ -1,4 +1,3 @@
-
 import { google } from "googleapis";
 import dotenv from "dotenv";
 
@@ -15,13 +14,15 @@ class GoogleSheetService {
     });
 
     this.sheets = google.sheets({ version: "v4", auth: this.auth });
-    this.spreadsheetId = process.env.GOOGLE_SHEET_ID;
+
+    // ✅ TWO DIFFERENT SHEETS
+    this.adminSheetId = process.env.GOOGLE_SHEET_ID;
+    this.collegeSheetId = process.env.COLLEGE_EXPORT_ID;
   }
 
-  // Export users to Google Sheet
-  async exportUsers(users) {
+  /* ================= ADMIN EXPORT ================= */
+  async exportAdminUsers(users) {
     try {
-      // Prepare rows
       const rows = users.map((user) => [
         user.name,
         user.email,
@@ -29,18 +30,43 @@ class GoogleSheetService {
         new Date().toLocaleString(),
       ]);
 
-      // Append rows to sheet
       await this.sheets.spreadsheets.values.append({
-        spreadsheetId: this.spreadsheetId,
-        range: "Sheet1!A:D", // change sheet name if needed
+        spreadsheetId: this.adminSheetId,
+        range: "Sheet1!A:D",
         valueInputOption: "RAW",
         insertDataOption: "INSERT_ROWS",
         resource: { values: rows },
       });
 
-      console.log("Users exported successfully!");
+      console.log("✅ Admin users exported successfully!");
     } catch (error) {
-      console.error("Error exporting users:", error);
+      console.error("❌ Admin export error:", error.message);
+      throw error;
+    }
+  }
+
+  /* ================= COLLEGE EXPORT ================= */
+  async exportCollegeUsers(users) {
+    try {
+      const rows = users.map((user) => [
+        user.name,
+        user.email,
+        user.contactNumber,
+        user.university,
+        new Date().toLocaleString(),
+      ]);
+
+      await this.sheets.spreadsheets.values.append({
+        spreadsheetId: this.collegeSheetId,
+        range: "Sheet1!A:E",
+        valueInputOption: "RAW",
+        insertDataOption: "INSERT_ROWS",
+        resource: { values: rows },
+      });
+
+      console.log("✅ College users exported successfully!");
+    } catch (error) {
+      console.error("❌ College export error:", error.message);
       throw error;
     }
   }

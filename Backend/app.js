@@ -16,6 +16,7 @@ import reviewRoutes from "./routes/review.routes.js"
 import sponsorRoutes from "./routes/sponsors.routes.js"
 
 import collegeRoutes from "./routes/college.routes.js"
+import partnerRoutes from "./routes/partner.routes.js"
 const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -29,9 +30,11 @@ app.use(
   "/certificates",
   express.static(path.join(__dirname, "uploads", "certificates"))
 )
+app.use("/api", partnerRoutes)
 app.use("/api", sponsorRoutes)
 app.use("/api", contactRoutes)
 app.use("/api", reviewRoutes)
+app.use("/api", collegeRoutes)
 app.use("/api", authRoutes)
 app.use("/api", userRoutes)
 app.use("/api", hackathonRoutes)
@@ -39,7 +42,6 @@ app.use("/api", blogRoutes)
 app.use("/api", analyticsRoutes)
 app.use("/api", transactionRoutes)
 app.use("/api", commentRoutes)
-app.use("/api", collegeRoutes)
 app.use("/api", adminRoutes);
 
 app.get("/health", (_, res) => {

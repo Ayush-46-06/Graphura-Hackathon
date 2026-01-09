@@ -18,7 +18,7 @@ export const register = async (req, res) => {
       address,
       contactNumber,
       university,
-      collegeUniqueId,   
+      collegeName, 
       occupation,
       company,
       role,
@@ -29,7 +29,6 @@ export const register = async (req, res) => {
 
     const image = req.file ? req.file.path : null;
 
-    
     const userExists = await User.findOne({ email });
     const adminExists = await Admin.findOne({ email });
 
@@ -42,7 +41,7 @@ export const register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    
+    /* ================= ADMIN ================= */
     if (role === "admin") {
       if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET_KEY) {
         return res.status(403).json({
@@ -71,15 +70,16 @@ export const register = async (req, res) => {
       });
     }
 
+
     const college = await College.findOne({
-      uniqueId: collegeUniqueId,
+      name: collegeName,
       isActive: true
     });
 
     if (!college) {
       return res.status(400).json({
         success: false,
-        message: "Invalid college unique ID"
+        message: "Invalid college name"
       });
     }
 
@@ -90,10 +90,7 @@ export const register = async (req, res) => {
       address,
       contactNumber,
       university,
-
-      collegeName: college.name,           
-      collegeUniqueId: college.uniqueId,  
-
+      collegeName: college.name, // 🔗 LINK BY NAME
       occupation: occupation || null,
       company: company || null,
       image,
@@ -129,31 +126,17 @@ export const login = async (req, res) => {
     account = await Admin.findOne({ email }).select("+password");
     if (account) role = "admin";
 
-    /* ================= USER (IMPORTANT FIRST) ================= */
+    /* ================= USER ================= */
     if (!account) {
-      account = await User.findOne({
-        $or: [
-          { email: email.toLowerCase() },
-          { collegeUniqueId: email.toUpperCase() }
-        ]
-      }).select("+password");
-
+      account = await User.findOne({ email }).select("+password");
       if (account) role = "user";
     }
 
-    /* ================= COLLEGE ================= */
+    /* ================= COLLEGE LOGIN (DISABLED) ================= */
     if (!account) {
-      account = await College.findOne({
-        $or: [
-          { email: email.toLowerCase() },
-          { uniqueId: email.toUpperCase() }
-        ]
-      }).select("+password");
-
-      if (account) role = "college";
+     account = await College.findOne({ email }).select("+password");
+     if (account) role = "college";
     }
-
-  
 
     if (!account || !account.password) {
       return res.status(400).json({

@@ -86,7 +86,7 @@ const Profile = () => {
       fd.append("name", profile.name);
       fd.append("contactNumber", profile.contactNumber || "");
       fd.append("university", profile.university || "");
-      fd.append("college", profile.college || "");
+      fd.append("collegeName", profile.collegeName || "");
       fd.append("courseName", profile.courseName || "");
       fd.append("yearOfStudy", profile.yearOfStudy || "");
 
@@ -201,12 +201,12 @@ const Profile = () => {
                     </div>
                   </div>
                 )}
-                {profile.college && (
+                {profile.collegeName && (
                   <div className="flex items-start gap-3">
                     <GraduationCap className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
                     <div>
                       <p className="text-xs text-gray-500">College</p>
-                      <p className="text-sm font-medium text-gray-800">{profile.college}</p>
+                      <p className="text-sm font-medium text-gray-800">{profile.collegeName}</p>
                     </div>
                   </div>
                 )}
@@ -297,8 +297,8 @@ const Profile = () => {
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">College/School</label>
                 <input
-                  name="college"
-                  value={profile.college || ""}
+                  name="collegeName"
+                  value={profile.collegeName || ""}
                   onChange={handleChange}
                   disabled={!isEditing}
                   placeholder="Enter your college or school name"

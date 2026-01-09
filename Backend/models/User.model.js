@@ -3,7 +3,6 @@ import { ROLES, ROLE_ARRAY } from "../config/roles.js";
 
 const userSchema = new mongoose.Schema(
   {
-  
     name: {
       type: String,
       required: true,
@@ -29,7 +28,6 @@ const userSchema = new mongoose.Schema(
       default: null
     },
 
-  
     address: {
       type: String,
       required: true
@@ -40,34 +38,28 @@ const userSchema = new mongoose.Schema(
       required: true
     },
 
-
     university: {
       type: String,
       required: true
     },
 
+
     collegeName: {
       type: String,
-      required: true
-    },
-
- 
-    collegeUniqueId: {
-      type: String,
       required: true,
-      uppercase: true,
       trim: true
     },
 
     courseName: {
-      type: String
+      type: String,
+      trim: true
     },
 
     yearOfStudy: {
-      type: String
+      type: String,
+      trim: true
     },
 
- 
     occupation: {
       type: String,
       default: null
@@ -78,7 +70,6 @@ const userSchema = new mongoose.Schema(
       default: null
     },
 
-   
     role: {
       type: String,
       enum: ROLE_ARRAY,
@@ -95,7 +86,6 @@ const userSchema = new mongoose.Schema(
       default: 0
     },
 
-  
     resetPasswordToken: String,
     resetPasswordExpire: Date
   },

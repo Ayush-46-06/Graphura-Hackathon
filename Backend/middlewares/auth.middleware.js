@@ -6,20 +6,21 @@ import { config } from "../config/env.js";
 
 export const authMiddleware = async (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
         success: false,
         message: "Authorization token required"
       });
     }
 
+    const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, config.JWT_SECRET);
     const { id, role } = decoded;
 
     if (role === "admin") {
       const admin = await Admin.findById(id);
-      if (!admin) throw new Error();
+      if (!admin || !admin.isActive) throw new Error();
       req.admin = admin;
     }
 
@@ -29,10 +30,14 @@ export const authMiddleware = async (req, res, next) => {
       req.college = college;
     }
 
-    else {
+    else if (role === "user") {
       const user = await User.findById(id);
       if (!user || !user.isActive) throw new Error();
       req.user = user;
+    }
+
+    else {
+      throw new Error();
     }
 
     next();

@@ -81,5 +81,3 @@ export const downloadCertificate = async (req, res) => {
     });
   }
 };
-
-

@@ -1,12 +1,18 @@
-export const roleMiddleware = (...roles) => {
+export const roleMiddleware = (allowedRole) => {
   return (req, res, next) => {
-    const role = req.user?.role || req.admin?.role; 
-    if (!role || !roles.includes(role)) {
+
+    const role =
+      req.admin?.role ||
+      req.user?.role ||
+      (req.college ? "college" : null);
+
+    if (!role || role !== allowedRole) {
       return res.status(403).json({
         success: false,
         message: "Access denied"
       });
     }
+
     next();
   };
 };
