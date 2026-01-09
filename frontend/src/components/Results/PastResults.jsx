@@ -25,7 +25,7 @@ export default function PastResults({ pastHackathons }) {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden py-15 bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]"
+      className="relative overflow-hidden py-10 sm:py-14 lg:py-20 bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]"
     >
       {/* Animated Background Blobs */}
       <div className="absolute inset-0 pointer-events-none">
@@ -38,7 +38,7 @@ export default function PastResults({ pastHackathons }) {
 
       {/* HEADER */}
       <div
-        className={`relative max-w-7xl mx-auto px-6 text-center mb-14 z-10
+        className={`relative max-w-7xl mx-auto px-6 text-center mb-8 sm:mb-12 lg:mb-14 z-10
           transition-all duration-700 ease-out
           ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
         `}
@@ -47,23 +47,37 @@ export default function PastResults({ pastHackathons }) {
           Results Declared
         </span>
 
-        <h2 className="text-4xl font-bold text-white mb-4">
+        <h2 className="
+          text-2xl
+          sm:text-3xl
+          lg:text-4xl
+          font-bold
+          text-white
+          mb-3 sm:mb-4
+        ">
           Past Hackathon Results
         </h2>
 
-        <p className="text-white/80 max-w-xl mx-auto">
+        <p className="
+          text-sm
+          sm:text-base
+          text-white/80
+          max-w-xl
+          mx-auto
+        ">
           Celebrating teams who stood out and made their mark.
         </p>
       </div>
 
       {/* GRID */}
-      <div className="relative max-w-7xl mx-auto px-2 grid grid-cols-1 lg:grid-cols-3 gap-10 z-10">
+      <div className="relative max-w-7xl mx-auto px-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 z-10">
         {pastHackathons.map((hack, index) => (
           <div
             key={hack.id}
             style={{ transitionDelay: `${index * 120}ms` }}
             className={`
-              group relative rounded-2xl p-8
+              group relative rounded-2xl 
+              p-3 sm:p-4 lg:p-6
               bg-white/95 backdrop-blur-xl
               border border-white/30
               shadow-[0_20px_50px_rgba(3,89,78,0.35)]
@@ -79,13 +93,13 @@ export default function PastResults({ pastHackathons }) {
             </span>
 
             {/* PODIUM */}
-            <div className="grid grid-cols-3 gap-4 mt-6 mb-8">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-10 sm:pt-12 mt-3 sm:mt-5 mb-4 sm:mb-5">
               {[1, 0, 2].map((i) => (
                 <div key={i} className="text-center">
                   <div
                     className={`
-                      aspect-square
-                      rounded-xl
+                      aspect-square max-w-[80px] sm:max-w-[96px]
+                      rounded-lg
                       overflow-hidden
                       bg-white
                       transition-all duration-300
@@ -109,7 +123,7 @@ export default function PastResults({ pastHackathons }) {
 
 
             {/* META */}
-            <div className="flex justify-between items-center text-sm text-[#6C757D] mb-6">
+            <div className="flex justify-between items-center text-xs sm:text-sm text-[#6C757D] mb-4">
               <span>📅 {hack.date}</span>
               <span className="px-3 py-1 text-[10px] rounded-full bg-[#E6F4F1] text-[#03594E] font-semibold uppercase">
                 Declared
@@ -117,17 +131,17 @@ export default function PastResults({ pastHackathons }) {
             </div>
 
             {/* TITLE */}
-            <h3 className="font-semibold text-lg text-[#0C121D] leading-snug">
+            <h3 className="font-semibold text-base sm:text-lg text-[#0C121D] leading-snug">
               {hack.title}
             </h3>
 
             {/* ACCENT */}
-            <div className="mt-6 h-[4px] w-16 bg-[#F8C62F] rounded-full group-hover:w-32 transition-all duration-500" />
+            <div className="mt-4 h-[4px] w-16 bg-[#F8C62F] rounded-full group-hover:w-32 transition-all duration-500" />
 
             {/* ACTION */}
             <button
               onClick={() => setSelectedHackathon(hack)}
-              className="mt-8 px-6 py-2 text-[11px] font-bold tracking-widest rounded-full border text-[#03594E] hover:bg-[#03594E] hover:text-white transition-all"
+              className="mt-4 sm:mt-5 px-5 py-1.5 text-[10px] sm:text-[11px] font-bold tracking-widest rounded-full border text-[#03594E] hover:bg-[#03594E] hover:text-white transition-all"
             >
               SHOW RESULT
             </button>

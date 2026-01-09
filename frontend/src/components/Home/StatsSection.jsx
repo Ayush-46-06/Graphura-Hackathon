@@ -34,8 +34,13 @@ const StatCard = ({ value, label, index }) => {
   return (
     <div
       className={`
-        group relative flex items-center gap-4 p-8 py-12
-        border-r border-white/20 last:border-none
+        group relative flex items-center gap-4
+        justify-center sm:justify-start
+        text-center sm:text-left
+        p-6 py-8 sm:p-8 sm:py-12
+        border-b sm:border-b-0
+        sm:border-r border-white/20
+        last:border-none
         transition-transform duration-500 ease-in-out
         ${
           index % 2 === 0
@@ -45,17 +50,17 @@ const StatCard = ({ value, label, index }) => {
       `}
     >
       {/* Icon */}
-      <div  className="text-4xl text-white/90 ">
-      <img src={statsData[index].icon} alt="" className="group-hover:[transform:rotateY(360deg)] transition-transform duration-500 ease-in-out" />
+      <div  className="text-white/90 flex justify-center sm:justify-start">
+      <img src={statsData[index].icon} alt="" className="w-8 h-8 sm:w-auto sm:h-auto group-hover:[transform:rotateY(360deg)] transition-transform duration-500 ease-in-out" />
       </div>
 
       {/* Text */}
       <div>
-        <h3 className="text-4xl font-semibold text-white">
+        <h3 className="text-3xl sm:text-4xl font-semibold text-white">
           {count}
           <span className="text-white">+</span>
         </h3>
-        <p className="text-white text-sm">{label}</p>
+        <p className="text-white text-xs sm:text-sm">{label}</p>
       </div>
     </div>
   );

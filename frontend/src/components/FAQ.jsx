@@ -72,16 +72,15 @@ export default function FAQ() {
       <main className="bg-white">
 
         {/* ================= HERO ================= */}
-        <section
-          className="
-            mt-[64px] sm:mt-[80px]
-            relative overflow-hidden
-            min-h-[unset] sm:min-h-[500px] md:min-h-[600px] lg:min-h-[650px]
-            flex items-start lg:items-center
-            py-12 sm:py-0
-            bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]
-          "
-        >
+        <section className="
+          pt-[120px] sm:pt-[140px]
+          relative
+          overflow-hidden
+          pb-24 sm:pb-28
+          min-h-[calc(100vh-80px)]
+          flex items-start lg:items-center
+          bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]
+        ">
           {/* Floating background accents */}
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-28 left-12 w-72 h-72 bg-[#1AB69D]/30 rounded-full blur-3xl" />
@@ -117,13 +116,13 @@ export default function FAQ() {
               {/* Heading */}
               <h1
                 className="
-                  text-3xl sm:text-4xl md:text-5xl lg:text-6xl
-                  leading-[1.15]
+                  text-3xl sm:text-4xl md:text-5xl lg:text-5xl
+                  font-bold
+                  leading-tight
                   font-[var(--it-ff-heading)]
                   text-white
                   mb-8
                   drop-shadow-[0_6px_30px_rgba(0,0,0,0.35)]
-                  opacity-0 hero-fade-up delay-200
                 "
               >
                 Got Questions? <br />
@@ -165,7 +164,7 @@ export default function FAQ() {
             {/* RIGHT VISUAL */}
             <div className="
               relative w-full max-w-sm mx-auto lg:max-w-none
-              -mt-8 sm:mt-0 mb-16 sm:mb-0
+              -mt-8 sm:mt-0 mb-0 sm:mb-0
               opacity-0 hero-image-in delay-400
             ">
               <img
@@ -177,7 +176,7 @@ export default function FAQ() {
 
           </div>
           {/* Scroll indicator */}
-          <div
+          {/* <div
             className="
               absolute bottom-8 left-1/2 -translate-x-1/2
               text-white/70 text-sm tracking-wide
@@ -185,7 +184,7 @@ export default function FAQ() {
             "
           >
             Scroll to explore FAQs ↓
-          </div>
+          </div> */}
         </section>
 
         <div className="h-[2px] bg-gradient-to-r from-transparent via-[#E6F4F1]/70 to-transparent" />

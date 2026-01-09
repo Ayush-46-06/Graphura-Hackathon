@@ -60,16 +60,16 @@ const Results = () => {
       <Navbar />
       
       {/* --- HERO SECTION --- */}
-      <section
-        className="
-          mt-[80px]
+      <section className="
+          pt-[96px] sm:pt-[120px] lg:pt-[140px]
+          pb-12 sm:pb-20 lg:pb-28
+          min-h-[unset] lg:min-h-[calc(100vh-80px)]
           relative
           overflow-hidden
-          min-h-[500px] md:min-h-[600px] lg:min-h-[650px]
-          flex items-center
+          flex items-start lg:items-center
           bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]
-        "
-      >
+        ">
+
         {/* Floating background accents (slightly sharper than About) */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-28 left-12 w-72 h-72 bg-[#1AB69D]/30 rounded-full blur-3xl" />
@@ -77,7 +77,7 @@ const Results = () => {
         </div>
 
         {/* CONTENT GRID */}
-        <div className="relative max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div className="relative max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
 
           {/* LEFT CONTENT */}
           <div className="relative">
@@ -85,13 +85,14 @@ const Results = () => {
         <span
           className="
             inline-flex items-center gap-2
-            mb-8
-            text-xs md:text-sm
+            mb-6
+            px-3.5 sm:px-6
+            py-1 sm:py-2
+            text-[11px] sm:text-xs md:text-sm
             tracking-[0.25em]
             uppercase
             bg-white/20 backdrop-blur-md
             text-white
-            px-6 py-2.5
             rounded-full
             font-semibold
             shadow-lg shadow-black/10
@@ -105,9 +106,12 @@ const Results = () => {
         {/* Heading */}
         <h1
           className="
-            text-4xl md:text-5xl lg:text-6xl
-            leading-[1.15]
-            font-[var(--it-ff-heading)]
+            text-3xl
+            sm:text-4xl
+            md:text-5xl
+            lg:text-5xl
+            font-bold
+            leading-tight
             text-white
             mb-8
             drop-shadow-[0_6px_30px_rgba(0,0,0,0.35)]
@@ -139,11 +143,9 @@ const Results = () => {
         {/* Description */}
         <p
           className="
-            text-white/85
-            text-lg md:text-xl
-            max-w-xl
-            mb-10
-            leading-relaxed
+            text-white/90 text-sm sm:text-base md:text-lg
+            mb-6 sm:mb-8 lg:mb-10
+            max-w-xl mb-10 leading-relaxed
             opacity-0 hero-fade-up delay-300
           "
         >
@@ -154,7 +156,7 @@ const Results = () => {
 
 
           {/* RIGHT VISUAL */}
-          <div className="relative opacity-0 hero-image-in delay-400">
+          <div className="relative -mt-6 sm:mt-0 opacity-0 hero-image-in delay-400">
             <img
               src="/results_img/results-hero.webp"
               alt="Hackathon Results"
@@ -162,6 +164,8 @@ const Results = () => {
                 rounded-2xl
                 shadow-2xl
                 border border-white/10
+                max-h-[360px] md:max-h-[420px] lg:max-h-none
+                mx-auto
               "
             />
           </div>

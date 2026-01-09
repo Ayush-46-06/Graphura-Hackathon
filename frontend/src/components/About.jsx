@@ -55,10 +55,45 @@ const fadeUp = {
   visible: { opacity: 1, y: 0 },
 };
 
+const teamMembers = [
+  {
+    id: 1,
+    name: "Anurag Sharma",
+    role: "Head - Technical Department",
+    image: "/about_img/team1.webp",
+  },
+  {
+    id: 2,
+    name: "Virendra Singh",
+    role: "Head - Finance Department",
+    image: "/about_img/team2.webp",
+  },
+  {
+    id: 3,
+    name: "Aayushi Shrivastav",
+    role: "Sales & Marketing Specialist",
+    image: "/about_img/team3.webp",
+  },
+  {
+    id: 4,
+    name: "Divya Jain",
+    role: "Head - Management & Operations",
+    image: "/about_img/team4.webp",
+  },
+  {
+    id: 5,
+    name: "Aarav Sharma",
+    role: "Digital Marketing Specialist",
+    image: "/about_img/team5.webp",
+  },
+];
+
+
 
 
 export default function About() {
   const navigate = useNavigate();
+  const darkLogos = [6, 7, 8, 9, 10]; // logos that need dark card 
 
   return (
     <>
@@ -71,12 +106,12 @@ export default function About() {
         
         {/* ================= HERO ================= */}
         <section className="
-          mt-[64px] sm:mt-[80px]
+          pt-[120px] sm:pt-[140px]
           relative
           overflow-hidden
-          min-h-[unset] sm:min-h-[500px] lg:min-h-[650px]
+          pb-24 sm:pb-28
+          min-h-[calc(100vh-80px)]
           flex items-start lg:items-center
-          py-12 sm:py-0
           bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]
         ">
 
@@ -92,7 +127,7 @@ export default function About() {
             {/* LEFT CONTENT */}
             <div>
               <span className="
-                inline-block mb-6 text-base bg-white/20 text-white px-5 py-2
+                inline-block mb-6 text-base bg-white/20 text-white px-5 py-1.5
                 rounded-full font-semibold tracking-wide
                 opacity-0 hero-fade-up delay-100
               ">
@@ -197,7 +232,7 @@ export default function About() {
               <motion.span
                 variants={fadeUp}
                 transition={{ duration: 0.5 }}
-                className="inline-block mb-4 text-sm bg-[#E6F4F1] text-[#03594E] px-4 py-1 rounded-full"
+                className="inline-block mb-4 text-base bg-[#E6F4F1] text-[#03594E] px-5 py-1.5 rounded-full"
               >
                 About Us
               </motion.span>
@@ -264,7 +299,7 @@ export default function About() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="inline-block mb-4 text-sm bg-[#E6F4F1] text-[#03594E] px-5 py-1 rounded-full"
+              className="inline-block mb-4 text-base bg-[#E6F4F1] text-[#03594E] px-5 py-1.5 rounded-full"
             >
               Why Choose Graphura
             </motion.span>
@@ -336,7 +371,7 @@ export default function About() {
 
           {/* TEXT stays centered */}
           <div className="relative max-w-7xl mx-auto px-6 text-center">
-            <span className="inline-block mb-4 text-sm bg-[#E6F4F1] text-[#03594E] px-4 py-1 rounded-full">
+            <span className="inline-block mb-4 text-base bg-[#E6F4F1] text-[#03594E] px-5 py-1.5 rounded-full">
               Our Partners
             </span>
 
@@ -348,31 +383,45 @@ export default function About() {
           <div className="marquee-wrapper">
             <div className="marquee-track">
 
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div
-                  key={`a-${i}`}
-                  className="bg-white rounded-xl p-6 mx-5 flex items-center justify-center shadow-sm min-w-[140px] sm:min-w-[180px]"
-                >
-                  <img
-                    src={`/about_img/partner-${i}.png`}
-                    alt="Partner Logo"
-                    className="h-20 object-contain"
-                  />
-                </div>
-              ))}
+              {[1,6,2,7,3,8,4,9,10].map((i) => {
+                const isDark = darkLogos.includes(i);
 
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div
-                  key={`b-${i}`}
-                  className="bg-white rounded-xl p-6 mx-5 flex items-center justify-center shadow-sm min-w-[140px] sm:min-w-[180px]"
-                >
-                  <img
-                    src={`/about_img/partner-${i}.png`}
-                    alt="Partner Logo"
-                    className="h-20 object-contain"
-                  />
-                </div>
-              ))}
+                return (
+                  <div
+                    key={`a-${i}`}
+                    className={`rounded-xl p-6 mx-5 flex items-center justify-center shadow-sm min-w-[140px] sm:min-w-[180px]
+                      ${isDark ? "bg-[#03594E]" : "bg-white"}
+                    `}
+                  >
+                    <img
+                      src={`/about_img/brand${i}.webp`}
+                      alt="Partner Logo"
+                      className={`h-20 object-contain`}
+                    />
+                  </div>
+                );
+              })}
+
+
+              {[1,6,2,7,3,8,4,9,10].map((i) => {
+                const isDark = darkLogos.includes(i);
+
+                return (
+                  <div
+                    key={`b-${i}`}
+                    className={`rounded-xl p-6 mx-5 flex items-center justify-center shadow-sm min-w-[140px] sm:min-w-[180px]
+                      ${isDark ? "bg-[#03594E]" : "bg-white"}
+                    `}
+                  >
+                    <img
+                      src={`/about_img/brand${i}.webp`}
+                      alt="Partner Logo"
+                      className={`h-20 object-contain`}
+                    />
+                  </div>
+                );
+              })}
+
 
             </div>
           </div>
@@ -385,7 +434,7 @@ export default function About() {
         <section className="py-16 md:py-28 bg-gradient-to-b from-white to-[#F9FAFB]">
 
           <div className="max-w-7xl mx-auto px-6 text-center">
-            <span className="inline-block mb-4 text-sm bg-[#E6F4F1] text-[#03594E] px-4 py-1 rounded-full">
+            <span className="inline-block mb-4 text-base bg-[#E6F4F1] text-[#03594E] px-5 py-1.5 rounded-full">
               Meet Our Team
             </span>
 
@@ -402,9 +451,9 @@ export default function About() {
               gap-8
               pt-6
             ">
-              {[1, 2, 3, 4, 5].map((i) => (
+              {teamMembers.map((member) => (
                 <motion.div
-                  key={i}
+                  key={member.id}
                   initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -429,8 +478,8 @@ export default function About() {
                   {/* Image */}
                   <div className="relative overflow-hidden">
                     <img
-                      src={`/about_img/team${i}.webp`}
-                      alt="Team Member"
+                      src={member.image}
+                      alt={member.name}
                       className="
                         w-full h-56 sm:h-64 object-cover
                         transition-all
@@ -469,10 +518,10 @@ export default function About() {
                   {/* Text */}
                   <div className="p-6 text-center">
                     <h4 className="font-semibold text-lg text-[#0C121D]">
-                      Team Member
+                      {member.name}
                     </h4>
                     <p className="text-sm text-[#6C757D] mt-1">
-                      Role / Position
+                      {member.role}
                     </p>
                   </div>
                 </motion.div>

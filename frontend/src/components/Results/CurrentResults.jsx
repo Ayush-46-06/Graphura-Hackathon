@@ -58,186 +58,246 @@ export default function Results() {
         className="
             relative
             overflow-hidden
-            py-24
+            pt-8 sm:pt-12 lg:pt-16
+            pb-10 sm:pb-14 lg:pb-20
             bg-[radial-gradient(circle_at_top_left,#F6FAF9,transparent_60%),radial-gradient(circle_at_bottom_right,#FFF1CC,transparent_55%),linear-gradient(90deg,#F6FAF9,#FFF7E6)]
         "
         >
   
       {/* HEADER */}
-      <div className="max-w-7xl mx-auto px-6 text-center mb-20">
-        <span className="inline-block mb-4 text-sm bg-[#E6F4F1] text-[#03594E] px-5 py-1 rounded-full">
+      <div className="max-w-7xl mx-auto px-6 text-center mb-6 sm:mb-10 lg:mb-14">
+        <span className="inline-block mb-3 text-xs sm:text-sm bg-[#E6F4F1] text-[#03594E] px-4 py-1.5 rounded-full">
           Live Results
         </span>
 
-        <h1 className="text-5xl font-bold text-[#0C121D] mb-4">
+        <h1 className="
+          text-2xl
+          sm:text-3xl
+          md:text-4xl
+          lg:text-5xl
+          font-bold
+          text-[#0C121D]
+          mb-3
+        ">
           Current Hackathon Results
         </h1>
 
-        <p className="text-[#6C757D] max-w-xl mx-auto">
+        <p className="
+          text-sm
+          sm:text-base
+          text-[#6C757D]
+          max-w-xl
+          mx-auto
+        ">
           Pending hackathons whose results are yet to be declared.
         </p>
       </div>
 
-      {/* NAVIGATION ARROWS (OUTSIDE CARDS) */}
-      <button
-        className="
-          results-prev
-          absolute
-          left-6
-          top-1/2
-          -translate-y-1/2
-          z-20
-          w-12 h-12
-          rounded-full
-          bg-white
-          border
-          shadow-md
-          flex items-center justify-center
-          text-2xl
-          text-[#03594E]
-          hover:bg-[#E6F4F1]
-        "
-      >
-        ‹
-      </button>
+      {/* SLIDER WRAPPER */}
+      <div className="relative max-w-7xl mx-auto px-6">
 
-      <button
-        className="
-          results-next
-          absolute
-          right-6
-          top-1/2
-          -translate-y-1/2
-          z-20
-          w-12 h-12
-          rounded-full
-          bg-white
-          border
-          shadow-md
-          flex items-center justify-center
-          text-2xl
-          text-[#03594E]
-          hover:bg-[#E6F4F1]
-        "
-      >
-        ›
-      </button>
+        {/* NAVIGATION ARROWS (OUTSIDE CARDS) */}
+        <button
+          className="
+            results-prev
+            absolute
+            left-2
+            md:left-4
+            lg:left-[-60px]
+            top-1/2
+            -translate-y-1/2
+            z-30
+            w-12 h-12
+            rounded-full 
+            bg-white
+            border
+            shadow-md
+            flex items-center justify-center
+            text-2xl
+            text-[#03594E]
+            hover:bg-[#E6F4F1]
+          "
+        >
+          ‹
+        </button>
 
-      {/* SLIDER */}
-      <Swiper
-        slidesPerView="auto"
-        centeredSlides
-        initialSlide={1} // so that 2nd card is in the center by default
-        spaceBetween={40}
-        navigation={{
-          prevEl: ".results-prev",
-          nextEl: ".results-next",
-        }}
-        modules={[Navigation]}
-        className="max-w-7xl mx-auto px-6 pb-32 overflow-visible"
-      >
-        {hackathons.map((hack) => (
-          <SwiperSlide key={hack.id} className="results-slide">
-            <div
-              className="
-                relative
-                bg-[#FDFEFE]
-                border border-[#E6F4F1]
-                rounded-2xl
-                p-10
-                shadow-[0_10px_30px_rgba(3,89,78,0.08)]
-              "
-            >
-              {/* CATEGORY */}
-              <span
+        <button
+          className="
+            results-next
+            absolute
+            right-2
+            md:right-4
+            lg:right-[-60px]
+            top-1/2
+            -translate-y-1/2
+            z-30
+            w-12 h-12
+            rounded-full
+            bg-white
+            border
+            shadow-md
+            flex items-center justify-center
+            text-2xl
+            text-[#03594E]
+            hover:bg-[#E6F4F1]
+          "
+        >
+          ›
+        </button>
+
+        {/* SLIDER */}
+        <Swiper
+          slidesPerView="auto"
+          centeredSlides
+          initialSlide={1} // so that 2nd card is in the center by default
+          spaceBetween={40}
+          navigation={{
+            prevEl: ".results-prev",
+            nextEl: ".results-next",
+          }}
+          modules={[Navigation]}
+          className="max-w-7xl mx-auto px-2 sm:px-6 pb-8 sm:pb-12 lg:pb-20 overflow-visible"
+        >
+          {hackathons.map((hack) => (
+            <SwiperSlide key={hack.id} className="results-slide">
+              <div
                 className="
-                  absolute
-                  top-6 right-6
-                  text-[11px]
-                  bg-[#E6F4F1]
-                  text-[#03594E]
-                  px-4 py-1
-                  rounded-full
-                  font-semibold
-                  uppercase
+                  relative
+                  bg-[#FDFEFE]
+                  border border-[#E6F4F1]
+                  rounded-2xl
+                  p-6 sm:p-8 lg:p-10
+                  shadow-[0_10px_30px_rgba(3,89,78,0.08)]
                 "
               >
-                {hack.category}
-              </span>
+                {/* CATEGORY */}
+                <span
+                  className="
+                    absolute
+                    top-6 right-6
+                    text-[11px]
+                    bg-[#E6F4F1]
+                    text-[#03594E]
+                    px-4 py-1
+                    rounded-full
+                    font-semibold
+                    uppercase
+                  "
+                >
+                  {hack.category}
+                </span>
 
-              {/* PLACEHOLDERS */}
-              <div className="grid grid-cols-3 gap-6 mt-10 mb-10">
-                {[
-                  "First Place",
-                  "Second Runner Up",
-                  "Third Runner Up",
-                ].map((label, i) => (
-                  <div key={i} className="text-center">
-                    <div
-                      className="
-                        aspect-square
-                        border-2 border-[#03594E]/40
-                        rounded-xl
-                        flex items-center justify-center
-                        text-3xl font-bold
-                        text-[#03594E]
-                        bg-white
-                      "
-                    >
-                      ?
+                {/* PLACEHOLDERS */}
+                <div className="grid grid-cols-3 gap-6 mt-10 mb-10">
+                  {[
+                    "First Place",
+                    "Second Runner Up",
+                    "Third Runner Up",
+                  ].map((label, i) => (
+                    <div key={i} className="text-center">
+                      <div
+                        className="
+                          aspect-square
+                          border-2 border-[#03594E]/40
+                          rounded-xl
+                          flex items-center justify-center
+                          text-3xl font-bold
+                          text-[#03594E]
+                          bg-white
+                        "
+                      >
+                        ?
+                      </div>
+                      <p className="mt-2 text-[10px] uppercase text-[#6C757D] font-medium">
+                        {label}
+                      </p>
                     </div>
-                    <p className="mt-2 text-[10px] uppercase text-[#6C757D] font-medium">
-                      {label}
-                    </p>
-                  </div>
-                ))}
+                  ))}
+                </div>
+
+                {/* DATE + TIMER */}
+                <div className="flex justify-between items-center text-sm text-[#6C757D] mb-6">
+                  <span>
+                    📅{" "}
+                    {new Date(
+                      hack.declarationTime
+                    ).toLocaleDateString()}
+                  </span>
+                  <span className="font-mono">
+                    ⌛ {formatTime(hack.declarationTime - Date.now())}
+                  </span>
+                </div>
+
+                {/* TITLE */}
+                <h3 className="font-semibold text-base sm:text-lg text-[#0C121D] leading-snug">
+                  {hack.title}
+                </h3>
+
+                {/* ACCENT */}
+                <div className="mt-6 h-[4px] w-16 bg-[#F8C62F] rounded-full" />
               </div>
-
-              {/* DATE + TIMER */}
-              <div className="flex justify-between items-center text-sm text-[#6C757D] mb-6">
-                <span>
-                  📅{" "}
-                  {new Date(
-                    hack.declarationTime
-                  ).toLocaleDateString()}
-                </span>
-                <span className="font-mono">
-                  ⌛ {formatTime(hack.declarationTime - Date.now())}
-                </span>
-              </div>
-
-              {/* TITLE */}
-              <h3 className="font-semibold text-lg text-[#0C121D] leading-snug">
-                {hack.title}
-              </h3>
-
-              {/* ACCENT */}
-              <div className="mt-6 h-[4px] w-16 bg-[#F8C62F] rounded-full" />
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
 
       {/* SCALE EFFECT */}
       <style>{`
         .results-slide {
-        width: 420px;
-        padding: 25px 0;  
-        transform: scale(0.8);
-        opacity: 0.45;
-        transition: transform 0.5s ease, opacity 0.5s ease;
-        }
+  width: 400px;
+  padding: 25px 0;
+  transform: scale(0.8);
+  opacity: 0.45;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
 
-        .swiper-slide-prev.results-slide,
-        .swiper-slide-next.results-slide {
-        transform: scale(0.9);
-        opacity: 0.75;
-        }
+.swiper-slide-prev.results-slide,
+.swiper-slide-next.results-slide {
+  transform: scale(0.9);
+  opacity: 0.75;
+}
 
-        .swiper-slide-active.results-slide {
-        transform: scale(1.08);
-        opacity: 1;
-        }
+.swiper-slide-active.results-slide {
+  transform: scale(1.08);
+  opacity: 1;
+}
+
+/* ===== LAPTOP / SMALL DESKTOP ===== */
+@media (max-width: 1279px) {
+  .results-slide {
+    width: 340px;
+    transform: scale(0.85);
+  }
+
+  .swiper-slide-prev.results-slide,
+  .swiper-slide-next.results-slide {
+    transform: scale(0.9);
+  }
+
+  .swiper-slide-active.results-slide {
+    transform: scale(1.02);
+  }
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 640px) {
+  .results-slide {
+    width: 280px;
+    transform: scale(0.95);
+    opacity: 1;
+  }
+
+  .swiper-slide-prev.results-slide,
+  .swiper-slide-next.results-slide {
+    transform: scale(0.95);
+    opacity: 0.9;
+  }
+
+  .swiper-slide-active.results-slide {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
 
       `}</style>
     </section>
