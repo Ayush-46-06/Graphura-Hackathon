@@ -28,6 +28,12 @@ const menu = [
     icon: BarChart3,
     badge: null
   },
+  {
+    key: "college-register",
+    label: "CreateCollege",
+    icon: BarChart3,
+    badge: null
+  },
 ];
 
 const AdminSidebar = ({ active, setActive }) => {
@@ -41,6 +47,10 @@ const AdminSidebar = ({ active, setActive }) => {
       window.location.href = "/login";
     }
   };
+  const handleGoHome = () => {
+    window.location.href = "/";
+  };
+
 
   return (
     <aside 
@@ -116,36 +126,24 @@ const AdminSidebar = ({ active, setActive }) => {
       </nav>
 
       {/* QUICK ADD SECTION */}
-      {!isCollapsed && (
-        <div className="p-4 border-t border-gray-200 bg-white">
-          <button
-            onClick={() => setShowQuickAdd(!showQuickAdd)}
-            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-gray-800 font-bold hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-95"
-            style={{ 
-              backgroundColor: "#F8C62F",
-              boxShadow: "0 4px 12px rgba(248, 198, 47, 0.3)"
-            }}
-          >
-            <PlusCircle size={18} strokeWidth={2.5} />
-            Quick Add
-          </button>
-          
-          {showQuickAdd && (
-            <div className="mt-3 space-y-1 animate-fade-in">
-              <button className="w-full text-left px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-gray-100 text-gray-700 transition-all duration-200 hover:shadow-sm hover:translate-x-1">
-                + New Hackathon
-              </button>
-              <button className="w-full text-left px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-gray-100 text-gray-700 transition-all duration-200 hover:shadow-sm hover:translate-x-1">
-                + New Blog Post
-              </button>
-              <button className="w-full text-left px-4 py-2.5 text-sm font-medium rounded-lg hover:bg-gray-100 text-gray-700 transition-all duration-200 hover:shadow-sm hover:translate-x-1">
-                + New User
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-
+     
+        <div className="p-4 border-b border-gray-200 bg-white">
+        <button
+          onClick={handleGoHome}
+          className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-left font-semibold transition-all duration-200 group
+            ${isCollapsed ? 'justify-center' : ''}
+            bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-600 hover:from-blue-500 hover:to-indigo-600 hover:text-white hover:shadow-lg transform hover:scale-[1.02] active:scale-95
+          `}
+          data-label={isCollapsed ? "Back to Home" : ""}
+        >
+          <Home 
+            size={20} 
+            className="group-hover:-translate-x-1 transition-transform duration-200"
+            strokeWidth={2.5}
+          />
+          {!isCollapsed && <span className="text-sm">Back to Home</span>}
+        </button>
+      </div>
       {/* LOGOUT BUTTON */}
       <div className="p-4 border-t border-gray-200 bg-white">
         <button

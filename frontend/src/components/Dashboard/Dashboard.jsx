@@ -8,6 +8,7 @@ import DashboardHome from "./components/DashboardHome";
 import AdminUserRegistrations from "./components/AdminUserRegistrations";
 import HackathonRegistrationStats from "./components/HackathonRegistrationStats";
 import DeclareResult from "./components/DeclareResult";
+import CreateCollege from "./components/CreateCollege";
 
 const AdminDashboard = () => {
   const [active, setActive] = useState("dashboard");
@@ -25,7 +26,9 @@ const AdminDashboard = () => {
     case "Result":
       return <HackathonRegistrationStats />;
     case "declare-result":            
-      return <DeclareResult />;       
+      return <DeclareResult />;  
+    case "college-register":            
+      return <CreateCollege />;     
     default:
       return <DashboardHome />;
   }

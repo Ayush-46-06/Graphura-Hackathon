@@ -26,9 +26,15 @@ import Results from "./components/Results/Results";
 import FAQ from "./components/FAQ";
 import PastResults from "./components/Results/PastResults";
 import Error404Page from "./components/404ErrorPage";
-// import BlogDetailsPage from "./components/Blog/BlogDetailsPage";
+import BlogDetailsPage from "./components/Blog/BlogDetailsPage";
 import Sponsor from "./components/Sponsor/Sponsor";
 import Career from "./components/Career/Career";
+import ContactUs from "./components/Contact/Contact";
+import ScrollToTop from "./components/ScrollToTop";
+import ResetPasswordModal from "./components/Auth/ResetPasswordModal";
+import CollegeLogin from "./components/Auth/CollegeLogin";
+import CollegeStudents from "./components/Dashboard/components/CollegeDasboard";
+import CollegeProtectedRoute from "./CollegeProtectedRoute";
 
 
 /* ================== ROUTE GUARDS ================== */
@@ -70,6 +76,7 @@ function App() {
   return (
     <Router>
       {/* <Navbar /> */}
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -82,9 +89,10 @@ function App() {
         <Route path="/partner" element={<PartnerPage />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/result" element={<Results />} />
-        {/* <Route path="/blog" element={<BlogDetailsPage />} /> */}
+        <Route path="/blog" element={<BlogDetailsPage />} />
         <Route path="/sponsors" element={<Sponsor />} />
         <Route path="/career" element={<Career />} />
+        <Route path="/contact" element={<ContactUs />} />
         {/* Public Auth Routes */}
         {/* Auth */}
         <Route
@@ -125,6 +133,22 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+  path="/reset-password/:token"
+  element={<ResetPasswordModal onClose={() => navigate("/login")} />}
+/>
+<Route path="/college-login" element={<CollegeLogin />} />
+
+<Route
+  path="/college/dashboard"
+  element={
+    <CollegeProtectedRoute>
+      <CollegeStudents />
+    </CollegeProtectedRoute>
+  }
+/>
+
+
 
         {/* 404 */}
         <Route path="*" element={<Error404Page />} />

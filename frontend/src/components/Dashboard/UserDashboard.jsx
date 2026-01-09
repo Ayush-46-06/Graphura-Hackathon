@@ -4,32 +4,35 @@ import Profile from "./UserComponents/Profile";
 import ExploreEvents from "./UserComponents/AllHackathon";
 import MyHackathons from "./UserComponents/MyHackathons";
 import Certificates from "./UserComponents/Certificates";
+import Testimonials from "./UserComponents/Testimonial";
 
 
 const UserDashboard = () => {
   const [active, setActive] = useState("profile");
 
-  const renderSection = () => {
-    switch (active) {
-      case "profile":
-        return <Profile />;
+ const renderSection = () => {
+  switch (active) {
+    case "profile":
+      return <Profile />;
 
-      case "explore":
-        return <ExploreEvents />;
+    case "explore":
+      return <ExploreEvents />;
 
-      case "myHackathons":
-        return <MyHackathons />;
+    case "myHackathons":
+      return <MyHackathons />;
 
-     
+    case "certificates":
+      return <Certificates />;
 
-      default:
-        return (
-          <div className="p-6 text-gray-600">
-            Coming soon...
-          </div>
-        );
-    }
-  };
+    case "testimonials":
+      return <Testimonials />;
+
+    default:
+       return <Testimonials />;
+
+  }
+};
+
 
   return (
     <div className="flex h-screen bg-gray-100">

@@ -1,18 +1,12 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { IoIosArrowDown, IoMdMenu, IoMdClose } from "react-icons/io";
+import { LayoutDashboard } from "lucide-react";
+import Login from "./Login";
 
 const navItems = [
   { name: "Home", path: "/" },
-  {
-    name: "Pages",
-    dropdown: [
-      { name: "About Us", path: "/about" },
-      { name: "Our Team", path: "/team" },
-      { name: "FAQ", path: "/faq" },
-      { name: "Pricing", path: "/pricing" },
-    ],
-  },
+  { name: "About", path: "/about" },
   { name: "Hackathons", path: "/hackathons" },
   { name: "Blog", path: "/all-blog" },
   { name: "Partners", path: "/partner" },
@@ -23,6 +17,12 @@ const Navbar = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Check if user is logged in and get role
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+  
+  // Determine dashboard path based on role
+  const dashboardPath = role === "admin" ? "/admin/dashboard" : "/user/dashboard";
   
   return (
     <>
@@ -74,12 +74,18 @@ const Navbar = () => {
               </div>
             ))}
 
+            {/* DASHBOARD BUTTON - Only show if logged in */}
+            {token && (
+              <Link to={dashboardPath}>
+                <button className="flex items-center gap-2 bg-gradient-to-r from-[#03594E] to-[#1AB69D] hover:scale-105 text-white font-semibold px-5 py-2 rounded-full transition-transform shadow-md">
+                  <LayoutDashboard size={18} />
+                  Dashboard
+                </button>
+              </Link>
+            )}
+
             {/* LOGIN BUTTON */}
-            <Link to="/login">
-              <button className="bg-yellow-400 hover:bg-yellow-500 transition text-gray-900 font-semibold px-6 py-2 rounded-full">
-                Login
-              </button>
-            </Link>
+            <Login />
           </div>
 
           {/* MOBILE TOGGLER */}
@@ -166,11 +172,24 @@ const Navbar = () => {
             </div>
           ))}
 
-          <Link to="/login" onClick={() => setMobileOpen(false)}>
-            <button className="mt-4 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold px-6 py-2 rounded-lg w-full">
-              Login
-            </button>
-          </Link>
+          {/* MOBILE DASHBOARD BUTTON - Only show if logged in */}
+          {token && (
+            <Link to={dashboardPath} onClick={() => setMobileOpen(false)}>
+              <button className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#03594E] to-[#1AB69D] text-white font-semibold px-6 py-2.5 rounded-lg w-full shadow-md">
+                <LayoutDashboard size={18} />
+                Dashboard
+              </button>
+            </Link>
+          )}
+
+          {/* MOBILE LOGIN BUTTON - Only show if not logged in */}
+          {!token && (
+            <Link to="/login" onClick={() => setMobileOpen(false)}>
+              <button className="mt-4 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold px-6 py-2 rounded-lg w-full">
+                Login
+              </button>
+            </Link>
+          )}
         </div>
       </div>
     </>

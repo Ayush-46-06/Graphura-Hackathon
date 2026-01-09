@@ -67,7 +67,8 @@ const Hackathons = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setParticipants(res.data.data);
+      setParticipants(res.data.data.participants);
+
     } catch {
       alert("Failed to load participants");
     } finally {

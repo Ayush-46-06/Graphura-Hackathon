@@ -169,20 +169,10 @@ const Footer = () => {
             {/* Column 1 - Logo & Description */}
             <div className="space-y-6">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-teal-600 rounded-full flex items-center justify-center">
-                  <svg
-                    className="w-8 h-8 text-white"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
-                  </svg>
-                </div>
-                <span className="text-2xl font-bold text-gray-800">
-                  Educeet
-                </span>
+                
+                 <img src="/Hackathon.png" alt="" />
               </div>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-gray-700 leading-relaxed">
                 Graphura — Where Hackathons Meet Esports.
               </p>
               <Link
@@ -203,7 +193,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/"
-                    className="text-gray-600 hover:text-teal-600 transition-colors"
+                    className="text-gray-700 hover:text-teal-600 transition-colors"
                   >
                     Home
                   </Link>
@@ -211,7 +201,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/hackathons"
-                    className="text-gray-600 hover:text-teal-600 transition-colors"
+                    className="text-gray-700 hover:text-teal-600 transition-colors"
                   >
                     Hackathons
                   </Link>
@@ -219,7 +209,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/about"
-                    className="text-gray-600 hover:text-teal-600 transition-colors"
+                    className="text-gray-700 hover:text-teal-600 transition-colors"
                   >
                     About
                   </Link>
@@ -227,7 +217,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/results"
-                    className="text-gray-600 hover:text-teal-600 transition-colors"
+                    className="text-gray-700 hover:text-teal-600 transition-colors"
                   >
                     Winners
                   </Link>
@@ -235,7 +225,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/partner"
-                    className="text-gray-600 hover:text-teal-600 transition-colors"
+                    className="text-gray-700 hover:text-teal-600 transition-colors"
                   >
                     Partners
                   </Link>
@@ -243,7 +233,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/about"
-                    className="text-gray-600 hover:text-teal-600 transition-colors"
+                    className="text-gray-700 hover:text-teal-600 transition-colors"
                   >
                     Contact
                   </Link>
@@ -260,7 +250,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/all-blog"
-                    className="text-gray-600 hover:text-teal-600 transition-colors"
+                    className="text-gray-700 hover:text-teal-600 transition-colors"
                   >
                     FAQs
                   </Link>
@@ -268,7 +258,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/rules"
-                    className="text-gray-600 hover:text-teal-600 transition-colors"
+                    className="text-gray-700 hover:text-teal-600 transition-colors"
                   >
                     Rules
                   </Link>
@@ -276,7 +266,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/privacy"
-                    className="text-gray-600 hover:text-teal-600 transition-colors"
+                    className="text-gray-700 hover:text-teal-600 transition-colors"
                   >
                     Privacy Policy
                   </Link>
@@ -285,7 +275,7 @@ const Footer = () => {
                 <li>
                   <Link
                     to="/privacy"
-                    className="text-gray-600 hover:text-teal-600 transition-colors"
+                    className="text-gray-700 hover:text-teal-600 transition-colors"
                   >
                     Terms & Conditions
                   </Link>
@@ -394,7 +384,7 @@ const Footer = () => {
       {/* Copyright */}
       <div className="bg-gray-900 py-5">
         <p className="text-center text-gray-400 text-sm">
-          Copyright © 2025{" "}
+          Copyright © 2026{" "}
           <a
             href="#"
             className="text-yellow-500 hover:text-yellow-400 font-semibold transition-colors"

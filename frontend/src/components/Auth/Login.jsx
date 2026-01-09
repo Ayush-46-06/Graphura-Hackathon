@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import ForgotPasswordModal from "./ForgotPasswordModal";
+import Navbar from "../Navbar";
+import login from "/login.jpg"
 
 const API_URL = "http://localhost:5001/api/auth/login";
 
@@ -14,54 +17,57 @@ const Login = () => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
+  const [showForgot, setShowForgot] = useState(false);
+
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
+    e.preventDefault();
+    setLoading(true);
 
-  try {
-    const response = await axios.post(API_URL, form);
-    const data = response.data;
+    try {
+      const response = await axios.post(API_URL, form);
+      const data = response.data;
 
-    // console.log("LOGIN RESPONSE:", data);
+      // console.log("LOGIN RESPONSE:", data);
 
-    if (!data.success) {
-      throw new Error(data.message);
+      if (!data.success) {
+        throw new Error(data.message);
+      }
+
+      // Save auth info
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.role);
+
+      // Navigate based on role
+      if (data.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/user/dashboard");
+      }
+
+    } catch (err) {
+      console.error("Login error:", err);
+      alert(err.response?.data?.message || err.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
-
-    // Save auth info
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("role", data.role);
-
-    // Navigate based on role
-    if (data.role === "admin") {
-      navigate("/admin/dashboard");
-    } else {
-      navigate("/user/dashboard");
-    }
-
-  } catch (err) {
-    console.error("Login error:", err);
-    alert(err.response?.data?.message || err.message || "Login failed");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className="min-h-screen flex pt-15 bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] relative overflow-hidden">
-      
-     
+      <Navbar />
+
+
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
       </div>
 
-      
+
       <div className="md:w-1/2 w-full flex items-center justify-center p-10 relative z-10">
         <div className="w-full max-w-md">
 
-          
+
           <div className="text-center mb-8">
             {/* <div className="inline-block mb-4 px-4 py-2  bg-gradient-to-br from-[#F8C62F] to-[#FE8235] rounded-full border border-indigo-500/30 backdrop-blur-sm">
               <span className="text-white font-semibold text-sm">👋 Welcome Back</span>
@@ -81,10 +87,10 @@ const Login = () => {
             </p>
           </div>
 
-          
+
           <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-white/10 shadow-2xl">
             <form onSubmit={handleSubmit} className="space-y-5">
-              
+
               <div className="relative group">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></span>
                 <input
@@ -98,7 +104,7 @@ const Login = () => {
                 />
               </div>
 
-              
+
               <div className="relative group">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></span>
                 <input
@@ -112,14 +118,22 @@ const Login = () => {
                 />
               </div>
 
-             
-              <div className="flex justify-end">
-                <a href="/forgot-password" className="text-sm text-[#C2B067] hover:scale-3d transition">
-                  Forgot password?
-                </a>
-              </div>
 
-             
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setShowForgot(true)}
+                  className="text-sm text-[#C2B067]"
+                >
+                  Forgot password?
+                </button>
+
+              </div>
+              {showForgot && (
+                <ForgotPasswordModal onClose={() => setShowForgot(false)} />
+              )}
+
+
               <button
                 type="submit"
                 disabled={loading}
@@ -137,26 +151,25 @@ const Login = () => {
 
             </form>
 
-           
 
-            
-            
+
+
+
           </div>
 
-          
+
         </div>
       </div>
 
-     
+
       <div className="w-1/2 relative overflow-hidden hidden md:flex items-center justify-center p-12">
         <div
-          className="absolute inset-0 m-8 rounded-3xl bg-cover bg-center shadow-2xl"
-          style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200')",
-            filter: "brightness(0.6)",
-          }}
-        >
+  className="absolute inset-0 m-8 rounded-3xl bg-cover bg-center shadow-2xl"
+  style={{
+    backgroundImage: `url(${login})`,
+    filter: "brightness(0.6)",
+  }}
+>
           <div className="absolute inset-0  rounded-3xl" />
         </div>
 

@@ -10,6 +10,10 @@ const ResultModal = ({ open, onClose, data, hackathonId, completed }) => {
     { name: "Others", value: data.distribution.others }
   ];
 
+  const handleDownload = () => {
+    window.open(`/api/user/certificate/${hackathonId}`, "_blank");
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
       <div className="bg-white w-full max-w-5xl rounded-2xl p-6 overflow-y-auto max-h-[90vh]">
@@ -72,14 +76,13 @@ const ResultModal = ({ open, onClose, data, hackathonId, completed }) => {
 
         {/* Certificate */}
         {completed && (
-          <a
-            href={`/api/user/certificate/${hackathonId}`}
-            target="_blank"
+          <button
+            onClick={handleDownload}
             className="inline-flex items-center gap-2 bg-[#03594E] text-white px-6 py-3 rounded-xl font-semibold"
           >
             <Download size={18} />
             Download Certificate
-          </a>
+          </button>
         )}
       </div>
     </div>

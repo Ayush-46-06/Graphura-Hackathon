@@ -99,50 +99,90 @@ export const registrationCompletion = async (req, res) => {
 export const hackathonGraphData = async (req, res) => {
   try {
     const { filter = "month" } = req.query;
+
+    let match = {};
     let groupBy;
     let labels = [];
 
+    const now = new Date();
+
+    // 1️⃣ LAST 7 DAYS
     if (filter === "day") {
+      const start = new Date();
+      start.setDate(start.getDate() - 6);
+
+      match = { createdAt: { $gte: start } };
+
       groupBy = {
-        $dateToString: {
-          format: "%Y-%m-%d",
-          date: "$createdAt"
-        }
+        $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
       };
 
       labels = Array.from({ length: 7 }).map((_, i) => {
-        const d = new Date();
-        d.setDate(d.getDate() - (6 - i));
+        const d = new Date(start);
+        d.setDate(start.getDate() + i);
         return d.toISOString().split("T")[0];
       });
+    }
 
-    } else {
+    // 2️⃣ THIS YEAR (GROUP BY MONTH)
+    else if (filter === "month") {
+      const start = new Date(now.getFullYear(), 0, 1);
+
+      match = { createdAt: { $gte: start } };
+
       groupBy = { $month: "$createdAt" };
-      labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+      labels = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+    }
+
+    // 3️⃣ LAST 5 YEARS (GROUP BY YEAR)
+    else if (filter === "year") {
+      const start = new Date(now.getFullYear() - 4, 0, 1);
+
+      match = { createdAt: { $gte: start } };
+
+      groupBy = { $year: "$createdAt" };
+
+      labels = Array.from({ length: 5 }).map(
+        (_, i) => now.getFullYear() - 4 + i
+      );
     }
 
     const rawData = await Registration.aggregate([
-      { $group: { _id: groupBy, count: { $sum: 1 } } }
+      { $match: match },
+      { $group: { _id: groupBy, count: { $sum: 1 } } },
     ]);
 
-    const data = labels.map((label, index) => {
-      const match = filter === "day"
-        ? rawData.find(d => d._id === label)
-        : rawData.find(d => d._id === index + 1);
+    const data = labels.map((label, idx) => {
+      const match =
+        filter === "year"
+          ? rawData.find((d) => d._id === label)
+          : rawData.find((d) => d._id === idx + 1 || d._id === label);
 
       return { label, count: match ? match.count : 0 };
     });
 
     res.json({ success: true, data });
-
-  } catch {
+  } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Failed to load graph data"
+      message: "Failed to load graph data",
     });
   }
 };
-
 
 export const transactionStats = async (req, res) => {
   const stats = await Transaction.aggregate([

@@ -191,7 +191,7 @@ const AddHackathonModal = ({ onClose, onCreated, editData = null }) => {
             onClick={onClose}
             className="w-10 h-10 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full flex items-center justify-center transition text-white"
           >
-            <X size={20} className="text-black"/>
+            <X size={20} />
           </button>
         </div>
 

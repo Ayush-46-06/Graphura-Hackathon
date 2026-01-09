@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-// 🔥 HERO ASSETS
+// HERO ASSETS
 import heroImg from "../../assets/blogs/blog-hero.png";
-// import breadcrumbBg from "../../assets/blogs/breadcrumb-1-bg.png";
 import brushImg from "../../assets/blogs/breadcrumb-1-2.png";
 import dotsImg from "../../assets/blogs/breadcrumb-1-1.png";
 import circleImg from "../../assets/blogs/breadcrumb-circle.png";
+import Footer from "../Footer";
 import Navbar from "../Navbar";
 
 const BLOGS_PER_PAGE = 9;
@@ -23,8 +23,7 @@ const AllBlog = () => {
     const fetchBlogs = async () => {
       try {
         const res = await axios.get(API_URL);
-        // ✅ API returns { success, data: [] }
-        setBlogs(res.data.data || []);
+        setBlogs(res.data?.data || []);
       } catch (error) {
         console.error("Error fetching blogs:", error);
       } finally {
@@ -35,7 +34,7 @@ const AllBlog = () => {
     fetchBlogs();
   }, []);
 
-  /* ================= PAGINATION LOGIC ================= */
+  /* ================= PAGINATION ================= */
   const totalPages = Math.ceil(blogs.length / BLOGS_PER_PAGE);
   const startIndex = (currentPage - 1) * BLOGS_PER_PAGE;
   const currentBlogs = blogs.slice(startIndex, startIndex + BLOGS_PER_PAGE);
@@ -52,43 +51,33 @@ const AllBlog = () => {
       <Navbar />
       {/* ================= HERO SECTION ================= */}
       <section className="relative overflow-hidden min-h-[70vh] bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]">
-        <div className="container mx-auto px-4 pt-30 pb-28 md:pt-36">
+        <div className="container mx-auto px-4 pt-32 pb-28 md:pt-36">
           <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-12">
             {/* LEFT */}
             <div className="relative z-10 text-center md:text-left max-w-xl">
-              <img
+              {/* <img
                 src={brushImg}
                 alt=""
                 className="hidden md:block absolute w-full h-5 left-0 top-10"
-              />
+              /> */}
 
-              <h1
-                className="text-4xl sm:text-5xl font-extrabold mb-6"
-                style={{
-                  fontFamily: "var(--it-ff-heading)",
-                  color: "#e0e0e0ff",
-                }}
-              >
-                Graphothon Blogs
+              <h1 className="text-4xl sm:text-5xl font-extrabold mb-6 text-[#e0e0e0]">
+                Graphura Hackathon
+                <br />
+                <span className="text-yellow-400">Blogs</span>
               </h1>
 
-              <p
-                className="text-base sm:text-lg leading-relaxed"
-                style={{
-                  fontFamily: "var(--it-ff-body)",
-                  color: "#d4d4d4ff",
-                }}
-              >
+              <p className="text-base sm:text-lg leading-relaxed text-[#d4d4d4]">
                 Drop in. Team up. Build fast. Outplay the competition. A
                 survival-of-the-smartest hackathon where only the top creators
                 claim victory.
               </p>
 
-              <img
+              {/* <img
                 src={dotsImg}
                 alt=""
-                className="hidden md:block absolute -left-20 bottom-22"
-              />
+                className="hidden md:block absolute -left-20 bottom-40"
+              /> */}
             </div>
 
             {/* RIGHT */}
@@ -140,29 +129,18 @@ const AllBlog = () => {
                   <div className="p-6">
                     <div className="text-sm text-gray-500 mb-3">
                       📅{" "}
-                      {new Date(
-                        blog.publishedAt || blog.createdAt
-                      ).toDateString()}
+                      {blog.createdAt
+                        ? new Date(blog.createdAt).toDateString()
+                        : "Date not available"}
                     </div>
 
-                    <h3
-                      className="text-lg font-semibold mb-4"
-                      style={{
-                        color: "#0C121D",
-                        fontFamily: "var(--it-ff-heading)",
-                      }}
-                    >
+                    <h3 className="text-lg font-semibold mb-4 text-[#0C121D]">
                       {blog.title}
                     </h3>
 
-                    <Link to={`/blog/${blog._id}`}>
-                      <button
-                        className="text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all"
-                        style={{
-                          color: "#03594E",
-                          fontFamily: "var(--it-ff-body)",
-                        }}
-                      >
+                    {/* SEND USER TO /blog */}
+                    <Link to="/blog">
+                      <button className="text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all text-[#03594E]">
                         More Details <span>→</span>
                       </button>
                     </Link>
@@ -173,13 +151,13 @@ const AllBlog = () => {
 
             {/* ================= PAGINATION ================= */}
             {totalPages > 1 && (
-              <div className="flex justify-center mt-12 sm:mt-16">
-                <div className="flex items-center gap-2 sm:gap-3">
+              <div className="flex justify-center mt-16">
+                <div className="flex items-center gap-3">
                   {/* Prev */}
                   <button
                     onClick={() => goToPage(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg border flex items-center justify-center disabled:opacity-40"
+                    className="w-10 h-10 rounded-lg border disabled:opacity-40"
                   >
                     ←
                   </button>
@@ -191,7 +169,7 @@ const AllBlog = () => {
                       <button
                         key={page}
                         onClick={() => goToPage(page)}
-                        className={`w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg ${
+                        className={`w-10 h-10 rounded-lg ${
                           currentPage === page
                             ? "bg-[#03594E] text-white"
                             : "border"
@@ -206,7 +184,7 @@ const AllBlog = () => {
                   <button
                     onClick={() => goToPage(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg bg-[#03594E] text-white flex items-center justify-center disabled:opacity-40"
+                    className="w-10 h-10 rounded-lg bg-[#03594E] text-white disabled:opacity-40"
                   >
                     →
                   </button>
@@ -216,6 +194,7 @@ const AllBlog = () => {
           </>
         )}
       </section>
+      <Footer />
     </div>
   );
 };

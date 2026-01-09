@@ -1,49 +1,23 @@
 import HomeHackathonSection from "./HomeHackathonSlider";
 import StatCard from "./StatsSection";
 import CTASection from "./CTASection";
+import Partner from "./Partner";
+import TestimonialSection from "./Testimonial";
+import { motion } from "framer-motion";
+import HackathonWinners from "./HackathonWinners";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0 },
+};
 
 export default function First() {
   return (
     <main className="bg-white">
-      {/* ================= CATEGORIES / DOMAINS ================= */}
-      {/* <section className="py-24 bg-[#F5F7F9]">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold text-[#0C121D] mb-4">
-            Choose Your Mission
-          </h2>
-          <p className="text-[#6C757D] max-w-2xl mx-auto mb-12">
-            From creative sprints to data combat — pick the battlefield that
-            suits your skill.
-          </p>
-
-          <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {[
-              "Human Resources Hack Battles",
-              "Content Strategy Challenges",
-              "Graphic Design Combat",
-              "Data Science & Analytics Missions",
-              "Video Editing Showdowns",
-              "Sales & Marketing Faceoffs",
-              "Digital Marketing Ops",
-              "UI/UX Design Quests",
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="bg-white border rounded-xl p-6 hover:shadow-lg transition text-left"
-              >
-                <h4 className="font-semibold text-[#0C121D]">{item}</h4>
-                <p className="text-sm text-[#6C757D] mt-2">
-                  Every domain has a different path to victory.
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section> */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 text-center">
           {/* SMALL PILL LABEL */}
-          <div className="inline-block mb-4 px-5 py-1.5 rounded-full border border-green-200 text-green-700 text-sm font-medium">
+          <div className="inline-block mb-6 px-5 py-5 rounded-full border border-green-200 text-green-700 text-md font-medium">
             Categories
           </div>
 
@@ -150,87 +124,144 @@ export default function First() {
       {/* ================= COUNTERS ================= */}
       <StatCard />
 
-      {/* ================= ABOUT ================= */}
-      <section className="py-24">
-        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <h2 className="text-4xl font-bold text-[#0C121D] mb-6">
-              Reinventing Hackathons as Esports
-            </h2>
-            <p className="text-[#6C757D] mb-6">
-              Graphura blends coding, creativity, and competition into a
-              high-energy experience where learning becomes a leaderboard
-              challenge.
-            </p>
+      <section className="py-16 sm:py-20 lg:py-24 bg-gradient-to-b from-white to-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-20 items-center">
+            {/* CONTENT - Shows first on mobile */}
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              variants={{
+                hidden: {},
+                visible: {
+                  transition: {
+                    staggerChildren: 0.15,
+                  },
+                },
+              }}
+              className="order-1"
+            >
+              <motion.span
+                variants={fadeUp}
+                transition={{ duration: 0.5 }}
+                className="inline-block mb-4 text-sm font-semibold bg-[#E6F4F1] text-[#03594E] px-5 py-2 rounded-full"
+              >
+                About Us
+              </motion.span>
 
-            <ul className="space-y-3">
-              {[
-                "Game-mode learning",
-                "Flexible, online participation",
-                "Industry-relevant tasks",
-                "Growth-focused tech ecosystem",
-              ].map((point, i) => (
-                <li key={i} className="flex items-center gap-3">
-                  <span className="w-2 h-2 bg-[#F8C62F] rounded-full"></span>
-                  {point}
-                </li>
-              ))}
-            </ul>
+              <motion.h2
+                variants={fadeUp}
+                transition={{ duration: 0.6 }}
+                className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 leading-tight text-[#0C121D]"
+              >
+                Reinventing Hackathons as Esports
+              </motion.h2>
 
-            <button className="mt-8 bg-[#03594E] text-white px-8 py-4 rounded-lg hover:bg-[#1AB69D] transition">
-              Discover Who We Are
-            </button>
+              <motion.p
+                variants={fadeUp}
+                transition={{ duration: 0.6 }}
+                className="text-[#6C757D] text-base sm:text-lg mb-8 leading-relaxed"
+              >
+                Graphura blends coding, creativity, and competition into a
+                high-energy experience where learning becomes a leaderboard
+                challenge.
+              </motion.p>
+
+              <ul className="grid sm:grid-cols-2 gap-4 sm:gap-5 mb-8">
+                {[
+                  "Game-mode learning",
+                  "Flexible, online participation",
+                  "Industry-relevant tasks",
+                  "Growth-focused tech ecosystem",
+                ].map((item, i) => (
+                  <motion.li
+                    key={i}
+                    variants={fadeUp}
+                    transition={{ duration: 0.4 }}
+                    className="flex items-start gap-3"
+                  >
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#F8C62F]/20 flex items-center justify-center mt-0.5">
+                      <svg
+                        className="w-4 h-4 text-[#F8C62F]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </span>
+                    <span className="text-[#0C121D] font-medium">{item}</span>
+                  </motion.li>
+                ))}
+              </ul>
+
+              <motion.button
+                variants={fadeUp}
+                transition={{ duration: 0.5 }}
+                className="group bg-[#03594E] text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold hover:bg-[#1AB69D] transition-all hover:scale-105 hover:shadow-xl flex items-center gap-2 w-full sm:w-auto justify-center"
+              >
+                Discover Who We Are
+                <svg
+                  className="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
+                </svg>
+              </motion.button>
+            </motion.div>
+
+            {/* IMAGE STACK - Shows second on mobile, right side on desktop */}
+             <motion.div
+              initial={{ opacity: 0, x: -60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="relative flex flex-col sm:flex-row gap-4 sm:gap-6 items-stretch"
+            >
+
+              {/* Image 1 */}
+              <img
+                src="/about_img/about-1.webp"
+                alt="Students collaborating"
+                className="w-full sm:w-[55%] h-[260px] sm:h-[420px] rounded-2xl object-cover"
+              />
+
+              {/* Image 2 */}
+              <div className="relative w-full sm:w-[45%] h-[260px] sm:h-[420px]">
+                <img
+                  src="/about_img/about-2.webp"
+                  alt="Learning discussion"
+                  className="w-full h-full rounded-2xl object-cover"
+                />
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
+
       {/* ================= ACTIVE HACKATHONS ================= */}
       <HomeHackathonSection />
-      {/* ================= TESTIMONIALS ================= */}
-      <section className="py-24">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-12">What Players Are Saying</h2>
+      {/* ================= PARTNER LOGOS ================= */}
+      <Partner />
 
-          <div className="space-y-6">
-            {[
-              "It felt like a real-time strategy game with actual results.",
-              "The leaderboard experience pushed me to outperform myself.",
-              "Best innovation battle I’ve participated in so far.",
-              "Great mentors and electrifying competition.",
-            ].map((quote, i) => (
-              <blockquote
-                key={i}
-                className="bg-[#F5F7F9] p-6 rounded-xl italic"
-              >
-                “{quote}”
-              </blockquote>
-            ))}
-          </div>
+      <TestimonialSection />
 
-          <button className="mt-10 bg-[#03594E] text-white px-8 py-4 rounded-lg">
-            More Success Stories
-          </button>
-        </div>
-      </section>
+      <HackathonWinners />
       {/* ================= CTA BANNER ================= */}
-      {/* <section className="py-24 bg-[#03594E] text-white text-center">
-        <h2 className="text-4xl font-bold mb-4">
-          Ready To Enter a New Level of Innovation?
-        </h2>
-        <p className="mb-8">
-          Get your squad, pick a mission, and compete in the ultimate coding
-          battle.
-        </p>
-
-        <div className="flex justify-center gap-6">
-          <button className="bg-[#F8C62F] text-black px-8 py-4 rounded-lg font-semibold">
-            Join the Next Hackathon
-          </button>
-          <button className="border border-white px-8 py-4 rounded-lg">
-            Contact Our Team
-          </button>
-        </div>
-      </section> */}
-      <CTASection />
+      {/* <CTASection /> */}
     </main>
   );
 }

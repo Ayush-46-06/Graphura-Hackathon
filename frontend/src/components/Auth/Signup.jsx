@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Navbar from "../Navbar";
+import signup from "/signup.jpg"
 
 const API_URL = "http://localhost:5001/api/auth/register";
 
@@ -16,7 +18,7 @@ const Signup = () => {
     address: "",
     contactNumber: "",
     university: "",
-    collegeName: "",
+    college: "",
     courseName: "",     // ✅ added
     yearOfStudy: "",    // ✅ added
     role: "user",
@@ -33,59 +35,61 @@ const Signup = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!form.agree) {
-      alert("Please agree to the Terms & Conditions");
-      return;
+  if (!form.agree) {
+    alert("Please agree to the Terms & Conditions");
+    return;
+  }
+
+  if (form.role === "admin" && !form.adminSecret) {
+    alert("Secret key is required for admin registration");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const payload = {
+      name: `${form.firstName} ${form.lastName}`,
+      email: form.email,
+      password: form.password,
+      address: form.address,
+      contactNumber: form.contactNumber,
+      university: form.university,
+
+      // ✅ FIX IS HERE
+      collegeName: form.college,
+
+      courseName: form.courseName,
+      yearOfStudy: form.yearOfStudy,
+      role: form.role,
+    };
+
+    if (form.role === "admin") {
+      payload.adminSecret = form.adminSecret;
     }
 
-    if (form.role === "admin" && !form.adminSecret) {
-      alert("Secret key is required for admin registration");
-      return;
+    const res = await axios.post(API_URL, payload);
+
+    if (res.data.success) {
+      alert(res.data.message);
+      navigate("/login");
     }
 
-    setLoading(true);
+  } catch (err) {
+    console.error("Signup error:", err);
+    alert(err.response?.data?.message || "Signup failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
-    try {
-      const payload = {
-        name: `${form.firstName} ${form.lastName}`,
-        email: form.email,
-        password: form.password,
-        address: form.address,
-        contactNumber: form.contactNumber,
-        university: form.university,
-        collegeName: form.collegeName,
-        courseName: form.courseName,     // ✅ added
-        yearOfStudy: form.yearOfStudy,   // ✅ added
-        role: form.role,
-      };
-
-
-      if (form.role === "admin") {
-        payload.adminSecret = form.adminSecret;
-      }
-
-      const res = await axios.post(API_URL, payload);
-
-      // ✅ Backend only sends success & message
-      if (res.data.success) {
-        alert(res.data.message);
-        navigate("/login"); // 🔥 CORRECT FLOW
-      }
-
-    } catch (err) {
-      console.error("Signup error:", err);
-      alert(err.response?.data?.message || "Signup failed");
-    } finally {
-      setLoading(false);
-    }
-  };
 
 
   return (
     <div className="min-h-screen flex pt-15  bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] relative overflow-hidden">
-      
+      <Navbar />
      
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -97,8 +101,7 @@ const Signup = () => {
         <div
           className="absolute inset-0 m-8 rounded-3xl bg-cover bg-center shadow-2xl"
           style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200')",
+            backgroundImage: `url(${signup})`,
             filter: "brightness(0.6)",
           }}
         >
@@ -297,9 +300,9 @@ const Signup = () => {
 
                 <input
                   type="text"
-                  name="collegeName"
-                  placeholder=" collegeName"
-                  value={form.collegeName}
+                  name="college"
+                  placeholder=" College"
+                  value={form.college}
                   onChange={handleChange}
                   required
                   className="w-full bg-white/5 border border-gray-600 focus:border-indigo-500 rounded-xl p-3 text-white placeholder-gray-400 transition duration-300 focus:ring-2 focus:ring-indigo-500/30 outline-none"

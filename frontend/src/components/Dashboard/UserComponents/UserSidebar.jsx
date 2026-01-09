@@ -8,14 +8,15 @@ import {
   ClipboardList,
   LogOut,
   Settings,
-  Bell
+  Bell,
+  Home
 } from "lucide-react";
 
 const menu = [
   { key: "profile", label: "Profile", icon: User, badge: null },
   { key: "explore", label: "Explore Hackathons", icon: Trophy, badge: null },
   { key: "myHackathons", label: "My Hackathons", icon: ClipboardList, badge: null },
-  
+  { key: "Testimonial", label: "Testimonial", icon: ClipboardList, badge: null },
 ];
 
 const UserSidebar = ({ active, setActive }) => {
@@ -25,8 +26,13 @@ const UserSidebar = ({ active, setActive }) => {
     if (window.confirm("Are you sure you want to logout?")) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      localStorage.removeItem("role");
       window.location.href = "/login";
     }
+  };
+
+  const handleGoHome = () => {
+    window.location.href = "/";
   };
 
   return (
@@ -56,30 +62,8 @@ const UserSidebar = ({ active, setActive }) => {
         </div>
       </div>
 
-      {/* USER INFO */}
-      {/* {!isCollapsed && (
-        <div className="p-4 border-b border-gray-200 bg-white">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg" style={{ backgroundColor: "#03594E" }}>
-              {localStorage.getItem("user") 
-                ? JSON.parse(localStorage.getItem("user")).name?.charAt(0).toUpperCase() 
-                : "U"}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-bold text-sm text-gray-800 truncate">
-                {localStorage.getItem("user") 
-                  ? JSON.parse(localStorage.getItem("user")).name 
-                  : "User"}
-              </p>
-              <p className="text-xs text-gray-500 truncate">
-                {localStorage.getItem("user") 
-                  ? JSON.parse(localStorage.getItem("user")).email 
-                  : "user@example.com"}
-              </p>
-            </div>
-          </div>
-        </div>
-      )} */}
+      {/* BACK TO HOME BUTTON */}
+      
 
       {/* NAVIGATION */}
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
@@ -127,40 +111,34 @@ const UserSidebar = ({ active, setActive }) => {
           </button>
         ))}
       </nav>
-
-      {/* SETTINGS BUTTON */}
-      {/* {!isCollapsed && (
-        <div className="p-4 border-t border-gray-200 bg-white">
-          <button
-            onClick={() => setActive("settings")}
-            className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-left font-semibold transition-all duration-200 group
-              ${active === "settings"
-                ? "text-white shadow-lg"
-                : "hover:bg-gray-100 text-gray-700"}
-            `}
-            style={active === "settings" ? { 
-              backgroundColor: "#03594E",
-              boxShadow: "0 4px 12px rgba(3, 89, 78, 0.25)"
-            } : {}}
-          >
-            <Settings 
-              size={20} 
-              className="group-hover:rotate-90 transition-transform duration-300"
-              strokeWidth={active === "settings" ? 2.5 : 2}
-            />
-            <span className="text-sm">Settings</span>
-          </button>
-        </div>
-      )} */}
+      <div className="p-4 border-b border-gray-200 bg-white">
+        <button
+          onClick={handleGoHome}
+          className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-left font-semibold transition-all duration-200 group
+            ${isCollapsed ? 'justify-center' : ''}
+            bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-600 hover:from-blue-500 hover:to-indigo-600 hover:text-white hover:shadow-lg transform hover:scale-[1.02] active:scale-95
+          `}
+          data-label={isCollapsed ? "Back to Home" : ""}
+        >
+          <Home 
+            size={20} 
+            className="group-hover:-translate-x-1 transition-transform duration-200"
+            strokeWidth={2.5}
+          />
+          {!isCollapsed && <span className="text-sm">Back to Home</span>}
+        </button>
+      </div>
 
       {/* LOGOUT BUTTON */}
       <div className="p-4 border-t border-gray-200 bg-white">
+        
         <button
           onClick={handleLogout}
           className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-left font-semibold transition-all duration-200 group
             ${isCollapsed ? 'justify-center' : ''}
             bg-gradient-to-r from-red-50 to-red-100 text-red-600 hover:from-red-500 hover:to-red-600 hover:text-white hover:shadow-lg transform hover:scale-[1.02] active:scale-95
           `}
+          data-label={isCollapsed ? "Logout" : ""}
         >
           <LogOut 
             size={20} 

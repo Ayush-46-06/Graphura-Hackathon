@@ -1,89 +1,81 @@
-import React from 'react';
-import { Play, Users, BookOpen, Award } from 'lucide-react';
+import React from "react";
+import { Play, Users, BookOpen, Award } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden pt-10 min-h-screen bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]">
-     
+    <section className="relative overflow-hidden min-h-screen bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-[#1AB69D]/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#F8C62F]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-10 sm:top-20 left-5 sm:left-10 w-40 h-40 sm:w-72 sm:h-72 bg-[#1AB69D]/20 rounded-full blur-3xl animate-pulse"></div>
+        <div
+          className="absolute bottom-10 sm:bottom-20 right-5 sm:right-10 w-56 h-56 sm:w-96 sm:h-96 bg-[#F8C62F]/10 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "1s" }}
+        ></div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-20 lg:py-32 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          
-          <div className="space-y-8 animate-fade-in">
-          
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20">
-              <Award className="w-4 h-4 text-[#F8C62F]" />
-              <span className="text-white/90 text-sm font-medium">Top-Rated Learning Platform</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-16 md:py-20 lg:py-32 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center min-h-[calc(100vh-4rem)] lg:min-h-0">
+          <div className="space-y-4 sm:space-y-6 lg:space-y-8 text-center lg:text-left fade-in-animation flex flex-col justify-center items-center lg:items-start">
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-white/20">
+              <Award className="w-3 h-3 sm:w-4 sm:h-4 text-[#F8C62F]" />
+              <span className="text-white/90 text-xs sm:text-sm font-medium">
+                Top-Rated Learning Platform
+              </span>
             </div>
 
-            <h1 className="text-white text-5xl lg:text-6xl font-bold leading-tight">
+            <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
               Discover, Learn,
-              <br />
+              <br className="hidden sm:block" />
               and Grow Smarter
-              <br />
+              <br className="hidden sm:block" />
               with{" "}
               <span className="relative inline-block">
                 <span className="relative z-10 text-[#F8C62F]">Graphura</span>
-                <span className="absolute left-0 bottom-2 w-full h-4 bg-[#F8C62F]/30 -z-0 transform -skew-x-12"></span>
+                <span className="absolute left-0 bottom-1 sm:bottom-2 w-full h-3 sm:h-4 bg-[#F8C62F]/30 -z-0 transform -skew-x-12"></span>
               </span>
             </h1>
 
-            
-            <p className="text-white/80 text-lg max-w-xl leading-relaxed">
+            <p className="text-white/80 text-base sm:text-lg max-w-xl leading-relaxed mx-auto lg:mx-0">
               Graphura offers expert-led courses, modern tools, and a supportive
               environment to help learners grow, achieve success, and build a
               brighter future.
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-4">
-              <button className="group bg-[#F8C62F] text-[#0C121D] px-8 py-4 rounded-xl font-bold hover:bg-[#e0b429] transition-all hover:scale-105 hover:shadow-2xl hover:shadow-[#F8C62F]/50 flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start">
+              <button className="group bg-[#F8C62F] text-[#0C121D] px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-[#e0b429] transition-all hover:scale-105 hover:shadow-2xl hover:shadow-[#F8C62F]/50 flex items-center justify-center gap-2">
                 Find Courses
-                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                <svg
+                  className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
                 </svg>
               </button>
-              <button className="bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-xl font-semibold border-2 border-white/30 hover:bg-white/20 hover:border-white/50 transition-all flex items-center gap-2">
-                <Play className="w-5 h-5" />
+              <button className="bg-white/10 backdrop-blur-sm text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold border-2 border-white/30 hover:bg-white/20 hover:border-white/50 transition-all flex items-center justify-center gap-2">
+                <Play className="w-4 h-4 sm:w-5 sm:h-5" />
                 Watch Demo
               </button>
             </div>
-
-            {/* Stats */}
-            {/* <div className="flex flex-wrap gap-8 pt-8 border-t border-white/20">
-              <div>
-                <p className="text-[#F8C62F] text-3xl font-bold">10k+</p>
-                <p className="text-white/70 text-sm">Video Courses</p>
-              </div>
-              <div>
-                <p className="text-[#F8C62F] text-3xl font-bold">15k+</p>
-                <p className="text-white/70 text-sm">Active Students</p>
-              </div>
-              <div>
-                <p className="text-[#F8C62F] text-3xl font-bold">500+</p>
-                <p className="text-white/70 text-sm">Expert Instructors</p>
-              </div>
-            </div> */}
           </div>
 
-       
-          <div className="relative flex justify-center lg:justify-end">
-            
+          {/* Hide entire image section on mobile - only show on lg screens and up */}
+          <div className="hidden lg:flex relative justify-center lg:justify-end mt-12 lg:mt-0">
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-[450px] h-[450px] bg-[#1AB69D]/30 rounded-full blur-2xl animate-pulse"></div>
+              <div className="w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] md:w-[450px] md:h-[450px] bg-[#1AB69D]/30 rounded-full blur-2xl animate-pulse"></div>
             </div>
 
-            
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-[420px] h-[420px] border-4 border-white/10 rounded-full animate-spin-slow"></div>
+              <div className="w-[260px] h-[260px] sm:w-[330px] sm:h-[330px] md:w-[420px] md:h-[420px] border-4 border-white/10 rounded-full spin-slow-animation"></div>
             </div>
 
-            
-            <div className="relative pt-10 w-[475px] h-[475px] flex items-center justify-center">
+            <div className="relative pt-6 sm:pt-8 md:pt-10 w-[300px] h-[300px] sm:w-[375px] sm:h-[375px] md:w-[475px] md:h-[475px] flex items-center justify-center">
               <img
                 src="https://ordainit.com/html/educeet/educeet/assets/img/hero/hero-1-1.png"
                 alt="Student learning"
@@ -91,46 +83,53 @@ export default function Hero() {
               />
             </div>
 
-            
-            <div className="absolute -top-9 -right-4 lg:-right-8 bg-white px-6 py-5 rounded-2xl shadow-2xl flex items-center gap-4 w-[280px] hover:scale-105 transition-transform animate-float">
-              <div className="w-16 h-16 bg-gradient-to-br from-[#03594E] to-[#1AB69D] rounded-2xl flex items-center justify-center shadow-lg">
-                <Play className="w-7 h-7 text-white" />
+            {/* All three cards also hidden on mobile */}
+            <div className="absolute top-0 sm:top-5 right-0 sm:-right-4 lg:-right-8 bg-white px-4 sm:px-6 py-3 sm:py-5 rounded-xl sm:rounded-2xl shadow-2xl flex items-center gap-2 sm:gap-4 w-[200px] sm:w-[240px] md:w-[280px] hover:scale-105 transition-transform float-animation">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-gradient-to-br from-[#03594E] to-[#1AB69D] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
+                <Play className="w-4 h-4 sm:w-5 sm:h-5 md:w-7 md:h-7 text-white" />
               </div>
               <div>
-                <span className="text-sm text-gray-500 font-medium block">
+                <span className="text-[10px] sm:text-xs md:text-sm text-gray-500 font-medium block">
                   Online Video Courses
                 </span>
-                <p className="text-2xl font-bold text-[#0C121D]">
+                <p className="text-lg sm:text-xl md:text-2xl font-bold text-[#0C121D]">
                   10k<span className="text-[#F8C62F]">+</span>
                 </p>
               </div>
             </div>
 
-            
-            <div className="absolute bottom-8 -left-4 lg:left-0 bg-white px-6 py-5 rounded-2xl shadow-2xl flex items-center gap-4 w-[280px] hover:scale-105 transition-transform animate-float" style={{ animationDelay: '1s' }}>
-              <div className="w-16 h-16 bg-gradient-to-br from-[#F8C62F] to-[#FE8235] rounded-2xl flex items-center justify-center shadow-lg">
-                <Users className="w-7 h-7 text-[#0C121D]" />
+            <div
+              className="absolute bottom-4 sm:bottom-8 left-0 sm:-left-4 lg:left-0 bg-white px-4 sm:px-6 py-3 sm:py-5 rounded-xl sm:rounded-2xl shadow-2xl flex items-center gap-2 sm:gap-4 w-[200px] sm:w-[240px] md:w-[280px] hover:scale-105 transition-transform float-animation"
+              style={{ animationDelay: "1s" }}
+            >
+              <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-gradient-to-br from-[#F8C62F] to-[#FE8235] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
+                <Users className="w-4 h-4 sm:w-5 sm:h-5 md:w-7 md:h-7 text-[#0C121D]" />
               </div>
               <div>
-                <span className="text-sm text-gray-500 font-medium block">
+                <span className="text-[10px] sm:text-xs md:text-sm text-gray-500 font-medium block">
                   Active Students
                 </span>
-                <p className="text-2xl font-bold text-[#0C121D]">
+                <p className="text-lg sm:text-xl md:text-2xl font-bold text-[#0C121D]">
                   15k<span className="text-[#F8C62F]">+</span>
                 </p>
               </div>
             </div>
 
-           
-            <div className="absolute w-[260px] top-[65%] -translate-y-1/2 -right-2 lg:-right-25 bg-white px-6 py-5 rounded-2xl shadow-2xl hover:scale-105 transition-transform animate-float" style={{ animationDelay: '0.5s' }}>
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#1AB69D] to-[#03594E] rounded-xl flex items-center justify-center">
-                  <BookOpen className="w-6 h-6 text-white" />
+            <div
+              className="absolute w-[180px] sm:w-[220px] md:w-[260px] top-[60%] sm:top-[65%] -translate-y-1/2 right-2 sm:-right-2 lg:-right-25 bg-white px-4 sm:px-6 py-3 sm:py-5 rounded-xl sm:rounded-2xl shadow-2xl hover:scale-105 transition-transform float-animation"
+              style={{ animationDelay: "0.5s" }}
+            >
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-[#1AB69D] to-[#03594E] rounded-lg sm:rounded-xl flex items-center justify-center">
+                  <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
                 </div>
                 <div>
-                  <span className="text-xs text-gray-500">Success Rate</span>
-                  <p className="text-lg font-bold text-[#0C121D]">98%</p>
-                  
+                  <span className="text-[10px] sm:text-xs text-gray-500">
+                    Success Rate
+                  </span>
+                  <p className="text-base sm:text-lg font-bold text-[#0C121D]">
+                    98%
+                  </p>
                 </div>
               </div>
             </div>
@@ -138,24 +137,36 @@ export default function Hero() {
         </div>
       </div>
 
-     
       <div className="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,50 C360,100 720,0 1080,50 C1200,65 1320,80 1440,80 L1440,100 L0,100 Z" fill="white" fillOpacity="0.1"/>
-          <path d="M0,70 C360,30 720,90 1080,60 C1200,50 1320,40 1440,50 L1440,100 L0,100 Z" fill="white" fillOpacity="0.05"/>
+        <svg
+          viewBox="0 0 1440 100"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M0,50 C360,100 720,0 1080,50 C1200,65 1320,80 1440,80 L1440,100 L0,100 Z"
+            fill="white"
+            fillOpacity="0.1"
+          />
+          <path
+            d="M0,70 C360,30 720,90 1080,60 C1200,50 1320,40 1440,50 L1440,100 L0,100 Z"
+            fill="white"
+            fillOpacity="0.05"
+          />
         </svg>
       </div>
 
       <style jsx>{`
         @keyframes float {
-          0%, 100% {
+          0%,
+          100% {
             transform: translateY(0px);
           }
           50% {
             transform: translateY(-20px);
           }
         }
-        
+
         @keyframes spin-slow {
           from {
             transform: rotate(0deg);
@@ -176,15 +187,15 @@ export default function Hero() {
           }
         }
 
-        .animate-float {
+        .float-animation {
           animation: float 3s ease-in-out infinite;
         }
 
-        .animate-spin-slow {
+        .spin-slow-animation {
           animation: spin-slow 20s linear infinite;
         }
 
-        .animate-fade-in {
+        .fade-in-animation {
           animation: fade-in 1s ease-out;
         }
       `}</style>

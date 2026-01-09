@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   getOverview,
   getHackathonGraph,
@@ -8,11 +8,6 @@ import {
 import {
   LineChart,
   Line,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
   XAxis,
   YAxis,
   Tooltip,
@@ -20,15 +15,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-
-const COLORS = [
-  "#6366f1",
-  "#22c55e",
-  "#f97316",
-  "#e11d48",
-  "#0ea5e9",
-  "#84cc16",
-];
 
 const StatCard = ({ title, value }) => (
   <div className="bg-white rounded-xl shadow p-6">
@@ -49,17 +35,18 @@ export default function DashboardHome() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [filter, setFilter] = useState("all");
+
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
-        setError(null);
 
         const [o, d, m, y, t] = await Promise.all([
           getOverview(),
-          getHackathonGraph("day"), // last 7 days
-          getHackathonGraph("month"), // this year
-          getHackathonGraph("year"), // last 5 years
+          getHackathonGraph("day"),
+          getHackathonGraph("month"),
+          getHackathonGraph("year"),
           getTransactionStats(),
         ]);
 
@@ -69,7 +56,6 @@ export default function DashboardHome() {
         setGraphYear(y?.data?.data || []);
         setTransactions(t?.data?.data || []);
       } catch (err) {
-        console.error(err);
         setError("Failed to load dashboard data");
       } finally {
         setLoading(false);
@@ -79,12 +65,48 @@ export default function DashboardHome() {
     loadData();
   }, []);
 
+  // -------- COMBINED VIEW FOR "ALL" --------
+  const combinedData = useMemo(() => {
+    const max = Math.max(graphDay.length, graphMonth.length, graphYear.length);
+
+    const result = [];
+
+    for (let i = 0; i < max; i++) {
+      result.push({
+        label: i + 1,
+        day: graphDay[i]?.count ?? 0,
+        month: graphMonth[i]?.count ?? 0,
+        year: graphYear[i]?.count ?? 0,
+      });
+    }
+
+    return result;
+  }, [graphDay, graphMonth, graphYear]);
+
   if (loading)
     return (
       <p className="text-center py-10 text-gray-500">Loading dashboard…</p>
     );
 
   if (error) return <p className="text-center py-10 text-red-500">{error}</p>;
+
+  // -------- FILTER LOGIC --------
+  const filteredData =
+    filter === "all"
+      ? combinedData
+      : filter === "day"
+      ? graphDay
+      : filter === "month"
+      ? graphMonth
+      : graphYear;
+
+  // -------- CORRECT COLORS PER FILTER --------
+  const getStrokeColor = () => {
+    if (filter === "day") return "#3b82f6"; // blue
+    if (filter === "month") return "#22c55e"; // green
+    if (filter === "year") return "#eab308"; // yellow
+    return "#3b82f6";
+  };
 
   return (
     <div className="space-y-6">
@@ -106,71 +128,111 @@ export default function DashboardHome() {
         </div>
       )}
 
-      {/* ===== HACKATHON REGISTRATIONS (ALL CHARTS) ===== */}
+      {/* ===== CHART SECTION ===== */}
       <div className="bg-white p-6 rounded-xl shadow space-y-6">
         <h3 className="font-semibold">Hackathon Registrations</h3>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* 🔵 LINE — LAST 7 DAYS */}
-          <div className="h-72">
-            <p className="font-medium mb-2 text-sm text-gray-600">
-              Last 7 Days
-            </p>
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={graphDay}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="label" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="count"
-                  stroke="#6366f1"
-                  strokeWidth={3}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+        {/* FILTER BUTTONS */}
+        <div className="flex gap-3 flex-wrap">
+          <button
+            onClick={() => setFilter("all")}
+            className={`px-4 py-2 rounded-lg ${
+              filter === "all"
+                ? "bg-indigo-600 text-white"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            All
+          </button>
 
-          {/* 🟢 BAR — THIS YEAR */}
-          <div className="h-72">
-            <p className="font-medium mb-2 text-sm text-gray-600">This Year</p>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={graphMonth}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="label" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="count" fill="#22c55e" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          <button
+            onClick={() => setFilter("day")}
+            className={`px-4 py-2 rounded-lg ${
+              filter === "day"
+                ? "bg-indigo-600 text-white"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            Last 7 Days
+          </button>
 
-          {/* 🟡 PIE — LAST 5 YEARS */}
-          <div className="h-72">
-            <p className="font-medium mb-2 text-sm text-gray-600">
-              Last 5 Years
-            </p>
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Tooltip />
-                <Legend />
-                <Pie
-                  data={graphYear}
-                  dataKey="count"
-                  nameKey="label"
-                  outerRadius={100}
-                  label
-                >
-                  {graphYear.map((_, i) => (
-                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+          <button
+            onClick={() => setFilter("month")}
+            className={`px-4 py-2 rounded-lg ${
+              filter === "month"
+                ? "bg-indigo-600 text-white"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            This Year
+          </button>
+
+          <button
+            onClick={() => setFilter("year")}
+            className={`px-4 py-2 rounded-lg ${
+              filter === "year"
+                ? "bg-indigo-600 text-white"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            Last 5 Years
+          </button>
+        </div>
+
+        {/* LINE CHART */}
+        <div className="h-80 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={filteredData}>
+              <Tooltip />
+
+              {/* ---- ALL VIEW ---- */}
+              {filter === "all" && (
+                <>
+                  <Legend />
+
+                  <Line
+                    type="monotone"
+                    dataKey="day"
+                    name="Last 7 Days"
+                    stroke="#3b82f6"
+                    strokeWidth={3}
+                  />
+
+                  <Line
+                    type="monotone"
+                    dataKey="month"
+                    name="This Year"
+                    stroke="#22c55e"
+                    strokeWidth={3}
+                  />
+
+                  <Line
+                    type="monotone"
+                    dataKey="year"
+                    name="Last 5 Years"
+                    stroke="#eab308"
+                    strokeWidth={3}
+                  />
+                </>
+              )}
+
+              {/* ---- SINGLE FILTER VIEW ---- */}
+              {filter !== "all" && (
+                <>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="label" />
+                  <YAxis />
+
+                  <Line
+                    type="monotone"
+                    dataKey="count"
+                    stroke={getStrokeColor()}
+                    strokeWidth={3}
+                  />
+                </>
+              )}
+            </LineChart>
+          </ResponsiveContainer>
         </div>
       </div>
 

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { Users, Calendar, Award, Tag, Search, Filter, X, ChevronDown, DollarSign, UserCheck } from "lucide-react";
 import HackathonViewModal from "./HackathonViewModal";
-import { Users, Calendar, Award, Tag, Search, Filter, X, ChevronDown } from "lucide-react";
 
 const API_URL = "http://localhost:5001/api/hackathon";
 
@@ -17,6 +16,8 @@ const ExploreEvents = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedPricing, setSelectedPricing] = useState("all"); // NEW: paid/free filter
+  const [selectedParticipation, setSelectedParticipation] = useState("all"); // NEW: solo/team filter
 
   // Extract unique categories and tags
   const categories = ["all", ...new Set(hackathons.map(h => h.category).filter(Boolean))];
@@ -24,9 +25,9 @@ const ExploreEvents = () => {
 
   const fetchHackathons = async () => {
     try {
-      // Add ?limit=1000 to get all hackathons (or remove pagination from backend)
-      const res = await axios.get(`${API_URL}?limit=1000`);
-      setHackathons(res.data.data);
+      const res = await fetch(`${API_URL}?limit=1000`);
+      const data = await res.json();
+      setHackathons(data.data);
     } catch {
       alert("Failed to load events");
     } finally {
@@ -51,7 +52,17 @@ const ExploreEvents = () => {
     const matchesTags = selectedTags.length === 0 || 
       selectedTags.some(tag => h.tags?.includes(tag));
 
-    return matchesSearch && matchesCategory && matchesStatus && matchesTags;
+    // NEW: Pricing filter
+    const matchesPricing = selectedPricing === "all" || 
+      (selectedPricing === "free" && !h.isPaid) ||
+      (selectedPricing === "paid" && h.isPaid);
+
+    // NEW: Participation filter
+    const matchesParticipation = selectedParticipation === "all" ||
+      (selectedParticipation === "solo" && h.participationType === "solo") ||
+      (selectedParticipation === "team" && h.participationType === "team");
+
+    return matchesSearch && matchesCategory && matchesStatus && matchesTags && matchesPricing && matchesParticipation;
   });
 
   const toggleTag = (tag) => {
@@ -66,12 +77,16 @@ const ExploreEvents = () => {
     setSelectedCategory("all");
     setSelectedStatus("all");
     setSelectedTags([]);
+    setSelectedPricing("all");
+    setSelectedParticipation("all");
     setSearch("");
   };
 
   const activeFiltersCount = 
     (selectedCategory !== "all" ? 1 : 0) +
     (selectedStatus !== "all" ? 1 : 0) +
+    (selectedPricing !== "all" ? 1 : 0) +
+    (selectedParticipation !== "all" ? 1 : 0) +
     selectedTags.length;
 
   if (loading) {
@@ -192,6 +207,52 @@ const ExploreEvents = () => {
                 </div>
               </div>
 
+              {/* NEW: Pricing Filter */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <DollarSign className="w-4 h-4 inline mr-1" />
+                  Pricing
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {["all", "free", "paid"].map(pricing => (
+                    <button
+                      key={pricing}
+                      onClick={() => setSelectedPricing(pricing)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                        selectedPricing === pricing
+                          ? "bg-[#03594E] text-white shadow-md"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      }`}
+                    >
+                      {pricing === "all" ? "All Pricing" : pricing.charAt(0).toUpperCase() + pricing.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* NEW: Participation Type Filter */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <UserCheck className="w-4 h-4 inline mr-1" />
+                  Participation Type
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {["all", "solo", "team"].map(type => (
+                    <button
+                      key={type}
+                      onClick={() => setSelectedParticipation(type)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                        selectedParticipation === type
+                          ? "bg-[#03594E] text-white shadow-md"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      }`}
+                    >
+                      {type === "all" ? "All Types" : type.charAt(0).toUpperCase() + type.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Tags Filter */}
               {allTags.length > 0 && (
                 <div>
@@ -263,7 +324,7 @@ const ExploreEvents = () => {
                         e.target.src = "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400";
                       }}
                     />
-                    <div className="absolute top-4 right-4">
+                    <div className="absolute top-4 right-4 flex flex-col gap-2">
                       <span
                         className="px-4 py-2 rounded-full text-xs font-bold uppercase shadow-lg"
                         style={{
@@ -283,21 +344,38 @@ const ExploreEvents = () => {
                       >
                         {h.status}
                       </span>
+                      {/* NEW: Paid/Free Badge */}
+                      <span
+                        className="px-4 py-2 rounded-full text-xs font-bold uppercase shadow-lg"
+                        style={{
+                          backgroundColor: h.isPaid ? "#FFF3E0" : "#E8F5E9",
+                          color: h.isPaid ? "#F57C00" : "#2E7D32"
+                        }}
+                      >
+                        {h.isPaid ? `₹${h.entryFee}` : "FREE"}
+                      </span>
                     </div>
                   </div>
 
                   {/* Content */}
                   <div className="flex-1 p-6">
                     <div className="mb-4">
-                      <h3 className="text-2xl font-bold mb-2 text-[#0C121D]">
-                        {h.title}
-                      </h3>
-                      {/* <div className="flex items-center gap-2 mb-3">
-                        <Award className="w-5 h-5 text-yellow-500" />
-                        <span className="text-xl font-bold text-yellow-500">
-                          ₹{h.prizePool?.toLocaleString() || "0"}
+                      <div className="flex items-start justify-between gap-4 mb-2">
+                        <h3 className="text-2xl font-bold text-[#0C121D] flex-1">
+                          {h.title}
+                        </h3>
+                        {/* NEW: Participation Type Badge */}
+                        <span
+                          className="px-3 py-1.5 rounded-full text-xs font-bold uppercase flex items-center gap-1 whitespace-nowrap"
+                          style={{
+                            backgroundColor: h.participationType === "team" ? "#E3F2FD" : "#F3E5F5",
+                            color: h.participationType === "team" ? "#1976D2" : "#7B1FA2"
+                          }}
+                        >
+                          <Users className="w-3 h-3" />
+                          {h.participationType === "team" ? `Team (Max ${h.maxTeamSize})` : "Solo"}
                         </span>
-                      </div> */}
+                      </div>
                       <p className="text-sm text-gray-600 line-clamp-2">
                         {h.description}
                       </p>
@@ -400,9 +478,8 @@ const ExploreEvents = () => {
             )}
           </div>
         )}
-
-        {/* View Modal */}
-        {open && (
+      </div>
+      {open && (
           <HackathonViewModal
             hackathonId={selectedId}
             onClose={() => {
@@ -411,7 +488,6 @@ const ExploreEvents = () => {
             }}
           />
         )}
-      </div>
     </div>
   );
 };
