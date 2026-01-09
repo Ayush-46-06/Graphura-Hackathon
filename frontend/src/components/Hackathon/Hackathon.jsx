@@ -10,9 +10,10 @@ import { faList } from "@fortawesome/free-solid-svg-icons";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import Footer from "../Footer";
 import Navbar from "../Navbar";
 
 const Hackathon = () => {
@@ -24,8 +25,10 @@ const Hackathon = () => {
   const [range, setRange] = useState([]);
   const [showCalendar, setShowCalendar] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isPaid, setIsPaid] = useState("All");
+  const [participation, setParticipation] = useState("All");
   const itemsPerPage = 9;
-
+  const navigate = useNavigate();
   const filterList = [
     "All",
     "Coding",
@@ -75,7 +78,20 @@ const Hackathon = () => {
       dateMatch = hackathonStart <= endDate && hackathonEnd >= startDate;
     }
 
-    return categoryMatch && searchMatch && dateMatch;
+    const paidMatch =
+    isPaid === "All"
+      ? true
+      : isPaid === "Paid"
+      ? item.isPaid === true
+      : item.isPaid === false;
+
+
+       const participationMatch =
+    participation === "All"
+      ? true
+      : item.participationType === participation.toLowerCase();
+
+    return categoryMatch && searchMatch && dateMatch && paidMatch && participationMatch;
   });
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -115,9 +131,6 @@ const Hackathon = () => {
       {/* Hero section */}
       <section className="bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] pt-20 pb-5 flex justify-center">
         <div className="relative mx-4 md:mx-8 flex flex-col md:flex-row gap-5 md:justify-between items-center lg:h-[400px] max-w-[1280px] w-full">
-          {/* spinner */}
-          {/* <div className="absolute z-10 left-15 top-15 w-70 h-70 slow-spin border border-[#078d7b]"></div> */}
-
           <div className="relative z-10 max-w-[300px] lg:max-w-[450px]">
             <h1 className="text-3xl lg:text-4xl xl:text-5xl font-extrabold text-white">
               Build the Future.
@@ -130,11 +143,12 @@ const Hackathon = () => {
             </p>
           </div>
 
-          <div className="rounded-xl overflow-hidden w-full max-w-[400px] lg:max-w-[500px] animate-float">
+          <div className="rounded-xl overflow-hidden w-full max-w-[400px] lg:max-w-[500px] floating">
             <img
-              src="https://res.cloudinary.com/drq2a0262/image/upload/v1766129810/hackathon_bljdtw.png"
+              // src="https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767686265/Hero_section-removebg-preview_ati5st"
+              src="https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767686924/Hero_section_hpi4js"
               alt="hackathon-image"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover drop-shadow-filter"
             />
           </div>
         </div>
@@ -145,10 +159,10 @@ const Hackathon = () => {
         <div className="my-10 w-full">
           <div className="flex flex-col gap-2 lg:flex-row lg:justify-end">
             <div className="flex flex-col gap-2 mb-2 lg:flex-row lg:border border-gray-200 lg:shadow-lg lg:rounded-[40px] lg:mr-10 p-3 lg:items-center">
-              <p className="mx-4 md:mx-8 font-semibold text-lg">
+              <p className="mx-2 font-semibold text-lg">
                 We found <strong>46</strong> hackathons live now
               </p>
-              <div className="md:mx-8 relative flex lg:items-center">
+              <div className="relative flex lg:items-center">
                 <input
                   type="text"
                   placeholder="Search hackathons..."
@@ -276,135 +290,204 @@ const Hackathon = () => {
       <section className="mx-4 flex justify-center">
         <div className="flex gap-[75px] w-full mx-2">
           <div className="hidden shadow-[0_20px_40px_rgba(0,0,0,0.25)] hover:shadow-[0_30px_60px_rgba(0,0,0,0.35)] hover:-translate-y-2 transition-all duration-300 p-4 border-2 ml-2 border-gray-300 rounded-2xl lg:flex flex-col min-w-[250px] self-start lg:sticky lg:top-0">
-            <h3 className="text-xl font-semibold">
-              <FontAwesomeIcon
-                icon={faFilter}
-                className="text-green-500 text-lg pr-2"
-              />
-              Categories
-            </h3>
-            <ul className="flex flex-col gap-1 mt-2 px-2 mr-5">
-              {filterList.map((val) => (
-                <li
-                  onClick={() => setActive(val)}
-                  className={`flex items-center cursor-pointer p-2 rounded-xl hover:-translate-y-1 hover:shadow-md transition-all duration-300 ease-out ${
-                    active === val
-                      ? "text-white bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]"
-                      : ""
-                  }`}
-                  key={val}
-                >
-                  <span
-                    className={`${
+            <div className="pb-2">
+              <h3 className="text-xl font-semibold">
+                <FontAwesomeIcon
+                  icon={faFilter}
+                  className="text-green-500 text-lg pr-2"
+                />
+                Categories
+              </h3>
+              <ul className="flex flex-col gap-1 mt-2 px-2 mr-5">
+                {filterList.map((val) => (
+                  <li
+                    onClick={() => setActive(val)}
+                    className={`flex items-center cursor-pointer p-2 rounded-xl hover:-translate-y-1 hover:shadow-md transition-all duration-300 ease-out ${
                       active === val
-                        ? "bg-white border-white"
-                        : "bg-gray-300 border-gray-500"
-                    } border flex rounded-full w-3 h-3 mr-2`}
-                  ></span>
-                  {val}
-                </li>
-              ))}
-            </ul>
+                        ? "text-white bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]"
+                        : ""
+                    }`}
+                    key={val}
+                  >
+                    <span
+                      className={`${
+                        active === val
+                          ? "bg-white border-white"
+                          : "bg-gray-300 border-gray-500"
+                      } border flex rounded-full w-3 h-3 mr-2`}
+                    ></span>
+                    {val}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="py-2 border-t border-gray-200">
+              <h3 className="text-xl font-semibold">
+                <FontAwesomeIcon
+                  icon={faFilter}
+                  className="text-green-500 text-lg pr-2"
+                />
+                Pricing
+              </h3>
+              <ul className="flex flex-col gap-1 mt-2 px-2 mr-5">
+                {["All", "Free", "Paid"].map((val) => (
+                  <li
+                    key={val}
+                    onClick={() => setIsPaid(val)}
+                    className={`flex items-center cursor-pointer p-2 rounded-xl hover:-translate-y-1 hover:shadow-md transition-all duration-300 ease-out ${
+                      isPaid === val
+                        ? "text-white bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]"
+                        : ""
+                    }`}
+                  >
+                     <span
+                      className={`${
+                        isPaid === val
+                          ? "bg-white border-white"
+                          : "bg-gray-300 border-gray-500"
+                      } border flex rounded-full w-3 h-3 mr-2`}
+                    ></span>
+                    {val}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="pt-2 border-t border-gray-200">
+              <h3 className="text-xl font-semibold">
+                <FontAwesomeIcon
+                  icon={faFilter}
+                  className="text-green-500 text-lg pr-2"
+                />
+                Participation
+              </h3>
+              <ul className="flex flex-col gap-1 mt-2 px-2 mr-5">
+                {["All", "Solo", "Team"].map((val) => (
+                  <li
+                    key={val}
+                    onClick={() => setParticipation(val)}
+                    className={`flex items-center cursor-pointer p-2 rounded-xl hover:-translate-y-1 hover:shadow-md transition-all duration-300 ease-out ${
+                      participation === val
+                        ? "text-white bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]"
+                        : ""
+                    }`}
+                  >
+                     <span
+                      className={`${
+                        participation === val
+                          ? "bg-white border-white"
+                          : "bg-gray-300 border-gray-500"
+                      } border flex rounded-full w-3 h-3 mr-2`}
+                    ></span>
+                    {val}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
           {view === "grid" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 place-items-center lg:place-items-start w-full pb-5">
               {paginatedData.map((val) => (
-                <Link to={`/hackathons/${val._id}`} key={val._id}>
-                  <div className="group relative mx-2 rounded-3xl shadow-lg overflow-hidden pb-3 border border-gray-200 max-w-[350px] hover:scale-105 hover:shadow-xl transition-transform duration-200">
-                    <div className="mb-4 overflow-hidden h-[180px]">
-                      <img
-                        src={val.image}
-                        alt="hackathon-image"
-                        className="group-hover:scale-110 transition-transform duration-200 h-full w-full object-cover"
-                      />
-                    </div>
-                    <div className="mx-4  pb-3 border-b border-gray-300">
-                      <div className="mt-2 w-full overflow-hidden">
-                        <div className="flex flex-nowrap gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
-                          {val.tags.map((tag, index) => (
-                            <span
-                              key={tag}
-                              className={`px-3 py-0.75 text-xs font-medium rounded-full border transition-colors line-clamp-1
+                <div
+                  key={val._id}
+                  className="group h-full flex flex-col relative mx-2 rounded-3xl shadow-lg overflow-hidden pb-3 border border-gray-200 w-full max-h-[450px] hover:scale-105 hover:shadow-xl transition-transform duration-200 w-[320px]"
+                >
+                  <div className="mb-4 overflow-hidden h-[180px]">
+                    <img
+                      src={val.image}
+                      alt="hackathon-image"
+                      className="group-hover:scale-110 transition-transform duration-200 h-full w-full object-cover"
+                    />
+                  </div>
+                  <div className="mx-4 mb-2 flex flex-col flex-1">
+                    <div className="mt-2 w-full overflow-hidden">
+                      <div className="flex flex-nowrap gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
+                        {val.tags.slice(0, 3).map((tag, index) => (
+                          <span
+                            key={tag}
+                            className={`px-3 py-0.75 text-[11px] font-medium rounded-full border transition-colors line-clamp-1
         ${index % 3 === 0 && "bg-green-50 text-green-700 border-green-300"}
         ${index % 3 === 1 && "bg-blue-50 text-blue-700 border-blue-300"}
         ${index % 3 === 2 && "bg-purple-50 text-purple-700 border-purple-300"}`}
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <h2 className="font-bold text-lg mt-2 truncate group-hover:text-green-800">
+                      {val.title}
+                    </h2>
+                    <p className="font-semibold text-gray-500 text-sm line-clamp-3 mb-2">
+                      {val.description}
+                    </p>
+                    <button
+                      onClick={() => navigate(`/hackathons/${val._id}`)}
+                      className="cursor-pointer mt-auto w-full bg-gradient-to-br from-[#F8C62F] to-[#fee035] py-2 text-white rounded-xl font-semibold hover:scale-105 hover:shadow-md hover:bg-amber-500 duration-200 transition-transform"
+                    >
+                      View Details
+                    </button>
+                  </div>
+                  <span className="absolute top-2 right-2 bg-[#2c572f] text-[#39ff14] font-semibold py-1 px-3 rounded-2xl border border-[#39ff14] shadow-[0_0_8px_#39ff14,0_0_16px_#39ff14]">
+                    {val.isPaid === true ? "Paid" : "Free"}
+                  </span>
+
+                  <div className="mx-4 flex justify-between mt-2 pt-3 mt-auto border-t border-gray-300">
+                    <div className="flex items-center gap-1">
+                      <div className="bg-green-200 rounded-lg py-1.5 px-2">
+                        <FontAwesomeIcon
+                          icon={faPeopleGroup}
+                          className="text-green-500"
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-gray-500 text-sm">
+                          Participants
+                        </span>
+                        <span className="text-green-400 font-medium text-sm">
+                          {val.participants.length}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="bg-blue-200 rounded-lg py-1.5 px-2">
+                        <FontAwesomeIcon
+                          icon={faClock}
+                          className="text-blue-600"
+                        />
                       </div>
 
-                      <h2 className="font-bold text-lg mt-2 truncate group-hover:text-green-800">
-                        {val.title}
-                      </h2>
-                      <p className="font-semibold text-gray-500 text-sm line-clamp-3">
-                        {val.description}
-                      </p>
-                    </div>
-                    <span className="absolute top-2 right-2 bg-[#2c572f] text-[#39ff14] font-semibold py-1 px-3 rounded-2xl border border-[#39ff14] shadow-[0_0_8px_#39ff14,0_0_16px_#39ff14]">
-                      Free
-                    </span>
-
-                    <div className="mx-4 flex justify-between mt-2">
-                      <div className="flex items-center gap-1">
-                        <div className="bg-green-200 rounded-lg py-1.5 px-2">
-                          <FontAwesomeIcon
-                            icon={faPeopleGroup}
-                            className="text-green-500"
-                          />
-                        </div>
+                      {val.status === "upcoming" && (
                         <div className="flex flex-col">
                           <span className="text-gray-500 text-sm">
-                            Participants
+                            Starts On
                           </span>
-                          <span className="text-green-400 font-medium text-sm">
-                            {val.participants.length}
+                          <span className="text-blue-500 font-medium text-sm">
+                            {formatDate(val.startDate)}
                           </span>
                         </div>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <div className="bg-blue-200 rounded-lg py-1.5 px-2">
-                          <FontAwesomeIcon
-                            icon={faClock}
-                            className="text-blue-600"
-                          />
+                      )}
+                      {val.status === "ongoing" && (
+                        <div className="flex flex-col">
+                          <span className="text-gray-500 text-sm">Ends On</span>
+                          <span className="text-blue-500 font-medium text-sm">
+                            {formatDate(val.endDate)}
+                          </span>
                         </div>
-
-                        {val.status === "upcoming" && (
-                          <div className="flex flex-col">
-                            <span className="text-gray-500 text-sm">
-                              Starts On
-                            </span>
-                            <span className="text-blue-500 font-medium text-sm">
-                              {formatDate(val.startDate)}
-                            </span>
-                          </div>
-                        )}
-                        {val.status === "ongoing" && (
-                          <div className="flex flex-col">
-                            <span className="text-gray-500 text-sm">
-                              Ends On
-                            </span>
-                            <span className="text-blue-500 font-medium text-sm">
-                              {formatDate(val.endDate)}
-                            </span>
-                          </div>
-                        )}
-                        {val.status === "completed" && (
-                          <div className="flex flex-col">
-                            <span className="text-gray-500 text-sm">
-                              Ended on
-                            </span>
-                            <span className="text-blue-500 font-medium text-sm">
-                              {formatDate(val.endDate)}
-                            </span>
-                          </div>
-                        )}
-                      </div>
+                      )}
+                      {val.status === "completed" && (
+                        <div className="flex flex-col">
+                          <span className="text-gray-500 text-sm">
+                            Ended on
+                          </span>
+                          <span className="text-blue-500 font-medium text-sm">
+                            {formatDate(val.endDate)}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           )}
@@ -447,18 +530,24 @@ const Hackathon = () => {
                       </div>
 
                       {/* TITLE */}
-                      <h2 className="font-bold text-sm truncate md:text-lg xl:text-xl group-hover:text-green-800 mt-2">
+                      <h2 className="font-bold text-sm line-clamp-1 md:text-lg xl:text-xl group-hover:text-green-800 mt-2">
                         {val.title}
                       </h2>
 
                       {/* DESCRIPTION */}
-                      <p className="mb-2 font-semibold text-gray-500 text-xs line-clamp-1 md:text-sm xl:text-base">
+                      <p className="mb-2 font-semibold text-gray-500 text-xs sm:line-clamp-3 line-clamp-2 md:line-clamp-1 md:text-sm xl:text-base">
                         {val.description}
                       </p>
+                      <div className="w-15 sm:hidden"> <button
+                      onClick={() => navigate(`/hackathons/${val._id}`)}
+                      className="cursor-pointer w-full bg-gradient-to-br from-[#F8C62F] to-[#fee035] text-white rounded-xl font-semibold hover:scale-105 hover:shadow-md hover:bg-amber-500 duration-200 transition-transform"
+                    >
+                      View
+                    </button></div>
 
-                      <div className="flex justify-between mt-auto border-t border-gray-300 pt-3">
+                      <div className="hidden sm:flex justify-between mt-auto border-t border-gray-300 pt-3">
                         {/* PARTICIPANTS */}
-                        <div className="flex flex-col md:flex-row items-center gap-2">
+                        <div className="flex flex-col sm:flex-row items-center gap-2">
                           <div className="bg-green-200 rounded-lg py-1.5 px-2">
                             <FontAwesomeIcon
                               icon={faPeopleGroup}
@@ -476,7 +565,7 @@ const Hackathon = () => {
                         </div>
 
                         {/* DATE */}
-                        <div className="flex flex-col md:flex-row items-center gap-2">
+                        <div className="flex flex-col sm:flex-row items-center gap-2">
                           <div className="bg-blue-200 rounded-lg py-1.5 px-2">
                             <FontAwesomeIcon
                               icon={faClock}
@@ -513,11 +602,17 @@ const Hackathon = () => {
                             </span>
                           </div>
                         </div>
+                        <div className="w-15"> <button
+                      onClick={() => navigate(`/hackathons/${val._id}`)}
+                      className="cursor-pointer w-full bg-gradient-to-br from-[#F8C62F] to-[#fee035] py-2 text-white rounded-xl font-semibold hover:scale-105 hover:shadow-md hover:bg-amber-500 duration-200 transition-transform"
+                    >
+                      View
+                    </button></div>
                       </div>
                     </div>
 
                     <span className="absolute top-2 left-2 bg-[#2c572f] text-[#39ff14] font-semibold py-1 px-3 rounded-2xl border border-[#39ff14] shadow-[0_0_8px_#39ff14,0_0_16px_#39ff14]">
-                      Free
+                      {val.isPaid===true ? "Paid" : "Free"}
                     </span>
                   </div>
                 </Link>
@@ -567,6 +662,7 @@ const Hackathon = () => {
           </div>
         )}
       </section>
+      <Footer />
     </div>
   );
 };

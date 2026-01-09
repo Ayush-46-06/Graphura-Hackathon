@@ -1,41 +1,40 @@
 @import "tailwindcss";
 
 :root {
-  --it-ff-body: 'Open Sans', sans-serif;
-  --it-ff-heading: 'Spartan-Bold', sans-serif;
-  --it-ff-jost: 'Jost', sans-serif;
-  --it-ff-newyork: 'NewYork-Regular', serif;
-  --it-ff-schoolbell: 'Schoolbell', cursive;
-  --it-ff-cinzel-decorative: 'Cinzel Decorative', cursive;
-  --it-ff-oxanium: 'Oxanium', sans-serif;
-  --it-ff-spartan-semibold: 'Spartan-SemiBold', sans-serif;
-  --it-ff-spartan-medium: 'Spartan-Medium', sans-serif;
-  --it-ff-spartan-regular: 'Spartan-Regular', sans-serif;
-  --it-ff-edensor-regular: 'Edensor-Regular', sans-serif;
-  --it-ff-edensor-semibold: 'Edensor-Semibold', sans-serif;
+  --it-ff-body: "Open Sans", sans-serif;
+  --it-ff-heading: "Spartan-Bold", sans-serif;
+  --it-ff-jost: "Jost", sans-serif;
+  --it-ff-newyork: "NewYork-Regular", serif;
+  --it-ff-schoolbell: "Schoolbell", cursive;
+  --it-ff-cinzel-decorative: "Cinzel Decorative", cursive;
+  --it-ff-oxanium: "Oxanium", sans-serif;
+  --it-ff-spartan-semibold: "Spartan-SemiBold", sans-serif;
+  --it-ff-spartan-medium: "Spartan-Medium", sans-serif;
+  --it-ff-spartan-regular: "Spartan-Regular", sans-serif;
+  --it-ff-edensor-regular: "Edensor-Regular", sans-serif;
+  --it-ff-edensor-semibold: "Edensor-Semibold", sans-serif;
   --it-ff-fontawesome: "Font Awesome 6 Pro";
 
   --it-common-white: #ffffff;
-  --it-common-black: #1F2432;
+  --it-common-black: #1f2432;
   --it-common-black-2: #313537;
   --it-common-brown: #272422;
-  --it-heading-primary: #0C121D;
+  --it-heading-primary: #0c121d;
 
-  --it-gray-1: #F0F4F5;
-  --it-gray-2: #D9D9D9;
-  --it-gray-3: #F5F7F9;
-  --it-gray-4: #FFF8F4;
+  --it-gray-1: #f0f4f5;
+  --it-gray-2: #d9d9d9;
+  --it-gray-3: #f5f7f9;
+  --it-gray-4: #fff8f4;
 
-  --it-text-body: #6C757D;
+  --it-text-body: #6c757d;
 
-  --it-theme-1: #03594E;
-  --it-theme-2: #F8C62F;
-  --it-theme-3: #1AB69D;
+  --it-theme-1: #03594e;
+  --it-theme-2: #f8c62f;
+  --it-theme-3: #1ab69d;
   --it-theme-4: #618269;
-  --it-theme-5: #FE8235;
-  --it-theme-6: #CD935A;
+  --it-theme-5: #fe8235;
+  --it-theme-6: #cd935a;
 }
-
 
 @keyframes float {
   0% {
@@ -52,7 +51,6 @@
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
-
 
 @keyframes marquee-scroll {
   from {
@@ -71,7 +69,7 @@
 
 .marquee-track {
   display: flex;
-  gap: 40px;              /* spacing here */
+  gap: 40px; /* spacing here */
   width: max-content;
   animation: marquee-scroll 12s linear infinite;
 }
@@ -108,12 +106,21 @@
 }
 
 /* stagger helpers */
-.delay-100 { animation-delay: 0.1s; }
-.delay-200 { animation-delay: 0.2s; }
-.delay-300 { animation-delay: 0.3s; }
-.delay-400 { animation-delay: 0.4s; }
-.delay-500 { animation-delay: 0.5s; }
-
+.delay-100 {
+  animation-delay: 0.1s;
+}
+.delay-200 {
+  animation-delay: 0.2s;
+}
+.delay-300 {
+  animation-delay: 0.3s;
+}
+.delay-400 {
+  animation-delay: 0.4s;
+}
+.delay-500 {
+  animation-delay: 0.5s;
+}
 
 /* Hide scrollbar but keep scroll */
 .scrollbar-hide::-webkit-scrollbar {
@@ -121,8 +128,8 @@
 }
 
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE & Edge */
-  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none; /* IE & Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 /* Logo slider animation */
@@ -144,7 +151,6 @@
 .logo-slider:hover {
   animation-play-state: paused;
 }
-
 
 /* Intern review slider animations */
 @keyframes scroll-left {
@@ -180,4 +186,75 @@
 .review-scroll-left:hover,
 .review-scroll-right:hover {
   animation-play-state: paused;
+}
+
+@keyframes slowSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.slow-spin {
+  animation: slowSpin 6s linear infinite;
+}
+
+/* fading in */
+@keyframes fading-in {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fading-in {
+  animation: fading-in 1s ease-out forwards;
+}
+
+.drop-shadow-filter {
+  filter: drop-shadow(0 0 18px rgba(0, 255, 140, 0.65))
+    drop-shadow(0 0 35px rgba(0, 255, 140, 0.35));
+}
+
+/* for square spinner */
+.spin-pulse-glow {
+  box-shadow: 0 0 18px rgba(7, 141, 123, 0.4);
+
+  animation: spinPulseGlow 6s linear infinite;
+}
+
+@keyframes spinPulseGlow {
+  0% {
+    transform: rotate(0deg) scale(1);
+    box-shadow: 0 0 14px rgba(7, 141, 123, 0.25);
+  }
+
+  50% {
+    transform: rotate(180deg) scale(1.5);
+    box-shadow: 0 0 40px rgba(7, 141, 123, 0.6);
+  }
+
+  100% {
+    transform: rotate(360deg) scale(1);
+    box-shadow: 0 0 14px rgba(7, 141, 123, 0.25);
+  }
+}
+
+@keyframes floating {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.floating {
+  animation: floating 3s ease-in-out infinite;
 }

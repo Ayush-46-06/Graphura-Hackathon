@@ -4,12 +4,16 @@ import { Link, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import { faWhatsapp, faTelegram } from "@fortawesome/free-brands-svg-icons";
+import Footer from "../Footer";
+import Navbar from "../Navbar";
 import {
+  faArrowLeft,
   faArrowRight,
   faAward,
   faCalendarWeek,
   faCheck,
   faCircleCheck,
+  faCommentDots,
   faCopy,
   faMedal,
   faPeopleGroup,
@@ -32,6 +36,8 @@ const HackathonDetail = () => {
   const [copied, setCopied] = useState(false);
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
+  const [replyText, setReplyText] = useState("");
+  const [replyTo, setReplyTo] = useState(null);
   const currentUrl = window.location.href;
 
   useEffect(() => {
@@ -95,7 +101,8 @@ const HackathonDetail = () => {
         "http://localhost:5001/api/comment",
         {
           hackathonId: id,
-          text: commentText,
+          text: replyTo ? replyText : commentText,
+          ...(replyTo && { parentCommentId: replyTo }),
         },
         {
           headers: {
@@ -104,9 +111,25 @@ const HackathonDetail = () => {
         }
       );
 
-      // add new comment on top
-      setComments([res.data.data, ...comments]);
-      setCommentText("");
+      const newComment = res.data.data;
+
+      // IF REPLY
+      if (replyTo) {
+        setComments((prev) =>
+          prev.map((c) =>
+            c._id === replyTo
+              ? { ...c, replies: [...(c.replies || []), newComment] }
+              : c
+          )
+        );
+        setReplyText("");
+        setReplyTo(null);
+      }
+      // IF NORMAL COMMENT
+      else {
+        setComments([newComment, ...comments]);
+        setCommentText("");
+      }
     } catch (err) {
       console.error("Error posting comment", err);
     }
@@ -115,14 +138,7 @@ const HackathonDetail = () => {
   if (loading) return <p>Loading...</p>;
   if (!data) return <p>Hackathon not found</p>;
 
-  const list = [
-    "Overview",
-    "Rules & Guidlines",
-    "Judges",
-    "Sponsors",
-    "Prizes",
-    "Comments",
-  ];
+  const list = ["Overview", "Rules & Guidlines", "Prizes", "Comments"];
 
   const rules = [
     "Only original code, content, and design are allowed.",
@@ -143,32 +159,7 @@ const HackathonDetail = () => {
   };
 
   const handleRegister = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        alert("Please login first");
-        return;
-      }
-
-      const res = await axios.post(
-        "http://localhost:5001/api/hackathon/register",
-        {
-          hackathonId: data._id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      alert(res.data.message);
-    } catch (error) {
-      console.error(error.response?.data || error.message);
-      alert(error.response?.data?.message || "Registration failed");
-    }
+    navigate("/signup");
   };
 
   const isEnrollmentClosed =
@@ -182,8 +173,46 @@ const HackathonDetail = () => {
   };
   const shareText = "Check out this hackathon on Graphura!";
 
+  // time ago
+  const timeAgo = (date) => {
+    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+
+    const intervals = [
+      { label: "year", seconds: 31536000 },
+      { label: "month", seconds: 2592000 },
+      { label: "day", seconds: 86400 },
+      { label: "hour", seconds: 3600 },
+      { label: "minute", seconds: 60 },
+    ];
+
+    for (let i of intervals) {
+      const count = Math.floor(seconds / i.seconds);
+      if (count >= 1) {
+        return `${count} ${i.label}${count > 1 ? "s" : ""} ago`;
+      }
+    }
+
+    return "Just now";
+  };
+
+  const formatLocalMidnightTime = (dateString) => {
+    if (!dateString) return "";
+
+    const localDateString = dateString.replace("Z", "");
+    const date = new Date(localDateString);
+
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
+  const prizes = data?.prizeDetails?.split(",").map((p) => Number(p.trim()));
+
   return (
-    <div>
+    <div className="pt-25">
+      <Navbar />
       {/* Breadcrumb */}
       <nav className="text-sm text-gray-500 flex items-center gap-1 mx-4 lg:mx-8 my-2">
         <Link to="/" className="hover:text-black">
@@ -203,8 +232,9 @@ const HackathonDetail = () => {
 
       {/* hackathon details */}
       <section>
-        <div className="mx-4 lg:mx-8 lg:flex gap-[5%] mt-15">
+        <div className="mx-4 lg:mx-8 lg:flex gap-[5%] mt-5">
           <div className="pb-4 w-full">
+            <button onClick={()=>navigate("/hackathons")} className="bg-yellow-400 hover:bg-amber-500 hover:-translate-y-1 cursor-pointer duration-200 transition-transform text-white py-2 px-4 rounded-2xl"><FontAwesomeIcon icon={faArrowLeft} /> Back to Hackathons</button>
             <div className=" relative mt-2 rounded-2xl overflow-hidden max-h-[250px] lg:max-h-[320px]">
               <img
                 src={data.image}
@@ -324,38 +354,7 @@ const HackathonDetail = () => {
                   </p>
                 </div>
               )}
-              {active === "Judges" && (
-                <div className="mt-4">
-                  <h3 className="font-bold text-xl w-full lg:text-2xl">
-                    Meet the Judges
-                  </h3>
-                  <div className="flex flex-wrap gap-4 w-full justify-center">
-                    {data?.judges?.map((judge) => (
-                      <div
-                        key={judge._id}
-                        className="flex flex-col max-w-[250px] items-center gap-2 p-4 border border-gray-200 rounded-2xl shadow-lg mt-2 w-full"
-                      >
-                        <div className="w-20 h-20 rounded-full overflow-hidden">
-                          <img src={judge.image} alt="" />
-                        </div>
-
-                        <div>
-                          <p className="font-semibold text-center">
-                            {judge.name}
-                          </p>
-                          <p className="text-sm text-green-800 font-medium text-center">
-                            {judge.occupation}
-                          </p>
-                          <p className="text-sm text-gray-500 text-center">
-                            {judge.company}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {active === "Sponsors" && (
+              {/* {active === "Sponsors" && (
                 <div className="mt-4">
                   <h3 className="font-bold text-xl lg:text-2xl">
                     Our Proud Sponsors
@@ -371,7 +370,7 @@ const HackathonDetail = () => {
                     ))}
                   </div>
                 </div>
-              )}
+              )} */}
               {active === "Prizes" && (
                 <div className="mt-4">
                   <h3 className="font-bold text-xl lg:text-2xl">
@@ -381,8 +380,8 @@ const HackathonDetail = () => {
                     />
                     Prizes & Awards
                   </h3>
-                  {/* 1st Prize Winner */}
                   <div className="flex gap-6 mt-2 justify-center w-full flex-wrap">
+                    {/* 1st Prize Winner */}
                     <div className="relative rounded-2xl p-5 bg-gradient-to-br from-yellow-300 via-yellow-100 to-yellow-500 shadow-[0_10px_30px_rgba(234,179,8,0.6)] border border-yellow-600">
                       <div className="flex items-center gap-3 mb-3">
                         <span className="w-10 h-10 flex items-center justify-center rounded-full bg-yellow-600 shadow-inner">
@@ -399,7 +398,7 @@ const HackathonDetail = () => {
 
                       {/* Prize amount */}
                       <p className="text-lg font-bold text-yellow-900">
-                        ₹15,000
+                        ₹{prizes?.[0]?.toLocaleString()}
                       </p>
 
                       <p className="text-sm text-yellow-800 mt-1 font-medium">
@@ -424,7 +423,9 @@ const HackathonDetail = () => {
                         </h3>
                       </div>
 
-                      <p className="text-lg font-bold text-gray-800">₹10,000</p>
+                      <p className="text-lg font-bold text-gray-800">
+                        ₹{prizes?.[1]?.toLocaleString()}
+                      </p>
 
                       <p className="text-sm text-gray-700 mt-1 font-medium">
                         Outstanding Performance
@@ -449,7 +450,9 @@ const HackathonDetail = () => {
                       </div>
 
                       {/* Prize */}
-                      <p className="text-lg font-bold text-white">₹5,000</p>
+                      <p className="text-lg font-bold text-white">
+                        ₹{prizes?.[2]?.toLocaleString()}
+                      </p>
 
                       <p className="text-sm text-white mt-1 font-medium">
                         Strong Performance
@@ -461,18 +464,18 @@ const HackathonDetail = () => {
                 </div>
               )}
               {active === "Comments" && (
-                <div className="mt-4">
-                  <div className="flex gap-3 mb-6">
+                <div className="mt-4 max-h-[500px] overflow-y-scroll">
+                  <div className="relative flex gap-3 mb-6 p-2">
                     <textarea
                       value={commentText}
                       onChange={(e) => setCommentText(e.target.value)}
-                      placeholder="Write a comment..."
-                      className="flex-1 border border-gray-300 rounded-lg p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-green-400"
-                      rows={2}
+                      placeholder="Add a comment..."
+                      className="flex-1 rounded-lg bg-gray-100 shadow-md border border-gray-200 p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-green-800 font-medium"
+                      rows={3}
                     />
                     <button
                       onClick={postComment}
-                      className="bg-green-600 text-white px-4 rounded-lg font-semibold hover:bg-green-700"
+                      className="absolute right-5 bottom-5 py-1 bg-yellow-400 hover:bg-yellow-500 cursor-pointer text-white px-6 rounded-xl font-semibold hover:-translate-y-1 hover:shadow-md duration-200 transition-transform"
                     >
                       Post
                     </button>
@@ -485,17 +488,101 @@ const HackathonDetail = () => {
                     <p className="text-gray-500 text-sm">No comments yet</p>
                   ) : (
                     <div className="space-y-4">
+                      <p className="font-bold text-lg mx-2">
+                        Comments{" "}
+                        <span className="font-semibold text-white bg-yellow-500 text-sm rounded-xl px-2">
+                          {comments.length}
+                        </span>
+                      </p>
                       {comments.map((comment) => (
-                        <div
-                          key={comment._id}
-                          className="border border-gray-200 rounded-lg p-3"
-                        >
-                          <p className="text-sm text-gray-800">
+                        <div key={comment._id} className="ml-2 pb-4">
+                          {/* MAIN COMMENT */}
+                          <div className="flex gap-2 items-center">
+                            {comment.user.image ? (
+                              <img
+                                src={comment.user.image}
+                                alt="user"
+                                className="w-10 h-10 rounded-full"
+                              />
+                            ) : (
+                              <span className="flex items-center justify-center w-10 h-10 bg-green-600 text-white rounded-full text-lg font-semibold">
+                                {comment.user?.name?.[0]}
+                              </span>
+                            )}
+
+                            <p className="font-semibold">
+                              {comment.user?.name}
+                              <span className="text-gray-600 font-normal ml-3">
+                                {timeAgo(comment.createdAt)}
+                              </span>
+                            </p>
+                          </div>
+
+                          <p className="text-sm text-gray-700 ml-12 font-medium">
                             {comment.text}
                           </p>
-                          <span className="text-xs text-gray-400">
-                            {new Date(comment.createdAt).toLocaleString()}
-                          </span>
+
+                          {/* REPLY BUTTON */}
+                          <button
+                            onClick={() => setReplyTo(comment._id)}
+                            className="ml-15 text-sm text-green-700 font-semibold mt-1 cursor-pointer"
+                          >
+                            <FontAwesomeIcon
+                              icon={faCommentDots}
+                              className="pr-1"
+                            />
+                            Reply
+                          </button>
+
+                          {/* REPLY INPUT */}
+                          {replyTo === comment._id && (
+                            <div className="ml-12 mt-2 flex gap-2">
+                              <input
+                                value={replyText}
+                                onChange={(e) => setReplyText(e.target.value)}
+                                placeholder="Write a reply..."
+                                className="flex-1 rounded-lg bg-gray-100 shadow-md border border-gray-200 p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-green-800 font-medium"
+                              />
+                              <button
+                                onClick={postComment}
+                                className="bg-yellow-400 cursor-pointer hover:bg-yellow-500 text-white px-4 rounded-lg text-sm hover:-translate-y-1 hover:shadow-md duration-200 transition-transform"
+                              >
+                                Send
+                              </button>
+                            </div>
+                          )}
+
+                          {/* REPLIES */}
+                          {comment.replies?.length > 0 && (
+                            <div className="ml-16 mt-3 space-y-2 pl-4 border-l border-green-700">
+                              {comment.replies.map((reply) => (
+                                <div
+                                  key={reply._id}
+                                  className="flex gap-2 pb-2"
+                                >
+                                  {reply.user.image ? (
+                                    <img
+                                      src={comment.user.image}
+                                      alt="user"
+                                      className="w-10 h-10 rounded-full"
+                                    />
+                                  ) : (
+                                    <span className="flex items-center justify-center w-8 h-8 bg-gray-500 text-white rounded-full text-sm">
+                                      {reply.user?.name?.[0]}
+                                    </span>
+                                  )}
+                                  <div>
+                                    <p className="text-xs font-semibold">
+                                      {reply.user?.name}
+                                    </p>
+                                    <p className="text-xs text-gray-700">
+                                      {reply.text}
+                                    </p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -513,8 +600,8 @@ const HackathonDetail = () => {
               </div>
               <ul className="py-2 px-4 flex flex-col gap-2 border-b border-gray-300">
                 <li className="flex justify-between font-semibold">
-                  <span className="text-gray-500">Duration:</span>
-                  <span>24 hrs</span>
+                  <span className="text-gray-500">Timing:</span>
+                  <span>{formatLocalMidnightTime(data.startDate)}</span>
                 </li>
                 <li className="flex justify-between font-semibold">
                   <span className="text-gray-500">Enrolled:</span>
@@ -662,7 +749,8 @@ const HackathonDetail = () => {
                       {formatDate(hackathon.startDate)}
                     </p>
                     <p className="text-gray-500 text-sm font-medium">
-                      <FontAwesomeIcon icon={faPeopleGroup} /> 123
+                      <FontAwesomeIcon icon={faPeopleGroup} />{" "}
+                      {hackathon.participants.length}
                     </p>
                     <Link to={`/hackathons/${hackathon._id}`}>
                       <button className="mt-2 border border-gray-200 text-green-500 font-semibold w-full bg-gray-100 p-2 rounded-xl hover:bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] hover:text-white duration-200 hover:shadow-lg cursor-pointer">
@@ -675,6 +763,7 @@ const HackathonDetail = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 };

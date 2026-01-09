@@ -3,11 +3,10 @@ import Hackathon from "../models/Hackathon.model.js";
 
 export const addComment = async (req, res) => {
   try {
-    
     if (!req.user) {
       return res.status(403).json({
         success: false,
-        message: "Admins are not allowed to add comments"
+        message: "Admins are not allowed to add comments",
       });
     }
 
@@ -17,7 +16,7 @@ export const addComment = async (req, res) => {
     if (!text || !text.trim()) {
       return res.status(400).json({
         success: false,
-        message: "Comment text is required"
+        message: "Comment text is required",
       });
     }
 
@@ -25,7 +24,7 @@ export const addComment = async (req, res) => {
     if (!hackathon) {
       return res.status(404).json({
         success: false,
-        message: "Hackathon not found"
+        message: "Hackathon not found",
       });
     }
 
@@ -33,89 +32,87 @@ export const addComment = async (req, res) => {
       hackathon: hackathonId,
       user: userId,
       text,
-      parentComment: parentCommentId || null
+      parentComment: parentCommentId || null,
     });
 
     if (parentCommentId) {
       await Comment.findByIdAndUpdate(parentCommentId, {
-        $push: { replies: comment._id }
+        $push: { replies: comment._id },
       });
     }
 
     hackathon.comments.push(comment._id);
     await hackathon.save();
 
+    const populatedComment = await Comment.findById(comment._id)
+      .populate("user", "name image")
+      .populate({
+        path: "replies",
+        populate: { path: "user", select: "name image" },
+      });
+
     res.status(201).json({
       success: true,
       message: "Comment added successfully",
-      data: comment
+      data: populatedComment,
     });
-
   } catch (error) {
     console.error("ADD COMMENT ERROR:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to add comment"
+      message: "Failed to add comment",
     });
   }
 };
-
-
 
 export const getHackathonComments = async (req, res) => {
   try {
     const { hackathonId } = req.params;
 
- const comments = await Comment.find({
-  hackathon: hackathonId,
-  isDeleted: false,
-  parentComment: null
-})
-.populate("user", "name image")
-.populate({
-  path: "replies",
-  match: { isDeleted: false },
-  populate: [
-    {
-      path: "user",
-      select: "name image"
-    },
-    {
-      path: "replies",
-      match: { isDeleted: false },
-      populate: {
-        path: "user",
-        select: "name image"
-      }
-    }
-  ]
-})
-.sort({ createdAt: 1 });
-
+    const comments = await Comment.find({
+      hackathon: hackathonId,
+      isDeleted: false,
+      parentComment: null,
+    })
+      .populate("user", "name image")
+      .populate({
+        path: "replies",
+        match: { isDeleted: false },
+        populate: [
+          {
+            path: "user",
+            select: "name image",
+          },
+          {
+            path: "replies",
+            match: { isDeleted: false },
+            populate: {
+              path: "user",
+              select: "name image",
+            },
+          },
+        ],
+      })
+      .sort({ createdAt: 1 });
 
     res.status(200).json({
       success: true,
-      data: comments
+      data: comments,
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Failed to fetch comments"
+      message: "Failed to fetch comments",
     });
   }
 };
-
-
-
-
 
 export const updateComment = async (req, res) => {
   try {
     if (!req.user) {
       return res.status(403).json({
         success: false,
-        message: "Admins cannot edit comments"
+        message: "Admins cannot edit comments",
       });
     }
 
@@ -128,14 +125,14 @@ export const updateComment = async (req, res) => {
     if (!comment || comment.isDeleted) {
       return res.status(404).json({
         success: false,
-        message: "Comment not found"
+        message: "Comment not found",
       });
     }
 
     if (comment.user.toString() !== userId.toString()) {
       return res.status(403).json({
         success: false,
-        message: "You can edit only your own comment"
+        message: "You can edit only your own comment",
       });
     }
 
@@ -145,25 +142,23 @@ export const updateComment = async (req, res) => {
     res.json({
       success: true,
       message: "Comment updated",
-      data: comment
+      data: comment,
     });
-
   } catch (error) {
     console.error("UPDATE COMMENT ERROR:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to update comment"
+      message: "Failed to update comment",
     });
   }
 };
-
 
 export const deleteComment = async (req, res) => {
   try {
     if (!req.user) {
       return res.status(403).json({
         success: false,
-        message: "Admins cannot delete comments"
+        message: "Admins cannot delete comments",
       });
     }
 
@@ -175,14 +170,14 @@ export const deleteComment = async (req, res) => {
     if (!comment) {
       return res.status(404).json({
         success: false,
-        message: "Comment not found"
+        message: "Comment not found",
       });
     }
 
     if (comment.user.toString() !== userId.toString()) {
       return res.status(403).json({
         success: false,
-        message: "You can delete only your own comment"
+        message: "You can delete only your own comment",
       });
     }
 
@@ -192,15 +187,13 @@ export const deleteComment = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Comment deleted"
+      message: "Comment deleted",
     });
-
   } catch (error) {
     console.error("DELETE COMMENT ERROR:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to delete comment"
+      message: "Failed to delete comment",
     });
   }
 };
-

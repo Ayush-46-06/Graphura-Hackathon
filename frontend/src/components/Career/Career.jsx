@@ -1,13 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Graph from "../Career/Graph";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+import { ChevronLeft, ChevronRight, Quote, University } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { EffectCoverflow, Pagination, Navigation } from "swiper/modules";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+import Footer from "../Footer";
 import Navbar from "../Navbar";
 
 const Career = () => {
   const [open, setOpen] = useState(null);
-  const [current, setCurrent] = useState(1);
+  const [reviews, setReviews] = useState([]);
+  const [currentReview, setCurrentReview] = useState(0);
 
   const faqQuestions = [
     "What is the Graphothon Career Program?",
@@ -60,53 +72,28 @@ const Career = () => {
   ];
 
   const logos = [
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700392/Hindustan_times_slsorl",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700392/Deewal_aa6obw",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700378/Accenture_bfsucq",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700378/Bajaj_sgqhky",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700377/TheAstroTalk_ztw8sq",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700377/Leans_Kart_tbzjbu",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700377/myntra_b6ov9v",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700378/4.policy_bazar_luk32a",
   ];
 
-  const reviews = [
-    {
-      name: "Tanush Mukherjee",
-      department: "Frontend Development",
-      image: "https://i.pravatar.cc/150?img=1",
-      review:
-        "“This was a great oportunity for me to learn about how this industry works and with this i have improved a lot in this few weeks. I am thankfull for this oportunity.”",
-    },
-    {
-      name: "Shruti Chhetri",
-      department: "Data Analytics",
-      image: "https://i.pravatar.cc/150?img=2",
-      review:
-        "“The overall experience was OKAY, the seniors were cooperative and also helpful, they did guide us whenever we faced an issue. I would like to thank all my seniors.”",
-    },
-    {
-      name: "Ariyan Dibakar Mahanta",
-      department: "Backend Development",
-      image: "https://i.pravatar.cc/150?img=3",
-      review:
-        "“My internship at Renusharma founfation was a great learning experience. I improved my design skills, explored new tools, and learned from a talented, supportive team.”",
-    },
-    {
-      name: "Shivam dubey",
-      department: "Graphic Design",
-      image: "https://i.pravatar.cc/150?img=4",
-      review:
-        "“It was great experience with graphura india private limited I learn so much in that intership great guidance with senior members of Graphura.“",
-    },
-    {
-      name: "Raj Sharma",
-      department: "Graphic Design",
-      image: "https://i.pravatar.cc/150?img=4",
-      review:
-        "“I gained hands-on experience in MERN stack backend projects and improved my teamwork skills by collaborating with colleagues.”",
-    },
-  ];
+  //getting testimonial reviews
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await axios.get("http://localhost:5001/api/review");
+        setReviews(res.data.review);
+      } catch (err) {
+        console.error("error fetching reviews", err);
+      }
+    };
+    fetchReviews();
+  }, []);
 
   const internshipRoles = [
     {
@@ -150,16 +137,28 @@ const Career = () => {
       desc: "Dedicated to understanding people, strengthening teams, and driving organizational success.",
     },
   ];
-  const cardsPerPage = 3;
 
-  const totalPages = Math.ceil(internshipRoles.length / cardsPerPage);
 
-  const startIndex = (current - 1) * cardsPerPage;
-  const currentCards = internshipRoles.slice(
-    startIndex,
-    startIndex + cardsPerPage
-  );
+  // for testimonial/reviews
+  const nextReview = () => {
+    setCurrentReview((prevIndex) => (prevIndex + 1) % reviews.length);
+  };
 
+  const prevReview = () => {
+    setCurrentReview((prevIndex) =>
+      prevIndex === 0 ? reviews.length - 1 : prevIndex - 1
+    );
+  };
+
+  const currentReviews = reviews[currentReview];
+
+  const universities = [
+    "https://res.cloudinary.com/drq2a0262/image/upload/v1767859754/brand1-2_w5p2l5.svg",
+    "https://res.cloudinary.com/drq2a0262/image/upload/v1767859753/brand1-1_ioex5l.svg",
+    "https://res.cloudinary.com/drq2a0262/image/upload/v1767859752/brand1-3_w0wikb.svg",
+    "https://res.cloudinary.com/drq2a0262/image/upload/v1767859753/brand1-4_edfuqd.svg",
+    "https://res.cloudinary.com/drq2a0262/image/upload/v1767859752/brand2-2_lkvyci.svg",
+  ]
   return (
     <div className="pb-15 overflow-hidden">
       <Navbar />
@@ -185,35 +184,16 @@ const Career = () => {
               AS SEEN ON
             </h2>
             <div className="flex flex-wrap justify-center gap-x-10">
-              <div className="max-w-[150px]">
-                <img
-                  src="https://res.cloudinary.com/drq2a0262/image/upload/v1767256564/Gemini_Generated_Image_j8qi18j8qi18j8qi-removebg-preview_n6aqfb.png"
-                  alt=""
-                />
-              </div>
-              <div className="max-w-[150px]">
-                <img
-                  src="https://res.cloudinary.com/drq2a0262/image/upload/v1767256564/Gemini_Generated_Image_j8qi18j8qi18j8qi-removebg-preview_n6aqfb.png"
-                  alt=""
-                />
-              </div>
-              <div className="max-w-[150px]">
-                <img
-                  src="https://res.cloudinary.com/drq2a0262/image/upload/v1767256564/Gemini_Generated_Image_j8qi18j8qi18j8qi-removebg-preview_n6aqfb.png"
-                  alt=""
-                />
-              </div>
-              <div className="max-w-[150px]">
-                <img
-                  src="https://res.cloudinary.com/drq2a0262/image/upload/v1767256564/Gemini_Generated_Image_j8qi18j8qi18j8qi-removebg-preview_n6aqfb.png"
-                  alt=""
-                />
-              </div>
+              {universities.map((university,index)=>(
+                <div key={index} className="w-45 h-40">
+                  <img src={university} alt="" className="w-full h-full"/>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* hero section image */}
-          <div className="border-4 border-white absolute bottom-[-15%] sm:bottom-[-25%] md:bottom-[-28%] w-[300px] sm:w-[400px] md:w-[450px] lg:w-[500px] rounded-xl overflow-hidden animate-float">
+          <div className="border-4 border-white absolute bottom-[-15%] sm:bottom-[-30%] md:bottom-[-38%] w-[300px] sm:w-[400px] md:w-[450px] lg:w-[500px] rounded-xl overflow-hidden animate-float">
             <img
               src="https://res.cloudinary.com/drq2a0262/image/upload/v1767178175/estee-janssens-zEqkUMiMxMI-unsplash_wqosou.jpg"
               alt=""
@@ -246,84 +226,122 @@ const Career = () => {
 
       {/* About internship section */}
       <section className="flex justify-center">
-        <div className="mt-16 mx-4 lg:mx-8 w-full max-w-[1280px]">
+        <div className="mt-16 mx-4 lg:mx-8 w-full max-w-[1280px] relative">
           <h1 className="text-xl font-extrabold text-center md:text-2xl lg:text-3xl">
             Transform your career with our internship program
           </h1>
 
-          {/* cards */}
-          <div className="flex flex-wrap justify-center mt-10 gap-10">
-            {currentCards.map((card, index) => (
-              <div
+          {/* LEFT ARROW */}
+          <button
+            className="
+        results-prev
+        absolute
+        left-0
+        top-1/2
+        -translate-y-1/2
+        z-20
+        w-12 h-12
+        rounded-full
+        bg-white
+        border
+        shadow-md
+        flex items-center justify-center
+        text-2xl
+        text-[#03594E]
+        hover:bg-[#E6F4F1]
+      "
+          >
+            ‹
+          </button>
+
+          {/* RIGHT ARROW */}
+          <button
+            className="
+        results-next
+        absolute
+        right-0
+        top-1/2
+        -translate-y-1/2
+        z-20
+        w-12 h-12
+        rounded-full
+        bg-white
+        border
+        shadow-md
+        flex items-center justify-center
+        text-2xl
+        text-[#03594E]
+        hover:bg-[#E6F4F1]
+      "
+          >
+            ›
+          </button>
+
+          <Swiper
+            modules={[Navigation]}
+            centeredSlides={true}
+            slidesPerView="auto"
+            spaceBetween={40}
+            initialSlide={1}
+            navigation={{
+              prevEl: ".results-prev",
+              nextEl: ".results-next",
+            }}
+            className="mt-10 overflow-visible"
+          >
+            {internshipRoles.map((card, index) => (
+              <SwiperSlide
                 key={index}
-                className="group cursor-pointer flex flex-col rounded-2xl overflow-hidden w-full max-w-[320px] h-100 shadow-lg border border-gray-200 pb-5 hover:scale-105 hover:shadow-xl duration-200 transition-transform"
+                className="results-slide flex justify-center"
               >
-                <div className="h-50 overflow-hidden">
-                  <img
-                    className="object-cover group-hover:scale-110 duration-200 transition-transform"
-                    src={card.img}
-                    alt={card.title}
-                  />
+                {/* CARD */}
+                <div className="group cursor-pointer flex flex-col rounded-2xl overflow-hidden w-[320px] h-100 shadow-lg border border-gray-200 pb-5 bg-white mb-5 ml-5">
+                  <div className="h-50 overflow-hidden">
+                    <img
+                      className="object-cover group-hover:scale-110 duration-200 transition-transform"
+                      src={card.img}
+                      alt={card.title}
+                    />
+                  </div>
+
+                  <h3 className="mt-2 mx-6 font-bold text-xl group-hover:text-green-800">
+                    {card.title}
+                  </h3>
+
+                  <p className="mx-6 mt-2 text-gray-500">{card.desc}</p>
+
+                  <Link
+                    to="https://graphura.online/internship.html"
+                    className="mx-8 mt-auto text-[#fab031] font-medium"
+                  >
+                    More about internship →
+                  </Link>
                 </div>
-
-                <h3 className="mt-2 mx-6 font-bold text-xl group-hover:text-green-800">
-                  {card.title}
-                </h3>
-
-                <p className="mx-6 mt-2 text-gray-500">{card.desc}</p>
-
-                <Link
-                  to="https://graphura.online/internship.html"
-                  className="mx-8 mt-auto text-[#fab031] font-medium"
-                >
-                  More about internship <FontAwesomeIcon icon={faArrowRight} />
-                </Link>
-              </div>
+              </SwiperSlide>
             ))}
-          </div>
+          </Swiper>
 
-          {/* PAGINATION */}
-          <div className="flex justify-center items-center mt-12 gap-3">
-            {/* previous */}
-            <button
-              onClick={() => setCurrent((p) => Math.max(p - 1, 1))}
-              disabled={current === 1}
-              className={`px-4 py-2 rounded-lg border font-semibold transition
-      ${
-        current === 1
-          ? "opacity-40 cursor-not-allowed"
-          : "hover:bg-gray-100"
-      }`}
-            >
-              ← Prev
-            </button>
+          {/* SCALE EFFECT (IMPORTANT) */}
+          <style>{`
+      .results-slide {
+        width: 360px;
+        padding: 25px 0;
+        transform: scale(0.8);
+        opacity: 0.45;
+        transition: transform 0.5s ease, opacity 0.5s ease;
+      }
 
-            {/* Numbering */}
-            {Array.from({ length: totalPages }).map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrent(i + 1)}
-                className={`px-4 py-2 rounded-lg font-semibold border
-        ${current === i + 1 ? "bg-[#03594E] text-white" : "hover:bg-gray-200"}`}
-              >
-                {i + 1}
-              </button>
-            ))}
+      .swiper-slide-prev.results-slide,
+      .swiper-slide-next.results-slide {
+        transform: scale(0.9);
+        opacity: 0.75;
+      }
 
-            {/* next */}
-            <button
-              onClick={() => setCurrent((p) => Math.min(p + 1, totalPages))}
-              disabled={current === totalPages}
-              className={`px-4 py-2 rounded-lg border font-semibold transition
-      ${
-        current === totalPages
-          ? "opacity-40 cursor-not-allowed"
-          : "hover:bg-gray-100"
-      }`}
-            >
-              Next →
-            </button>
-          </div>
+      .swiper-slide-active.results-slide {
+        transform: scale(1.08);
+        opacity: 1;
+      }
+    `}</style>
         </div>
       </section>
 
@@ -353,7 +371,7 @@ const Career = () => {
                   <img
                     src={logo}
                     alt="logo"
-                    className="h-12 w-auto object-contain grayscale hover:grayscale-0 transition"
+                    className="h-20 w-35 w-auto object-contain transition"
                   />
                 </div>
               ))}
@@ -368,37 +386,87 @@ const Career = () => {
           <h1 className="text-xl font-extrabold w-full text-center md:text-2xl lg:text-3xl">
             What Our Interns Say
           </h1>
-          <div className="w-full overflow-hidden py-12 space-y-10 relative">
-            {/* LEFT fade */}
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-15 sm:w-20 md:w-35 lg:50 xl:w-100 bg-gradient-to-r from-white to-transparent z-20" />
+          {/* card */}
+          <div className="relative max-w-6xl mx-auto mt-15">
+            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-500 hover:shadow-3xl">
+              <div className="grid md:grid-cols-5 gap-8">
+                {/* Image Section */}
+                <div className="md:col-span-2 relative h-96 md:h-auto">
+                  <div className="absolute inset-0 bg-gradient-to-br from-teal-600 to-teal-800"></div>
+                  <img
+                    src={currentReviews?.user?.image}
+                    alt={currentReviews?.user?.name}
+                    className="w-full h-full object-cover mix-blend-overlay opacity-90"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-teal-900/50 to-transparent"></div>
+                </div>
 
-            {/* RIGHT fade */}
-            <div className="pointer-events-none absolute inset-y-0 right-0 w-15 sm:w-20 md:w-35 lg:50 xl:w-100 bg-gradient-to-l from-white to-transparent z-20" />
+                {/* Content Section */}
+                <div className="md:col-span-3 p-8 md:p-12 flex flex-col justify-center">
+                  <Quote className="w-16 h-16 text-teal-600 mb-6 opacity-50" />
 
-            <div className="review-scroll-left">
-              {[...reviews, ...reviews].map((item, index) => (
-                <div
-                  key={index}
-                  className="w-[320px] bg-white rounded-xl shadow-md p-5 mx-4"
-                >
-                  <div className="flex items-center gap-4 mb-3">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
+                  <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-8">
+                    {currentReviews?.text}
+                  </p>
+
+                  <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="font-semibold text-sm">{item.name}</h4>
-                      <p className="text-xs text-gray-500">{item.department}</p>
+                      <h4 className="text-2xl font-bold text-gray-900 mb-1">
+                        {currentReviews?.user?.name}
+                      </h4>
+                      <p className="text-teal-600 font-medium">
+                        {currentReviews?.user?.occupation}
+                      </p>
+                    </div>
+
+                    {/* Rating Stars */}
+                    <div className="flex gap-1">
+                      {[...Array(currentReviews?.rating)].map((_, i) => (
+                        <svg
+                          key={i}
+                          className="w-6 h-6 text-yellow-400 fill-current"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                      ))}
                     </div>
                   </div>
-
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    {item.review}
-                  </p>
                 </div>
-              ))}
+              </div>
             </div>
+
+            {/* Navigation Buttons */}
+            <button
+              onClick={prevReview}
+              className="absolute left-4 md:-left-6 top-1/2 -translate-y-1/2 bg-white w-12 h-12 rounded-full shadow-xl flex items-center justify-center text-teal-600 hover:bg-teal-600 hover:text-white transition-all duration-300 hover:scale-110 z-10"
+              aria-label="Previous testimonial"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+
+            <button
+              onClick={nextReview}
+              className="absolute right-4 md:-right-6 top-1/2 -translate-y-1/2 bg-white w-12 h-12 rounded-full shadow-xl flex items-center justify-center text-teal-600 hover:bg-teal-600 hover:text-white transition-all duration-300 hover:scale-110 z-10"
+              aria-label="Next testimonial"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+          </div>
+          {/* Dots Indicator */}
+          <div className="flex justify-center gap-3 mt-12">
+            {reviews.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentReview(index)}
+                className={`transition-all duration-300 rounded-full ${
+                  index === currentReview
+                    ? "w-12 h-3 bg-teal-600"
+                    : "w-3 h-3 bg-gray-300 hover:bg-teal-400"
+                }`}
+                aria-label={`Go to testimonial ${index + 1}`}
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -415,12 +483,14 @@ const Career = () => {
                 key={index}
                 className="border-x-4 border-green-700 rounded-lg px-4 py-2 md:py-4 shadow-lg w-full max-w-[800px] cursor-pointer hover:scale-105 hover:shadow:xl transition-transform duration-300"
               >
-                <h3 className="font-semibold text-lg flex justify-between">
-                  <span>{question}</span>
-                  <span
-                    className="cursor-pointer"
-                    onClick={() => setOpen(open === index ? null : index)}
-                  >
+                <h3
+                  className="group font-semibold text-lg flex justify-between"
+                  onClick={() => setOpen(open === index ? null : index)}
+                >
+                  <span className="group-hover:text-yellow-400">
+                    {question}
+                  </span>
+                  <span className="cursor-pointer">
                     <FontAwesomeIcon
                       icon={faAngleDown}
                       className={`transition-transform duration-300 ${
@@ -430,9 +500,9 @@ const Career = () => {
                   </span>
                 </h3>
                 <p
-                  className={`text-gray-600 mt-2 ${
-                    open === index ? "block" : "hidden"
-                  }`}
+                  className={`text-gray-600 mt-2 overflow-hidden transition-all duration-500 ease-in-out
+    ${open === index ? "max-h-40 opacity-100" : "max-h-0 opacity-0"}
+  `}
                 >
                   {faqAnswers[index]}
                 </p>
@@ -441,6 +511,7 @@ const Career = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 };

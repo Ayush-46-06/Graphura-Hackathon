@@ -1,6 +1,7 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
 import { motion } from "framer-motion";
 import {
   faBullhorn,
@@ -14,16 +15,25 @@ import {
   faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../Navbar";
+import Footer from "../Footer";
 
 const Sponsor = () => {
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    companyHQ: "",
+    message: "",
+  });
   const formRef = useRef(null);
   const logos = [
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767278224/505c8f5f-76ae-49ea-a429-5b5902377c50_ymmnuu.png",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700392/Hindustan_times_slsorl",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700392/Deewal_aa6obw",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700378/Accenture_bfsucq",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700378/Bajaj_sgqhky",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700377/TheAstroTalk_ztw8sq",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700377/Leans_Kart_tbzjbu",
   ];
 
   const left = {
@@ -36,12 +46,48 @@ const Sponsor = () => {
     show: { opacity: 1, x: 0 },
   };
 
+  // form input data
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await axios.post(
+        "http://localhost:5001/api/sponsor-interest",
+        formData
+      );
+
+      if (res.data.success) {
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          companyHQ: "",
+          message: "",
+        });
+      }
+      alert("form submitted");
+    } catch (err) {
+      console.error("something went wrong", err);
+    } finally {
+      setLoading(true);
+    }
+  };
   return (
-    <div>
+    <div className="overflow-hidden">
       <Navbar />
       {/* hero section */}
       <section className="bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] flex justify-center">
-        <div className="w-full px-4 lg:px-8 pt-20 pb-15 mt-10 flex flex-col gap-10 items-center lg:flex-row lg:justify-between max-w-[1280px] animate-fading-in">
+        <div className="w-full px-4 lg:px-8 pt-20 pb-15 mt-15 flex flex-col gap-10 items-center lg:flex-row lg:justify-between max-w-[1280px] animate-fading-in">
           <div className="max-w-[500px]">
             <div className="flex flex-wrap justify-center lg:justify-start">
               <h1 className="text-3xl lg:text-4xl xl:text-5xl font-extrabold text-white">
@@ -68,9 +114,9 @@ const Sponsor = () => {
               </button>
             </Link>
           </div>
-          <div className="rounded-2xl overflow-hidden max-w-[500px] max-h-[300px]">
+          <div className="rounded-2xl overflow-hidden max-w-[500px] max-h-[300px] floating">
             <img
-              src="https://res.cloudinary.com/drq2a0262/image/upload/v1766732772/Gemini_Generated_Image_5mb56e5mb56e5mb5_zrimij.png"
+              src="https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767699624/hero_section_2_xvlgyz"
               alt="Graphothon-Event"
             />
           </div>
@@ -78,18 +124,18 @@ const Sponsor = () => {
       </section>
 
       {/* Our Sponsors */}
-      <section className="flex justify-cente mt-20">
+      <section className="flex justify-center mt-20">
         <div className="px-4 lg:px-8 pt-5 pb-10 w-full max-w-[1280px]">
           <h1 className="text-xl font-extrabold w-full text-center mb-4 md:text-2xl lg:text-3xl">
             Truster by our Partners
           </h1>
           <div className="flex flex-wrap justify-center gap-10 mt-8">
             {logos.map((logo, index) => (
-              <div key={index} className="w-35">
+              <div key={index} className="hover:-translate-y-2 cursor-pointer duration-200 transition-transform">
                 <img
                   src={logo}
                   alt={`Partner Logo ${index + 1}`}
-                  className="object-contain"
+                  className="object-contain w-35 h-20"
                 />
               </div>
             ))}
@@ -316,9 +362,12 @@ const Sponsor = () => {
       </section>
 
       {/* Become a Sponsor Today - Form */}
-      <section className="flex justify-center bg-gray-200" ref={formRef}>
+      <section className="flex justify-center" ref={formRef}>
         <div className="pt-10 px-4 pb-5 flex justify-center w-full max-w-[1280px]">
-          <form className="p-4 rounded-xl shadow-md border border-gray-200 max-w-[700px] lg:max-w-[900px] flex flex-col items-center bg-white">
+          <form
+            onSubmit={handleSubmit}
+            className="p-4 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.25),0_8px_16px_rgba(0,0,0,0.12)] border border-gray-200 border-r-10 border-b-8 border-b-green-800 border-r-green-800  max-w-[700px] lg:max-w-[900px] flex flex-col items-center bg-white"
+          >
             <h1 className="text-xl font-extrabold w-full text-center pt-5 md:text-2xl lg:text-3xl">
               Become a Sponsor Today
             </h1>
@@ -329,30 +378,34 @@ const Sponsor = () => {
             <div className="flex flex-col gap-6 items-center lg:flex-row lg:flex-wrap lg:justify-between">
               <div className="flex flex-col w-full max-w-[400px]">
                 <label
-                  htmlFor="firstname"
+                  htmlFor="firstName"
                   className="font-semibold text-gray-800 p-1"
                 >
                   First Name
                 </label>
                 <input
                   type="text"
-                  name="firstname"
+                  name="firstName"
+                  value={formData.firstName}
                   placeholder="John"
                   className="border border-gray-300 py-2.5 px-4 bg-gray-100 rounded-xl focus:outline-green-500"
+                  onChange={handleChange}
                   required
                 />
               </div>
               <div className="flex flex-col w-full max-w-[400px]">
                 <label
-                  htmlFor="lastname"
+                  htmlFor="lastName"
                   className="font-semibold text-gray-800 p-1"
                 >
                   Last Name
                 </label>
                 <input
                   type="text"
-                  name="lastname"
+                  name="lastName"
+                  value={formData.lastName}
                   placeholder="Doe"
+                  onChange={handleChange}
                   className="border border-gray-300 py-2.5 px-4 bg-gray-100 rounded-xl focus:outline-green-500"
                   required
                 />
@@ -367,8 +420,10 @@ const Sponsor = () => {
                 <input
                   type="email"
                   name="email"
+                  value={formData.email}
                   placeholder="john@company.com"
                   className="border border-gray-300 py-2.5 px-4 bg-gray-100 rounded-xl focus:outline-green-500"
+                  onChange={handleChange}
                   required
                 />
               </div>
@@ -382,7 +437,9 @@ const Sponsor = () => {
                 <input
                   type="text"
                   name="companyHQ"
+                  value={formData.companyHQ}
                   placeholder="City, Country"
+                  onChange={handleChange}
                   className="border border-gray-300 py-2.5 px-4 bg-gray-100 rounded-xl focus:outline-green-500"
                   required
                 />
@@ -397,17 +454,24 @@ const Sponsor = () => {
               </label>
               <textarea
                 name="message"
+                value={formData.message}
+                onChange={handleChange}
                 placeholder="We are Looking for talent acquisition opportunities..."
                 className="mt-1 border w-full h-40 border-gray-300 py-2.5 px-4 bg-gray-100 rounded-xl focus:outline-green-500"
                 required
               ></textarea>
             </div>
-            <button className="cursor-pointer mt-5 bg-yellow-400 hover:bg-yellow-500 hover:scale-105 hover:shadow-lg duration-200 transition-transform rounded-lg text-md max-w-[350px] font-bold w-full py-3">
-              Apply to Sponsor
+            <button
+              type="submit"
+              disabled={loading}
+              className="cursor-pointer mt-5 bg-yellow-400 hover:bg-yellow-500 hover:scale-105 hover:shadow-lg duration-200 transition-transform rounded-lg text-md max-w-[350px] font-bold w-full py-3"
+            >
+              {loading ? "Applying..." : "Apply to Sponsor"}
             </button>
           </form>
         </div>
       </section>
+      <Footer />
     </div>
   );
 };
