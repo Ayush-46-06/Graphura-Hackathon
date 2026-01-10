@@ -193,7 +193,7 @@ const Career = () => {
           </div>
 
           {/* hero section image */}
-          <div className="border-4 border-white absolute bottom-[-15%] sm:bottom-[-30%] md:bottom-[-38%] w-[300px] sm:w-[400px] md:w-[450px] lg:w-[500px] rounded-xl overflow-hidden animate-float">
+          <div className="border-4 border-white absolute bottom-[-8%] sm:bottom-[-20%] w-[300px] sm:w-[400px] md:w-[450px] lg:w-[500px] rounded-xl overflow-hidden floating">
             <img
               src="https://res.cloudinary.com/drq2a0262/image/upload/v1767178175/estee-janssens-zEqkUMiMxMI-unsplash_wqosou.jpg"
               alt=""

@@ -15,6 +15,7 @@ import {
   Zap,
   Target
 } from "lucide-react";
+import openRazorpayPayment from "../../Payment";
 
 const tabs = ["Overview", "Rules & Guidelines"];
 
@@ -66,7 +67,13 @@ const HackathonViewModal = ({ hackathonId, onClose }) => {
           headers: { Authorization: `Bearer ${token}` }
         }
       );
-      alert("Successfully registered for the hackathon!");
+      openRazorpayPayment({
+      hackathonId: hackathon._id,
+      token,
+      onSuccess: () => {
+        alert("🎉 Payment successful & registered!");
+      },
+    });
       onClose();
     } catch (err) {
       alert(err.response?.data?.message || "Registration failed");
