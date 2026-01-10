@@ -112,7 +112,10 @@ const hackathonSchema = new mongoose.Schema(
     maxTeamSize: {
       type: Number,
       default: 1
-    }
+    },
+    activityPdf: {
+  type: String 
+},
   },
   { timestamps: true }
 );

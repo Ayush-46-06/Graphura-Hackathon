@@ -1,5 +1,6 @@
 import SibApiV3Sdk from "sib-api-v3-sdk";
 import { config } from "../config/env.js";
+import { downloadPdfAsBuffer } from "../utils/downloadPdfBuffer.js";
 
 /* =====================================================
    🔐 BREVO GLOBAL SETUP (ONLY ONCE)
@@ -48,17 +49,28 @@ export const sendContactMail = async (data) => {
 /* =====================================================
    🧑‍💻 HACKATHON REGISTRATION MAIL
 ===================================================== */
+
 export const sendHackathonRegistrationMail = async ({
   userName,
   userEmail,
   hackathonTitle,
   startDate,
-  startTime = "10:00 AM",
-  mode = "Online",
-  duration = "48 Hours"
+  activityPdf
 }) => {
   try {
     const formattedStartDate = new Date(startDate).toLocaleDateString("en-IN");
+
+    let attachments = [];
+
+    if (activityPdf) {
+      const pdfBuffer = await downloadPdfAsBuffer(activityPdf);
+
+      attachments.push({
+        content: pdfBuffer.toString("base64"),
+        name: `${hackathonTitle}-Activity.pdf`,
+        type: "application/pdf"
+      });
+    }
 
     await emailApi.sendTransacEmail({
       sender: {
@@ -68,19 +80,27 @@ export const sendHackathonRegistrationMail = async ({
       to: [{ email: userEmail }],
       subject: "Hackathon Registration Confirmation | Graphura",
       htmlContent: `
-        <p>Dear ${userName},</p>
+        <p>Dear <b>${userName}</b>,</p>
+
         <p>You are successfully registered for <b>${hackathonTitle}</b>.</p>
+
         <ul>
           <li>Date: ${formattedStartDate}</li>
-          <li>Time: ${startTime}</li>
-          <li>Mode: ${mode}</li>
-          <li>Duration: ${duration}</li>
+          <li>Mode: Online</li>
+          <li>Duration: 48 Hours</li>
         </ul>
-        <p>Best of luck!</p>
-      `
+
+        <p>
+          📎 Hackathon Activity PDF is attached with this email.
+        </p>
+
+        <p>Best of luck!<br/>Team Graphura</p>
+      `,
+      attachment: attachments
     });
+
   } catch (error) {
-    console.error("❌ Hackathon Registration Mail Error:", error);
+    console.error("❌ Registration Mail Error:", error);
   }
 };
 

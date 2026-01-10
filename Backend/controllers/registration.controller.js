@@ -43,7 +43,8 @@ export const registerForHackathon = async (req, res) => {
       userEmail: req.user.email,
       hackathonTitle: hackathon.title,
       startDate: hackathon.startDate,
-      endDate: hackathon.endDate
+      endDate: hackathon.endDate,
+      activityPdf: hackathon.activityPdf
     }).catch(() => {});
 
     res.status(201).json({

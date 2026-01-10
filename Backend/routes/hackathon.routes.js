@@ -52,7 +52,8 @@ router.post(
   validateBody(createHackathonSchema),
   upload.fields([
     { name: "image", maxCount: 1 },
-    { name: "sponsors", maxCount: 10 }
+    { name: "sponsors", maxCount: 10 },
+    { name: "activityPdf", maxCount: 1 }
   ]),
   createHackathon
 );

@@ -70,11 +70,16 @@ export const createHackathon = async (req, res) => {
     }
 
     const hackathon = await Hackathon.create({
-      ...req.body,
-      image: req.files.image[0].path,
-      sponsors,
-      participants: [] // 🔐 force backend control
-    });
+  ...req.body,
+  image: req.files.image[0].path,
+
+  activityPdf: req.files.activityPdf
+    ? req.files.activityPdf[0].path
+    : null,
+
+  sponsors,
+  participants: []
+});
 
     res.status(201).json({
       success: true,
