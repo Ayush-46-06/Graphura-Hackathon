@@ -14,12 +14,12 @@ export const createHackathon = async (req, res) => {
 
     if (Array.isArray(req.body.judges)) {
       const invalidJudge = req.body.judges.find(
-        id => !mongoose.Types.ObjectId.isValid(id)
+        (id) => !mongoose.Types.ObjectId.isValid(id)
       );
       if (invalidJudge) {
         return res.status(400).json({
           success: false,
-          message: "Invalid judge ID provided"
+          message: "Invalid judge ID provided",
         });
       }
     }
@@ -27,16 +27,16 @@ export const createHackathon = async (req, res) => {
     if (!req.files?.image?.length) {
       return res.status(400).json({
         success: false,
-        message: "Hackathon banner image is required"
+        message: "Hackathon banner image is required",
       });
     }
 
-    /* 🔐 NEW: FREE / PAID VALIDATION */
+    /* FREE / PAID */
     if (req.body.isPaid === "true" || req.body.isPaid === true) {
       if (!req.body.entryFee || Number(req.body.entryFee) <= 0) {
         return res.status(400).json({
           success: false,
-          message: "Entry fee required for paid hackathon"
+          message: "Entry fee required for paid hackathon",
         });
       }
       req.body.isPaid = true;
@@ -46,7 +46,7 @@ export const createHackathon = async (req, res) => {
       req.body.entryFee = 0;
     }
 
-    /* 👥 NEW: TEAM VALIDATION */
+    /* TEAM */
     if (req.body.participationType === "team") {
       req.body.maxTeamSize = req.body.maxTeamSize
         ? Number(req.body.maxTeamSize)
@@ -65,32 +65,26 @@ export const createHackathon = async (req, res) => {
       const sponsorNames = JSON.parse(req.body.sponsorsName);
       sponsors = sponsorNames.map((name, index) => ({
         name,
-        logo: req.files.sponsors[index]?.path
+        logo: req.files.sponsors[index]?.path,
       }));
     }
 
     const hackathon = await Hackathon.create({
-  ...req.body,
-  image: req.files.image[0].path,
-
-  activityPdf: req.files.activityPdf
-    ? req.files.activityPdf[0].path
-    : null,
-
-  sponsors,
-  participants: []
-});
+      ...req.body,
+      image: req.files.image[0].path,
+      sponsors,
+      participants: [], // activityPdf ❌ NOT HERE
+    });
 
     res.status(201).json({
       success: true,
-      data: hackathon
+      data: hackathon,
     });
-
   } catch (error) {
     console.error("CREATE HACKATHON ERROR:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to create hackathon"
+      message: "Failed to create hackathon",
     });
   }
 };
@@ -108,12 +102,12 @@ export const updateHackathon = async (req, res) => {
 
     if (Array.isArray(req.body.judges)) {
       const invalidJudge = req.body.judges.find(
-        id => !mongoose.Types.ObjectId.isValid(id)
+        (id) => !mongoose.Types.ObjectId.isValid(id)
       );
       if (invalidJudge) {
         return res.status(400).json({
           success: false,
-          message: "Invalid judge ID provided"
+          message: "Invalid judge ID provided",
         });
       }
     }
@@ -135,20 +129,19 @@ export const updateHackathon = async (req, res) => {
     if (!hackathon) {
       return res.status(404).json({
         success: false,
-        message: "Hackathon not found"
+        message: "Hackathon not found",
       });
     }
 
     res.json({
       success: true,
-      data: hackathon
+      data: hackathon,
     });
-
   } catch (error) {
     console.error("UPDATE HACKATHON ERROR:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to update hackathon"
+      message: "Failed to update hackathon",
     });
   }
 };
@@ -161,19 +154,19 @@ export const deleteHackathon = async (req, res) => {
     if (!hackathon) {
       return res.status(404).json({
         success: false,
-        message: "Hackathon not found"
+        message: "Hackathon not found",
       });
     }
 
     res.json({
       success: true,
-      message: "Hackathon deleted successfully"
+      message: "Hackathon deleted successfully",
     });
   } catch (error) {
     console.error("DELETE HACKATHON ERROR:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to delete hackathon"
+      message: "Failed to delete hackathon",
     });
   }
 };
@@ -187,12 +180,12 @@ export const getAllHackathons = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: hackathons
+      data: hackathons,
     });
   } catch {
     res.status(500).json({
       success: false,
-      message: "Failed to fetch hackathons"
+      message: "Failed to fetch hackathons",
     });
   }
 };
@@ -200,24 +193,62 @@ export const getAllHackathons = async (req, res) => {
 /* ================= GET HACKATHON BY ID ================= */
 export const getHackathonById = async (req, res) => {
   try {
-    const hackathon = await Hackathon.findById(req.params.id)
-      .populate("judges", "name email occupation company image");
+    const hackathon = await Hackathon.findById(req.params.id).populate(
+      "judges",
+      "name email occupation company image"
+    );
 
     if (!hackathon) {
       return res.status(404).json({
         success: false,
-        message: "Hackathon not found"
+        message: "Hackathon not found",
       });
     }
 
     res.json({
       success: true,
-      data: hackathon
+      data: hackathon,
     });
   } catch {
     res.status(500).json({
       success: false,
-      message: "Failed to fetch hackathon"
+      message: "Failed to fetch hackathon",
+    });
+  }
+};
+
+export const uploadActivityPdf = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Activity PDF is required",
+      });
+    }
+
+    const hackathon = await Hackathon.findByIdAndUpdate(
+      req.params.id,
+      { activityPdf: req.file.path },
+      { new: true }
+    );
+
+    if (!hackathon) {
+      return res.status(404).json({
+        success: false,
+        message: "Hackathon not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Activity PDF uploaded successfully",
+      activityPdf: hackathon.activityPdf,
+    });
+  } catch (error) {
+    console.error("UPLOAD ACTIVITY PDF ERROR:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to upload activity PDF",
     });
   }
 };

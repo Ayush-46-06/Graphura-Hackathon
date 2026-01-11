@@ -6,7 +6,8 @@ import {
   updateHackathon,
   deleteHackathon,
   getAllHackathons,
-  getHackathonById
+  getHackathonById,
+  uploadActivityPdf
 } from "../controllers/hackathon.controller.js";
 
 import {
@@ -81,6 +82,7 @@ router.delete(
 router.post(
   "/hackathon/register",
   authMiddleware,
+  roleMiddleware(ROLES.USER),
   validateBody(registerHackathonSchema),
   registerForHackathon
 );
@@ -126,4 +128,12 @@ router.get(
   getParticipantsList
 );
 
+
+router.post(
+  "/hackathon/:id/activity-pdf",
+  authMiddleware,
+  roleMiddleware(ROLES.ADMIN),
+  upload.single("activityPdf"),
+  uploadActivityPdf
+);
 export default router;

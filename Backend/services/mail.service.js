@@ -1,7 +1,8 @@
 import SibApiV3Sdk from "sib-api-v3-sdk";
 import { config } from "../config/env.js";
 import { downloadPdfAsBuffer } from "../utils/downloadPdfBuffer.js";
-
+import Hackathon from "../models/Hackathon.model.js"
+import Registration from "../models/Registration.model.js"
 /* =====================================================
    🔐 BREVO GLOBAL SETUP (ONLY ONCE)
 ===================================================== */
@@ -55,22 +56,23 @@ export const sendHackathonRegistrationMail = async ({
   userEmail,
   hackathonTitle,
   startDate,
-  activityPdf
+  mode = "Online",
+  duration = "48 Hours"
 }) => {
   try {
-    const formattedStartDate = new Date(startDate).toLocaleDateString("en-IN");
+    const start = new Date(startDate);
 
-    let attachments = [];
+    const formattedDate = start.toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
 
-    if (activityPdf) {
-      const pdfBuffer = await downloadPdfAsBuffer(activityPdf);
-
-      attachments.push({
-        content: pdfBuffer.toString("base64"),
-        name: `${hackathonTitle}-Activity.pdf`,
-        type: "application/pdf"
-      });
-    }
+    const formattedTime = start.toLocaleTimeString("en-IN", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true
+    });
 
     await emailApi.sendTransacEmail({
       sender: {
@@ -82,28 +84,64 @@ export const sendHackathonRegistrationMail = async ({
       htmlContent: `
         <p>Dear <b>${userName}</b>,</p>
 
-        <p>You are successfully registered for <b>${hackathonTitle}</b>.</p>
-
-        <ul>
-          <li>Date: ${formattedStartDate}</li>
-          <li>Mode: Online</li>
-          <li>Duration: 48 Hours</li>
-        </ul>
-
         <p>
-          📎 Hackathon Activity PDF is attached with this email.
+          Thank you for registering for the <b>Graphura Hackathon</b>.
+          We are pleased to confirm your successful registration.
         </p>
 
-        <p>Best of luck!<br/>Team Graphura</p>
-      `,
-      attachment: attachments
+        <p><b>Below are the important details of the hackathon:</b></p>
+
+        <table cellpadding="6" cellspacing="0">
+          <tr>
+            <td><b>Hackathon Name</b></td>
+            <td>: ${hackathonTitle}</td>
+          </tr>
+          <tr>
+            <td><b>Start Date</b></td>
+            <td>: ${formattedDate}</td>
+          </tr>
+          <tr>
+            <td><b>Start Time</b></td>
+            <td>: ${formattedTime} (IST)</td>
+          </tr>
+          <tr>
+            <td><b>Mode</b></td>
+            <td>: ${mode}</td>
+          </tr>
+          <tr>
+            <td><b>Duration</b></td>
+            <td>: ${duration}</td>
+          </tr>
+        </table>
+
+        <p>
+          Please ensure that you are available and prepared before the start time.
+          Additional details regarding rules, problem statements, and submission
+          guidelines will be shared once the hackathon begins.
+        </p>
+
+        <p>
+          For any queries or assistance, feel free to reach out to us at
+          <a href="mailto:support@graphura.com">support@graphura.com</a>.
+        </p>
+
+        <p>
+          We look forward to your participation and wish you all the best for the hackathon.
+        </p>
+
+        <p>
+          Warm regards,<br/>
+          <b>Team Graphura</b><br/>
+          Graphura India Private Limited<br/>
+          <a href="https://graphura.com">https://graphura.com</a>
+        </p>
+      `
     });
 
   } catch (error) {
     console.error("❌ Registration Mail Error:", error);
   }
 };
-
 /* =====================================================
    🏆 WINNER RESULT MAIL
 ===================================================== */
@@ -112,19 +150,107 @@ export const sendWinnerResultMail = async ({
   userEmail,
   hackathonTitle,
   rank,
+  startDate,
+  mode = "Online",
+  duration = "48 Hours",
+  theme = "Hackathon Challenge",
   pdfBuffer
 }) => {
   try {
+    const start = new Date(startDate);
+
+    const formattedDate = start.toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+
+    const formattedTime = start.toLocaleTimeString("en-IN", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true
+    });
+
     await emailApi.sendTransacEmail({
       sender: {
         email: config.BREVO_SENDER_EMAIL,
         name: "Graphura"
       },
       to: [{ email: userEmail }],
-      subject: "🎉 Congratulations! You Are a Winner",
+      subject: "Congratulations! You Are a Winner – Graphura Hackathon",
       htmlContent: `
-        <p>Dear ${userName},</p>
-        <p>Congratulations! You secured <b>${rank}</b> position in ${hackathonTitle}.</p>
+        <p>Dear <b>${userName}</b>,</p>
+
+        <p>
+          <b>Congratulations! 🎉</b><br/>
+          We are delighted to inform you that you have emerged as a 
+          <b>Winner of the Graphura Hackathon</b>.
+        </p>
+
+        <p>
+          Your performance, innovation, and problem-solving approach truly stood out
+          among all participants.
+        </p>
+
+        <p><b>Below are the official details of the hackathon for your reference:</b></p>
+
+        <table cellpadding="6" cellspacing="0">
+          <tr>
+            <td><b>Hackathon Name</b></td>
+            <td>: ${hackathonTitle}</td>
+          </tr>
+          <tr>
+            <td><b>Organized By</b></td>
+            <td>: Graphura India Private Limited</td>
+          </tr>
+          <tr>
+            <td><b>Hackathon Start Date</b></td>
+            <td>: ${formattedDate}</td>
+          </tr>
+          <tr>
+            <td><b>Start Time</b></td>
+            <td>: ${formattedTime} (IST)</td>
+          </tr>
+          <tr>
+            <td><b>Mode</b></td>
+            <td>: ${mode}</td>
+          </tr>
+          <tr>
+            <td><b>Duration</b></td>
+            <td>: ${duration}</td>
+          </tr>
+          <tr>
+            <td><b>Theme / Problem Statement</b></td>
+            <td>: ${theme}</td>
+          </tr>
+        </table>
+
+        <p>
+          Based on the evaluation criteria, your submission was selected as one of
+          the top entries. We sincerely appreciate the effort, dedication, and
+          creativity you demonstrated throughout the hackathon.
+        </p>
+
+        <p><b>Prize Details:</b></p>
+        <p>
+          <b>Position:</b> ${rank}
+        </p>
+
+        <p>
+          📎 Your winner certificate is attached with this email.
+        </p>
+
+        <p>
+          Once again, congratulations on your achievement. We look forward to seeing
+          you participate in more initiatives organized by Graphura.
+        </p>
+
+        <p>
+          Warm regards,<br/>
+          <b>Team Graphura</b><br/>
+          Graphura India Private Limited<br/>
+          <a href="https://graphura.com">https://graphura.com</a>
+        </p>
       `,
       attachment: [
         {
@@ -134,6 +260,7 @@ export const sendWinnerResultMail = async ({
         }
       ]
     });
+
   } catch (error) {
     console.error("❌ Winner Mail Error:", error);
     throw error;
@@ -319,5 +446,136 @@ export const sendSponsorInterestMail = async ({
   } catch (error) {
     console.error("❌ Sponsor Interest Mail Error:", error);
     throw error;
+  }
+};
+
+
+export const sendActivityPdfToParticipants = async (hackathonId) => {
+  try {
+    const hackathon = await Hackathon.findById(hackathonId);
+    if (!hackathon || !hackathon.activityPdf) return;
+
+    const registrations = await Registration.find({
+      hackathon: hackathonId
+    }).populate("user", "name email");
+
+    if (!registrations.length) return;
+
+    // 🔥 Download PDF only once
+    const pdfBuffer = await downloadPdfAsBuffer(hackathon.activityPdf);
+
+    for (const reg of registrations) {
+      if (!reg.user?.email) continue;
+
+      await emailApi.sendTransacEmail({
+        sender: {
+          email: config.BREVO_SENDER_EMAIL,
+          name: "Graphura"
+        },
+        to: [{ email: reg.user.email }],
+        subject: `🚀 Hackathon Started – ${hackathon.title}`,
+        htmlContent: `
+          <p>Hello <b>${reg.user.name}</b>,</p>
+
+          <p>The hackathon <b>${hackathon.title}</b> has officially started!</p>
+
+          <p>📎 Activity / Problem Statement PDF is attached.</p>
+
+          <p>Good luck & happy hacking!<br/>Team Graphura</p>
+        `,
+        attachment: [
+          {
+            content: pdfBuffer.toString("base64"),
+            name: `${hackathon.title}-Problem-Statement.pdf`,
+            type: "application/pdf"
+          }
+        ]
+      });
+    }
+
+    console.log(`✅ Activity PDF sent for hackathon: ${hackathon.title}`);
+
+  } catch (error) {
+    console.error("❌ Activity PDF Mail Error:", error.message);
+  }
+};
+
+
+export const sendHackathonReminderMail = async ({
+  userName,
+  userEmail,
+  hackathonTitle,
+  startDate,
+  supportEmail = "support@graphura.com"
+}) => {
+  try {
+    const start = new Date(startDate);
+
+    const formattedDate = start.toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+
+    const formattedTime = start.toLocaleTimeString("en-IN", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true
+    });
+
+    await emailApi.sendTransacEmail({
+      sender: {
+        email: config.BREVO_SENDER_EMAIL,
+        name: "Graphura"
+      },
+      to: [{ email: userEmail }],
+      subject: "Reminder: Graphura Hackathon – Starting Tomorrow",
+      htmlContent: `
+        <p>Dear <b>${userName}</b>,</p>
+
+        <p>
+          This is a reminder that the <b>Graphura Hackathon</b> you registered for
+          will commence <b>tomorrow</b> as per the schedule shared earlier.
+        </p>
+
+        <p><b>Hackathon Details:</b></p>
+
+        <table cellpadding="6" cellspacing="0">
+          <tr>
+            <td><b>Hackathon Name</b></td>
+            <td>: ${hackathonTitle}</td>
+          </tr>
+          <tr>
+            <td><b>Start Date</b></td>
+            <td>: ${formattedDate}</td>
+          </tr>
+          <tr>
+            <td><b>Start Time</b></td>
+            <td>: ${formattedTime} (IST)</td>
+          </tr>
+        </table>
+
+        <p>
+          Please ensure your availability and readiness before the start time.
+          Any final instructions or updates will be communicated prior to the
+          commencement of the hackathon.
+        </p>
+
+        <p>
+          For any assistance, feel free to contact us at
+          <a href="mailto:${supportEmail}">${supportEmail}</a>.
+        </p>
+
+        <p>
+          Warm regards,<br/>
+          <b>Team Graphura</b><br/>
+          Graphura India Private Limited<br/>
+          <a href="https://graphura.com">https://graphura.com</a>
+        </p>
+      `
+    });
+
+  } catch (error) {
+    console.error("❌ Reminder Mail Error:", error);
   }
 };

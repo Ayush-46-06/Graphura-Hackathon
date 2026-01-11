@@ -13,16 +13,29 @@ export const registerForHackathon = async (req, res) => {
 
     const hackathon = await Hackathon.findById(hackathonId);
     if (!hackathon) {
-      return res.status(404).json({ success: false, message: "Hackathon not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Hackathon not found",
+      });
     }
 
     if (hackathon.status === "completed") {
-      return res.status(400).json({ success: false, message: "Registrations closed" });
+      return res.status(400).json({
+        success: false,
+        message: "Registrations closed",
+      });
     }
 
-    const exists = await Registration.findOne({ user: userId, hackathon: hackathonId });
+    const exists = await Registration.findOne({
+      user: userId,
+      hackathon: hackathonId,
+    });
+
     if (exists) {
-      return res.status(400).json({ success: false, message: "Already registered" });
+      return res.status(400).json({
+        success: false,
+        message: "Already registered",
+      });
     }
 
     const registration = await Registration.create({
@@ -30,21 +43,20 @@ export const registerForHackathon = async (req, res) => {
       hackathon: hackathonId,
       participationType: hackathon.participationType,
       teamLeader: hackathon.participationType === "team" ? userId : null,
-      paymentStatus: hackathon.isPaid ? "pending" : "free"
+      paymentStatus: hackathon.isPaid ? "pending" : "free",
     });
 
-    await Hackathon.findByIdAndUpdate(
-      hackathonId,
-      { $addToSet: { participants: userId } }
-    );
+    await Hackathon.findByIdAndUpdate(hackathonId, {
+      $addToSet: { participants: userId },
+    });
 
+    // ✅ Registration confirmation mail ONLY
     sendHackathonRegistrationMail({
       userName: req.user.name,
       userEmail: req.user.email,
       hackathonTitle: hackathon.title,
       startDate: hackathon.startDate,
-      endDate: hackathon.endDate,
-      activityPdf: hackathon.activityPdf
+      // ❌ activityPdf intentionally removed
     }).catch(() => {});
 
     res.status(201).json({
@@ -52,12 +64,14 @@ export const registerForHackathon = async (req, res) => {
       message: hackathon.isPaid
         ? "Registration created. Complete payment to proceed"
         : "Registered successfully",
-      registration
+      registration,
     });
-
   } catch (error) {
     console.error("REGISTER ERROR:", error);
-    res.status(500).json({ success: false, message: "Failed to register" });
+    res.status(500).json({
+      success: false,
+      message: "Failed to register",
+    });
   }
 };
 
@@ -65,7 +79,7 @@ export const registerForHackathon = async (req, res) => {
 export const getParticipantsCount = async (req, res) => {
   try {
     const count = await Registration.countDocuments({
-      hackathon: req.params.hackathonId
+      hackathon: req.params.hackathonId,
     });
 
     res.json({ success: true, data: { count } });
@@ -77,22 +91,27 @@ export const getParticipantsCount = async (req, res) => {
 /* ================= PARTICIPANTS LIST ================= */
 export const getParticipantsList = async (req, res) => {
   try {
-    const hackathon = await Hackathon.findById(req.params.hackathonId).select("title");
+    const hackathon = await Hackathon.findById(req.params.hackathonId).select(
+      "title"
+    );
     if (!hackathon) {
-      return res.status(404).json({ success: false, message: "Hackathon not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Hackathon not found" });
     }
 
     const participants = await Registration.find({
-      hackathon: req.params.hackathonId
+      hackathon: req.params.hackathonId,
     }).populate("user", "name email university");
 
     res.json({
       success: true,
-      data: { hackathon, participants, count: participants.length }
+      data: { hackathon, participants, count: participants.length },
     });
-
   } catch {
-    res.status(500).json({ success: false, message: "Failed to fetch participants" });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch participants" });
   }
 };
 
@@ -105,26 +124,26 @@ export const createPaidOrder = async (req, res) => {
     const registration = await Registration.findOne({
       user: userId,
       hackathon: hackathonId,
-      paymentStatus: "pending"
+      paymentStatus: "pending",
     });
 
     if (!registration) {
       return res.status(400).json({
         success: false,
-        message: "Register first before payment"
+        message: "Register first before payment",
       });
     }
 
     const hackathon = await Hackathon.findById(hackathonId);
 
-    const receipt = `hack_${hackathonId
+    const receipt = `hack_${hackathonId.toString().slice(-8)}_${userId
       .toString()
-      .slice(-8)}_${userId.toString().slice(-6)}`;
+      .slice(-6)}`;
 
     const order = await razorpay.orders.create({
       amount: hackathon.entryFee * 100,
       currency: "INR",
-      receipt
+      receipt,
     });
 
     registration.razorpayOrderId = order.id;
@@ -132,18 +151,16 @@ export const createPaidOrder = async (req, res) => {
 
     res.json({
       success: true,
-      order
+      order,
     });
-
   } catch (error) {
     console.error("CREATE ORDER ERROR:", error);
     res.status(500).json({
       success: false,
-      message: "Payment order failed"
+      message: "Payment order failed",
     });
   }
 };
-
 
 export const verifyPaidRegistration = async (req, res) => {
   try {
@@ -157,7 +174,7 @@ export const verifyPaidRegistration = async (req, res) => {
     if (generatedSignature !== signature) {
       return res.status(400).json({
         success: false,
-        message: "Payment verification failed"
+        message: "Payment verification failed",
       });
     }
 
@@ -165,9 +182,9 @@ export const verifyPaidRegistration = async (req, res) => {
       { razorpayOrderId: orderId },
       {
         paymentStatus: "paid",
-        status: "completed",   // ✅ VERY IMPORTANT
+        status: "completed", // ✅ VERY IMPORTANT
         razorpayPaymentId: paymentId,
-        razorpaySignature: signature
+        razorpaySignature: signature,
       },
       { new: true }
     );
@@ -175,14 +192,13 @@ export const verifyPaidRegistration = async (req, res) => {
     res.json({
       success: true,
       message: "Payment successful & registration completed",
-      registration
+      registration,
     });
-
   } catch (error) {
     console.error("VERIFY PAYMENT ERROR:", error);
     res.status(500).json({
       success: false,
-      message: "Verification failed"
+      message: "Verification failed",
     });
   }
 };
@@ -197,19 +213,19 @@ export const createTeamRegistration = async (req, res) => {
     if (!hackathon || hackathon.participationType !== "team") {
       return res.status(400).json({
         success: false,
-        message: "This hackathon does not support teams"
+        message: "This hackathon does not support teams",
       });
     }
 
     const registration = await Registration.findOne({
       hackathon: hackathonId,
-      user: userId
+      user: userId,
     });
 
     if (!registration) {
       return res.status(400).json({
         success: false,
-        message: "Register for hackathon first"
+        message: "Register for hackathon first",
       });
     }
 
@@ -220,9 +236,8 @@ export const createTeamRegistration = async (req, res) => {
     res.json({
       success: true,
       message: "Team created successfully",
-      data: registration
+      data: registration,
     });
-
   } catch (error) {
     console.error("CREATE TEAM ERROR:", error);
     res.status(500).json({ success: false, message: "Failed to create team" });
@@ -237,35 +252,37 @@ export const addTeamMember = async (req, res) => {
     if (!Array.isArray(memberId) || memberId.length === 0) {
       return res.status(400).json({
         success: false,
-        message: "memberId must be a non-empty array"
+        message: "memberId must be a non-empty array",
       });
     }
 
-    const invalidId = memberId.find(id => !mongoose.Types.ObjectId.isValid(id));
+    const invalidId = memberId.find(
+      (id) => !mongoose.Types.ObjectId.isValid(id)
+    );
     if (invalidId) {
       return res.status(400).json({
         success: false,
-        message: "Invalid member ID provided"
+        message: "Invalid member ID provided",
       });
     }
 
     if (memberId.includes(req.user._id.toString())) {
       return res.status(400).json({
         success: false,
-        message: "Team leader cannot be added as member"
+        message: "Team leader cannot be added as member",
       });
     }
 
     const registration = await Registration.findOne({
       hackathon: hackathonId,
       teamLeader: req.user._id,
-      participationType: "team"
+      participationType: "team",
     });
 
     if (!registration) {
       return res.status(403).json({
         success: false,
-        message: "Only team leader can add members"
+        message: "Only team leader can add members",
       });
     }
 
@@ -274,7 +291,7 @@ export const addTeamMember = async (req, res) => {
     if (hackathon.isPaid && registration.paymentStatus !== "paid") {
       return res.status(403).json({
         success: false,
-        message: "Complete payment before adding team members"
+        message: "Complete payment before adding team members",
       });
     }
 
@@ -284,15 +301,15 @@ export const addTeamMember = async (req, res) => {
     ) {
       return res.status(400).json({
         success: false,
-        message: `Max ${hackathon.maxTeamSize - 1} members allowed`
+        message: `Max ${hackathon.maxTeamSize - 1} members allowed`,
       });
     }
 
     registration.teamMembers = [
       ...new Set([
-        ...registration.teamMembers.map(id => id.toString()),
-        ...memberId
-      ])
+        ...registration.teamMembers.map((id) => id.toString()),
+        ...memberId,
+      ]),
     ];
 
     await registration.save();
@@ -300,9 +317,8 @@ export const addTeamMember = async (req, res) => {
     res.json({
       success: true,
       message: "Team members added successfully",
-      teamMembers: registration.teamMembers
+      teamMembers: registration.teamMembers,
     });
-
   } catch (error) {
     console.error("ADD TEAM MEMBER ERROR:", error);
     res.status(500).json({ success: false, message: "Failed to add members" });

@@ -116,6 +116,14 @@ const hackathonSchema = new mongoose.Schema(
     activityPdf: {
   type: String 
 },
+activityMailSent: {
+  type: Boolean,
+  default: false
+},
+reminderMailSent: {
+  type: Boolean,
+  default: false
+},
   },
   { timestamps: true }
 );
