@@ -6,10 +6,6 @@ import { sendCollegeCredentialsMail } from "../services/mail.service.js";
 import googleSheetService from "../services/googleSheet.service.js";
 import jwt from "jsonwebtoken";
 import { config } from "../config/env.js";
-/* ================= CREATE COLLEGE (ADMIN) ================= */
-
-
-
 
 
 /* ================= COLLEGE LOGIN ================= */
@@ -17,13 +13,24 @@ export const collegeLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const college = await College.findOne({ email })
-      .select("+password");
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and password are required",
+      });
+    }
+
+    
+    const normalizedEmail = email.toLowerCase();
+
+    const college = await College.findOne({
+      $or: [{ email: normalizedEmail }, { alternateEmail: normalizedEmail }],
+    }).select("+password");
 
     if (!college || !college.isActive) {
       return res.status(400).json({
         success: false,
-        message: "Invalid credentials"
+        message: "Invalid credentials",
       });
     }
 
@@ -31,7 +38,7 @@ export const collegeLogin = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({
         success: false,
-        message: "Invalid credentials"
+        message: "Invalid credentials",
       });
     }
 
@@ -44,30 +51,39 @@ export const collegeLogin = async (req, res) => {
     res.json({
       success: true,
       token,
-      role: "college"
+      role: "college",
     });
-
   } catch (error) {
     console.error("COLLEGE LOGIN ERROR:", error);
     res.status(500).json({
       success: false,
-      message: "Login failed"
+      message: "Login failed",
     });
   }
 };
 
 export const createCollege = async (req, res) => {
   try {
-    const { name, email, password, city, state } = req.body;
+    const { name, email, password, city, state, alternateEmail, shortName } =
+      req.body;
+
+   
+    const primaryEmail = email.toLowerCase();
+    const altEmail = alternateEmail?.toLowerCase();
 
     const exists = await College.findOne({
-      $or: [{ email }, { name }]
+      $or: [
+        { email: primaryEmail },
+        ...(altEmail ? [{ alternateEmail: altEmail }] : []),
+        { name },
+        ...(shortName ? [{ shortName }] : []),
+      ],
     });
 
     if (exists) {
       return res.status(400).json({
         success: false,
-        message: "College already exists"
+        message: "College already exists",
       });
     }
 
@@ -75,81 +91,161 @@ export const createCollege = async (req, res) => {
 
     const college = await College.create({
       name,
-      email,
+      email: primaryEmail,
+      alternateEmail: altEmail,
+      shortName,
       password: hashedPassword,
       city,
-      state
+      state,
     });
 
-    /* 📧 SEND LOGIN CREDENTIALS MAIL */
     await sendCollegeCredentialsMail({
       collegeName: name,
-      collegeEmail: email,
+      collegeEmail: primaryEmail,
       password,
-      loginUrl: `${process.env.FRONTEND_URL}/college-login`
+      loginUrl: `${process.env.FRONTEND_URL}/college-login`,
     });
+
+    if (altEmail) {
+      await sendCollegeCredentialsMail({
+        collegeName: name,
+        collegeEmail: altEmail,
+        password,
+        loginUrl: `${process.env.FRONTEND_URL}/college-login`,
+      });
+    }
 
     res.status(201).json({
       success: true,
       message: "College created and credentials sent via email",
-      data: college
+      data: college,
     });
-
   } catch (error) {
     console.error("CREATE COLLEGE ERROR:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to create college"
+      message: "Failed to create college",
     });
   }
 };
 
-/* ================= GET ALL COLLEGES ================= */
 export const getAllColleges = async (req, res) => {
-  const colleges = await College.find().sort({ createdAt: -1 });
-  res.json({ success: true, data: colleges });
-};
+  try {
+    const { search = "", isActive } = req.query;
 
-/* ================= GET COLLEGE BY ID ================= */
-export const getCollegeById = async (req, res) => {
-  const college = await College.findById(req.params.id).select("-password");
+    const query = {};
 
-  if (!college) {
-    return res.status(404).json({
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { shortName: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+        { alternateEmail: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    if (isActive !== undefined) {
+      query.isActive = isActive === "true";
+    }
+
+    const colleges = await College.find(query)
+      .select("-password")
+      .sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      count: colleges.length,
+      data: colleges,
+    });
+  } catch (error) {
+    console.error("GET ALL COLLEGES ERROR:", error);
+    res.status(500).json({
       success: false,
-      message: "College not found"
+      message: "Failed to fetch colleges",
     });
   }
+};
 
-  res.json({ success: true, data: college });
+export const getCollegeById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+   
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid college ID",
+      });
+    }
+
+    const college = await College.findById(id).select("-password");
+
+    if (!college) {
+      return res.status(404).json({
+        success: false,
+        message: "College not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      data: college,
+    });
+  } catch (error) {
+    console.error("GET COLLEGE BY ID ERROR:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch college",
+    });
+  }
 };
 
 /* ================= UPDATE COLLEGE ================= */
+
 export const updateCollege = async (req, res) => {
-  const updateData = { ...req.body };
+  try {
+    const { id } = req.params;
+    const updateData = { ...req.body };
 
-  if (updateData.password) {
-    updateData.password = await bcrypt.hash(updateData.password, 10);
-  }
+ 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid college ID",
+      });
+    }
 
-  const college = await College.findByIdAndUpdate(
-    req.params.id,
-    updateData,
-    { new: true }
-  );
+    
+    if (updateData.password) {
+      updateData.password = await bcrypt.hash(updateData.password, 10);
+    }
 
-  if (!college) {
-    return res.status(404).json({
+  
+    delete updateData.role;
+
+    const college = await College.findByIdAndUpdate(id, updateData, {
+      new: true,
+    }).select("-password");
+
+    if (!college) {
+      return res.status(404).json({
+        success: false,
+        message: "College not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "College updated successfully",
+      data: college,
+    });
+  } catch (error) {
+    console.error("UPDATE COLLEGE ERROR:", error);
+    res.status(500).json({
       success: false,
-      message: "College not found"
+      message: "Failed to update college",
     });
   }
-
-  res.json({
-    success: true,
-    message: "College updated successfully",
-    data: college
-  });
 };
 
 /* ================= COLLEGE STUDENTS LIST ================= */
@@ -157,37 +253,56 @@ export const getCollegeStudents = async (req, res) => {
   try {
     const collegeName = req.college.name;
 
-    // Step 1: get all users of this college
-    const users = await User.find({ collegeName })
-      .select("name email contactNumber");
 
-    // Step 2: attach hackathon names
-    const result = await Promise.all(
-      users.map(async (user) => {
-        const registrations = await Registration.find({
-          user: user._id
-        }).populate("hackathon", "title");
-
-        return {
-          name: user.name,
-          email: user.email,
-          contactNumber: user.contactNumber,
-          hackathons: registrations.map(r => r.hackathon.title)
-        };
-      })
+    const users = await User.find({ collegeName }).select(
+      "_id name email contactNumber"
     );
+
+    if (!users.length) {
+      return res.json({
+        success: true,
+        count: 0,
+        data: [],
+      });
+    }
+
+    const userIds = users.map((u) => u._id);
+
+  
+    const registrations = await Registration.find({
+      user: { $in: userIds },
+    }).populate("hackathon", "title");
+
+  
+    const hackathonMap = {};
+
+    registrations.forEach((reg) => {
+      if (!reg.hackathon) return;
+
+      const uid = reg.user.toString();
+      if (!hackathonMap[uid]) hackathonMap[uid] = new Set();
+
+      hackathonMap[uid].add(reg.hackathon.title);
+    });
+
+  
+    const result = users.map((user) => ({
+      name: user.name,
+      email: user.email,
+      contactNumber: user.contactNumber,
+      hackathons: Array.from(hackathonMap[user._id.toString()] || []),
+    }));
 
     res.json({
       success: true,
       count: result.length,
-      data: result
+      data: result,
     });
-
   } catch (error) {
     console.error("COLLEGE STUDENTS ERROR:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to fetch college students"
+      message: "Failed to fetch college students",
     });
   }
 };
@@ -197,29 +312,66 @@ export const exportCollegeStudents = async (req, res) => {
   try {
     const collegeName = req.college.name;
 
+
     const users = await User.find({ collegeName }).select(
-      "name email contactNumber university"
+      "_id name email contactNumber university"
     );
 
-    await googleSheetService.exportCollegeUsers(users);
+    if (!users.length) {
+      return res.status(400).json({
+        success: false,
+        message: "No students found for this college",
+      });
+    }
+
+    const userIds = users.map((u) => u._id);
+
+   
+    const registrations = await Registration.find({
+      user: { $in: userIds },
+    }).populate("hackathon", "title");
+
+   
+    const hackathonMap = {};
+
+    registrations.forEach((reg) => {
+      if (!reg.hackathon) return;
+
+      const uid = reg.user.toString();
+      if (!hackathonMap[uid]) hackathonMap[uid] = new Set();
+
+      hackathonMap[uid].add(reg.hackathon.title);
+    });
+
+ 
+    const exportData = users.map((user) => ({
+      Name: user.name,
+      Email: user.email,
+      Contact: user.contactNumber || "",
+      University: user.university || "",
+      Hackathons: Array.from(hackathonMap[user._id.toString()] || []).join(
+        ", "
+      ),
+    }));
+
+
+    await googleSheetService.exportCollegeUsers(exportData);
+
+    console.log(`📊 College students exported: ${collegeName}`);
 
     res.json({
       success: true,
-      message: "Students exported to College Google Sheet successfully"
+      message: "Students exported to College Google Sheet successfully",
+      count: exportData.length,
     });
-
   } catch (error) {
     console.error("EXPORT COLLEGE STUDENTS ERROR:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to export students"
+      message: "Failed to export students",
     });
   }
 };
-
-
-
-
 
 export const getStudentsByCollegeId = async (req, res) => {
   try {
@@ -228,44 +380,63 @@ export const getStudentsByCollegeId = async (req, res) => {
     if (!college) {
       return res.status(404).json({
         success: false,
-        message: "College not found"
+        message: "College not found",
       });
     }
 
+   
     const users = await User.find({ collegeName: college.name }).select(
-      "name email contactNumber university"
+      "_id name email contactNumber university"
     );
 
-    const enrichedData = await Promise.all(
-      users.map(async (user) => {
-        const registrations = await Registration.find({
-          user: user._id
-        }).populate("hackathon", "title");
+    if (!users.length) {
+      return res.json({
+        success: true,
+        college: college.name,
+        count: 0,
+        data: [],
+      });
+    }
 
-        return {
-          name: user.name,
-          email: user.email,
-          contactNumber: user.contactNumber,
-          university: user.university,
-          hackathons: registrations.map(
-            (reg) => reg.hackathon?.title
-          )
-        };
-      })
-    );
+    const userIds = users.map((u) => u._id);
+
+    
+    const registrations = await Registration.find({
+      user: { $in: userIds },
+    }).populate("hackathon", "title");
+
+   
+    const hackathonMap = {};
+
+    registrations.forEach((reg) => {
+      if (!reg.hackathon) return;
+
+      const uid = reg.user.toString();
+      if (!hackathonMap[uid]) hackathonMap[uid] = new Set();
+
+      hackathonMap[uid].add(reg.hackathon.title);
+    });
+
+
+    const enrichedData = users.map((user) => ({
+      name: user.name,
+      email: user.email,
+      contactNumber: user.contactNumber || "",
+      university: user.university || "",
+      hackathons: Array.from(hackathonMap[user._id.toString()] || []),
+    }));
 
     res.json({
       success: true,
       college: college.name,
       count: enrichedData.length,
-      data: enrichedData
+      data: enrichedData,
     });
-
   } catch (error) {
     console.error("ADMIN COLLEGE STUDENTS ERROR:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to fetch students"
+      message: "Failed to fetch students",
     });
   }
 };

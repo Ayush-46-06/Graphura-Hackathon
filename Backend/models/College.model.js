@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import {ROLES} from "../config/roles.js"
+import { ROLES } from "../config/roles.js";
 const collegeSchema = new mongoose.Schema(
   {
     name: {
@@ -7,7 +7,7 @@ const collegeSchema = new mongoose.Schema(
       required: true,
       trim: true,
       unique: true,
-      lowercase:true
+      lowercase: true,
     },
 
     email: {
@@ -15,33 +15,47 @@ const collegeSchema = new mongoose.Schema(
       required: true,
       unique: true,
       lowercase: true,
-      trim: true
+      trim: true,
     },
 
     password: {
       type: String,
       required: true,
-      select: false
+      select: false,
     },
 
     city: {
       type: String,
-      trim: true
+      trim: true,
     },
-role: {
-    type: String,
-    default: ROLES.COLLEGE
-  },
+    role: {
+      type: String,
+      default: ROLES.COLLEGE,
+    },
 
     state: {
       type: String,
-      trim: true
+      trim: true,
     },
 
     isActive: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
+    shortName: {
+      type: String,
+      trim: true,
+      uppercase: true,
+      index: true,
+    },
+
+    alternateEmail: {
+      type: String,
+      lowercase: true,
+      trim: true,
+      unique: true,
+      sparse: true,
+    },
   },
   { timestamps: true }
 );
