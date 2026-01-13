@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Graph from "../Career/Graph";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
@@ -138,7 +138,6 @@ const Career = () => {
     },
   ];
 
-
   // for testimonial/reviews
   const nextReview = () => {
     setCurrentReview((prevIndex) => (prevIndex + 1) % reviews.length);
@@ -158,7 +157,11 @@ const Career = () => {
     "https://res.cloudinary.com/drq2a0262/image/upload/v1767859752/brand1-3_w0wikb.svg",
     "https://res.cloudinary.com/drq2a0262/image/upload/v1767859753/brand1-4_edfuqd.svg",
     "https://res.cloudinary.com/drq2a0262/image/upload/v1767859752/brand2-2_lkvyci.svg",
-  ]
+    "https://res.cloudinary.com/drq2a0262/image/upload/v1768289838/brand2-3_km6bbb.svg",
+    "https://res.cloudinary.com/drq2a0262/image/upload/v1768290009/brand2-4_vsdtxg.svg",
+    "https://res.cloudinary.com/drq2a0262/image/upload/v1768290009/brand2-5_bj0zix.svg"
+  ];
+  const navigate = useNavigate();
   return (
     <div className="pb-15 overflow-hidden">
       <Navbar />
@@ -174,7 +177,10 @@ const Career = () => {
             talent meets innovation, skills turn into impact, and careers take
             shape through challenges that matter.
           </p>
-          <button className="text-[#F8C62F] border border-[#F8C62F] px-5 py-2 rounded-md cursor-pointer hover:bg-[#fab031] hover:text-white active:bg-[#fab031] active:text-white transition-transform duration-200 hover:scale-105 hover:shadow-lg">
+          <button
+            onClick={() => navigate("/contact")}
+            className="text-[#F8C62F] border border-[#F8C62F] px-5 py-2 rounded-md cursor-pointer hover:bg-[#fab031] hover:text-white active:bg-[#fab031] active:text-white transition-transform duration-200 hover:scale-105 hover:shadow-lg"
+          >
             Get Free Consultation
           </button>
 
@@ -183,12 +189,21 @@ const Career = () => {
             <h2 className="w-full text-center text-[#fab031] font-bold text-lg">
               AS SEEN ON
             </h2>
-            <div className="flex flex-wrap justify-center gap-x-10">
-              {universities.map((university,index)=>(
-                <div key={index} className="w-45 h-40">
-                  <img src={university} alt="" className="w-full h-full"/>
+            <div className="w-full overflow-hidden py-6">
+            <div className="logo-slider">
+              {[...universities, ...universities].map((logo, index) => (
+                <div
+                  key={index}
+                  className="mx-10 flex items-center cursor-pointer"
+                >
+                  <img
+                    src={logo}
+                    alt="logo"
+                    className="h-20 w-auto object-contain transition"
+                  />
                 </div>
               ))}
+            </div>
             </div>
           </div>
 
@@ -217,7 +232,10 @@ const Career = () => {
               community that is rapidly expanding and making a significant
               impact.
             </p>
-            <button className="border border-[#fab031] text-[#fab031] hover:bg-[#fab031] py-2 px-4 rounded-md hover:text-white font-medium mt-5 cursor-pointer active:bg-[#fab031] active:text-white transition-transform duration-200 hover:scale-105 hover:shadow-lg">
+            <button
+              onClick={() => navigate("/all-blog")}
+              className="border border-[#fab031] text-[#fab031] hover:bg-[#fab031] py-2 px-4 rounded-md hover:text-white font-medium mt-5 cursor-pointer active:bg-[#fab031] active:text-white transition-transform duration-200 hover:scale-105 hover:shadow-lg"
+            >
               Learn more about Career
             </button>
           </div>
@@ -389,7 +407,7 @@ const Career = () => {
           {/* card */}
           <div className="relative max-w-6xl mx-auto mt-15">
             <div className="bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-500 hover:shadow-3xl">
-              <div className="grid md:grid-cols-5 gap-8">
+              <div className="grid md:grid-cols-5 gap-8 h-100">
                 {/* Image Section */}
                 <div className="md:col-span-2 relative h-96 md:h-auto">
                   <div className="absolute inset-0 bg-gradient-to-br from-teal-600 to-teal-800"></div>
@@ -402,10 +420,10 @@ const Career = () => {
                 </div>
 
                 {/* Content Section */}
-                <div className="md:col-span-3 p-8 md:p-12 flex flex-col justify-center">
+                <div className="md:col-span-3 p-8 md:p-12 flex flex-col justify-between">
                   <Quote className="w-16 h-16 text-teal-600 mb-6 opacity-50" />
 
-                  <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-8">
+                  <p className="md:text-lg text-gray-700 leading-relaxed mb-8 line-clamp-5">
                     {currentReviews?.text}
                   </p>
 
@@ -414,22 +432,40 @@ const Career = () => {
                       <h4 className="text-2xl font-bold text-gray-900 mb-1">
                         {currentReviews?.user?.name}
                       </h4>
-                      <p className="text-teal-600 font-medium">
-                        {currentReviews?.user?.occupation}
-                      </p>
                     </div>
 
                     {/* Rating Stars */}
                     <div className="flex gap-1">
-                      {[...Array(currentReviews?.rating)].map((_, i) => (
                         <svg
-                          key={i}
                           className="w-6 h-6 text-yellow-400 fill-current"
                           viewBox="0 0 20 20"
                         >
                           <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
                         </svg>
-                      ))}
+                        <svg
+                          className="w-6 h-6 text-yellow-400 fill-current"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg
+                          className="w-6 h-6 text-yellow-400 fill-current"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg
+                          className="w-6 h-6 text-yellow-400 fill-current"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                        <svg
+                          className="w-6 h-6 text-yellow-400 fill-current"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
                     </div>
                   </div>
                 </div>

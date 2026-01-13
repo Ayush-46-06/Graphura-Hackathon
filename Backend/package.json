@@ -26,6 +26,7 @@
     "mongoose": "^9.0.1",
     "multer": "^2.0.2",
     "multer-storage-cloudinary": "^4.0.0",
+    "node-cron": "^4.2.1",
     "nodemon": "^3.1.11",
     "pdfkit": "^0.17.2",
     "razorpay": "^2.9.6",

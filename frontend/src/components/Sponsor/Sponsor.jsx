@@ -129,16 +129,27 @@ const Sponsor = () => {
           <h1 className="text-xl font-extrabold w-full text-center mb-4 md:text-2xl lg:text-3xl">
             Truster by our Partners
           </h1>
-          <div className="flex flex-wrap justify-center gap-10 mt-8">
-            {logos.map((logo, index) => (
-              <div key={index} className="hover:-translate-y-2 cursor-pointer duration-200 transition-transform">
-                <img
-                  src={logo}
-                  alt={`Partner Logo ${index + 1}`}
-                  className="object-contain w-35 h-20"
-                />
-              </div>
-            ))}
+          <div className="w-full overflow-hidden py-6 relative">
+            {/* left fade */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-15 sm:w-20 md:w-35 lg:50 xl:w-100 bg-gradient-to-r from-white to-transparent z-20" />
+
+            {/* RIGHT fade */}
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-15 sm:w-20 md:w-35 lg:50 xl:w-100 bg-gradient-to-l from-white to-transparent z-20" />
+
+            <div className="logo-slider">
+              {[...logos, ...logos].map((logo, index) => (
+                <div
+                  key={index}
+                  className="mx-10 flex items-center cursor-pointer"
+                >
+                  <img
+                    src={logo}
+                    alt="logo"
+                    className="h-20 w-35 object-contain transition"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
