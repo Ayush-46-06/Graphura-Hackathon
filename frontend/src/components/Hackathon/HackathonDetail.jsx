@@ -210,6 +210,14 @@ const HackathonDetail = () => {
 
   const prizes = data?.prizeDetails?.split(",").map((p) => Number(p.trim()));
 
+const start = new Date(data.startDate).getTime();
+const end = new Date(data.endDate).getTime();
+
+const durationInHours = Math.ceil(
+  (end - start) / (1000 * 60 * 60)
+);
+
+
   return (
     <div className="pt-25">
       <Navbar />
@@ -600,7 +608,7 @@ const HackathonDetail = () => {
               </div>
               <ul className="py-2 px-4 flex flex-col gap-2 border-b border-gray-300">
                 <li className="flex justify-between font-semibold">
-                  <span className="text-gray-500">Timing:</span>
+                  <span className="text-gray-500">Starts at:</span>
                   <span>{formatLocalMidnightTime(data.startDate)}</span>
                 </li>
                 <li className="flex justify-between font-semibold">
@@ -612,8 +620,8 @@ const HackathonDetail = () => {
                   <span>Available</span>
                 </li>
                 <li className="flex justify-between font-semibold">
-                  <span className="text-gray-500">Language:</span>
-                  <span>English</span>
+                  <span className="text-gray-500">Duration:</span>
+                  <span>{durationInHours} hrs</span>
                 </li>
               </ul>
               <div className="flex justify-center bg-yellow-400 hover:bg-yellow-500 hover:scale-105 hover:shadow-lg duration-200 transition-transform text-white mx-6 mt-4 py-2 rounded-2xl cursor-pointer">

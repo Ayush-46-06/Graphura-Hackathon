@@ -79,19 +79,24 @@ const Hackathon = () => {
     }
 
     const paidMatch =
-    isPaid === "All"
-      ? true
-      : isPaid === "Paid"
-      ? item.isPaid === true
-      : item.isPaid === false;
+      isPaid === "All"
+        ? true
+        : isPaid === "Paid"
+        ? item.isPaid === true
+        : item.isPaid === false;
 
+    const participationMatch =
+      participation === "All"
+        ? true
+        : item.participationType === participation.toLowerCase();
 
-       const participationMatch =
-    participation === "All"
-      ? true
-      : item.participationType === participation.toLowerCase();
-
-    return categoryMatch && searchMatch && dateMatch && paidMatch && participationMatch;
+    return (
+      categoryMatch &&
+      searchMatch &&
+      dateMatch &&
+      paidMatch &&
+      participationMatch
+    );
   });
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -280,8 +285,26 @@ const Hackathon = () => {
           </div>
         </div>
         {showCalendar && (
-          <div className="fixed top-20 right-2 z-50 bg-white shadow-xl rounded-xl overflow-hidden">
-            <Calendar selectRange={true} onChange={handleChange} />
+          <div className="fixed top-20 right-2 z-50 bg-white shadow-xl rounded-xl overflow-hidden w-[320px]">
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 py-3 border-b">
+              <p className="text-sm text-gray-600">
+                Select <span className="font-semibold">start</span> and{" "}
+                <span className="font-semibold">end</span> dates
+              </p>
+
+              <button
+                onClick={() => setShowCalendar(false)}
+                className="text-gray-500 hover:text-red-500 text-lg font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Calendar */}
+            <div className="p-3">
+              <Calendar selectRange={true} onChange={handleChange} />
+            </div>
           </div>
         )}
       </section>
@@ -340,7 +363,7 @@ const Hackathon = () => {
                         : ""
                     }`}
                   >
-                     <span
+                    <span
                       className={`${
                         isPaid === val
                           ? "bg-white border-white"
@@ -371,7 +394,7 @@ const Hackathon = () => {
                         : ""
                     }`}
                   >
-                     <span
+                    <span
                       className={`${
                         participation === val
                           ? "bg-white border-white"
@@ -538,12 +561,15 @@ const Hackathon = () => {
                       <p className="mb-2 font-semibold text-gray-500 text-xs sm:line-clamp-3 line-clamp-2 md:line-clamp-1 md:text-sm xl:text-base">
                         {val.description}
                       </p>
-                      <div className="w-15 sm:hidden"> <button
-                      onClick={() => navigate(`/hackathons/${val._id}`)}
-                      className="cursor-pointer w-full bg-gradient-to-br from-[#F8C62F] to-[#fee035] text-white rounded-xl font-semibold hover:scale-105 hover:shadow-md hover:bg-amber-500 duration-200 transition-transform"
-                    >
-                      View
-                    </button></div>
+                      <div className="w-15 sm:hidden">
+                        {" "}
+                        <button
+                          onClick={() => navigate(`/hackathons/${val._id}`)}
+                          className="cursor-pointer w-full bg-gradient-to-br from-[#F8C62F] to-[#fee035] text-white rounded-xl font-semibold hover:scale-105 hover:shadow-md hover:bg-amber-500 duration-200 transition-transform"
+                        >
+                          View
+                        </button>
+                      </div>
 
                       <div className="hidden sm:flex justify-between mt-auto border-t border-gray-300 pt-3">
                         {/* PARTICIPANTS */}
@@ -602,17 +628,20 @@ const Hackathon = () => {
                             </span>
                           </div>
                         </div>
-                        <div className="w-15"> <button
-                      onClick={() => navigate(`/hackathons/${val._id}`)}
-                      className="cursor-pointer w-full bg-gradient-to-br from-[#F8C62F] to-[#fee035] py-2 text-white rounded-xl font-semibold hover:scale-105 hover:shadow-md hover:bg-amber-500 duration-200 transition-transform"
-                    >
-                      View
-                    </button></div>
+                        <div className="w-15">
+                          {" "}
+                          <button
+                            onClick={() => navigate(`/hackathons/${val._id}`)}
+                            className="cursor-pointer w-full bg-gradient-to-br from-[#F8C62F] to-[#fee035] py-2 text-white rounded-xl font-semibold hover:scale-105 hover:shadow-md hover:bg-amber-500 duration-200 transition-transform"
+                          >
+                            View
+                          </button>
+                        </div>
                       </div>
                     </div>
 
                     <span className="absolute top-2 left-2 bg-[#2c572f] text-[#39ff14] font-semibold py-1 px-3 rounded-2xl border border-[#39ff14] shadow-[0_0_8px_#39ff14,0_0_16px_#39ff14]">
-                      {val.isPaid===true ? "Paid" : "Free"}
+                      {val.isPaid === true ? "Paid" : "Free"}
                     </span>
                   </div>
                 </Link>
