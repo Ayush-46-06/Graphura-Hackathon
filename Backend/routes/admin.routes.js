@@ -1,7 +1,15 @@
 import express from "express";
-import {getAllUsers,declareHackathonResult,exportStudentsToSheet} from "../controllers/admin.controller.js";
+import {
+  getAllUsers,
+  declareHackathonResult,
+  exportStudentsToSheet
+} from "../controllers/admin.controller.js";
 
-import {adminDashboardOverview,hackathonGraphData,transactionStats} from "../controllers/analytics.controller.js";
+import {
+  adminDashboardOverview,
+  hackathonGraphData,
+  transactionStats
+} from "../controllers/analytics.controller.js";
 
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { roleMiddleware } from "../middlewares/role.middleware.js";
@@ -9,23 +17,56 @@ import { validateBody, validateQuery } from "../middlewares/validate.middleware.
 
 import { declareResultSchema } from "../validators/result.validator.js";
 import { dashboardFilterSchema } from "../validators/analytics.validation.js";
-
 import { ROLES } from "../config/roles.js";
 
 const router = express.Router();
 
-router.use(authMiddleware, roleMiddleware(ROLES.ADMIN));
+/* ================= DASHBOARD ================= */
+router.get(
+  "/admin/dashboard",
+  authMiddleware,
+  roleMiddleware(ROLES.ADMIN),
+  adminDashboardOverview
+);
 
-router.get("/admin/dashboard", adminDashboardOverview);
-router.get("/admin/dashboard/graph",validateQuery(dashboardFilterSchema),hackathonGraphData);
-router.get("/admin/dashboard/transactions", transactionStats);
+router.get(
+  "/admin/dashboard/graph",
+  authMiddleware,
+  roleMiddleware(ROLES.ADMIN),
+  validateQuery(dashboardFilterSchema),
+  hackathonGraphData
+);
 
+router.get(
+  "/admin/dashboard/transactions",
+  authMiddleware,
+  roleMiddleware(ROLES.ADMIN),
+  transactionStats
+);
 
-router.get("/admin/users", getAllUsers);
+/* ================= USERS ================= */
+router.get(
+  "/admin/users",
+  authMiddleware,
+  roleMiddleware(ROLES.ADMIN),
+  getAllUsers
+);
 
-router.post("/admin/hackathon/declare-result",validateBody(declareResultSchema),declareHackathonResult);
+/* ================= HACKATHON RESULT ================= */
+router.post(
+  "/admin/hackathon/declare-result",
+  authMiddleware,
+  roleMiddleware(ROLES.ADMIN),
+  validateBody(declareResultSchema),
+  declareHackathonResult
+);
 
-
-router.post("/admin/export/students", exportStudentsToSheet);
+/* ================= EXPORT ================= */
+router.post(
+  "/admin/export/students",
+  authMiddleware,
+  roleMiddleware(ROLES.ADMIN),
+  exportStudentsToSheet
+);
 
 export default router;

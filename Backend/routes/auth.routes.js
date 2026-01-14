@@ -1,7 +1,13 @@
 import express from "express";
 import { registerSchema, loginSchema } from "../validators/auth.validator.js";
 import { validateBody } from "../middlewares/validate.middleware.js";
-import { register, login, forgotPassword,resetPassword } from "../controllers/auth.controller.js";
+import {
+  register,
+  login,
+  forgotPassword,
+  resetPassword,
+  judgeRegister
+} from "../controllers/auth.controller.js";
 import upload from "../middlewares/upload.middleware.js";
 
 const router = express.Router();
@@ -18,8 +24,14 @@ router.post(
   login
 );
 
-router.post("/auth/forgot-password",forgotPassword)
+router.post("/auth/forgot-password", forgotPassword);
 
-router.post("/auth/reset-password/:token",resetPassword)
+router.post("/auth/reset-password/:token", resetPassword);
+
+router.post(
+  "/auth/judge-register",
+  upload.single("image"),
+  judgeRegister
+);
 
 export default router;

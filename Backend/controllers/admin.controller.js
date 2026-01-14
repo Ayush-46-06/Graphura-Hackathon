@@ -39,14 +39,7 @@ const getPrizeSplit = (totalPrize, count) => {
 /* ================= DECLARE RESULT ================= */
 export const declareHackathonResult = async (req, res) => {
   try {
-    const { hackathonId, winners } = req.body;
-
-    if (!Array.isArray(winners) || winners.length < 1 || winners.length > 3) {
-      return res.status(400).json({
-        success: false,
-        message: "Winners must be between 1 and 3 users"
-      });
-    }
+    const { hackathonId } = req.body;
 
     const hackathon = await Hackathon.findById(hackathonId);
     if (!hackathon) {
@@ -63,16 +56,29 @@ export const declareHackathonResult = async (req, res) => {
       });
     }
 
-    /* -------- Registration check -------- */
+    const rankedParticipants = hackathon.participants
+      .filter(p => p.rank && [1, 2, 3].includes(p.rank) && p.reviewedBy)
+      .sort((a, b) => a.rank - b.rank);
+
+    if (rankedParticipants.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Judge has not selected winners yet"
+      });
+    }
+
+    const winners = rankedParticipants.map(p => p.user.toString());
+
     for (const userId of winners) {
       const registered = await Registration.findOne({
         user: userId,
         hackathon: hackathonId
       });
+
       if (!registered) {
         return res.status(400).json({
           success: false,
-          message: "Some users are not registered"
+          message: "Some winners are not registered"
         });
       }
     }
@@ -80,18 +86,18 @@ export const declareHackathonResult = async (req, res) => {
     const prizeSplit = getPrizeSplit(hackathon.prizePool, winners.length);
     const winnerDetails = [];
 
-    /* ================= MAIN LOOP ================= */
     for (let i = 0; i < winners.length; i++) {
       const user = await User.findById(winners[i]);
       if (!user) continue;
 
-      /* Wallet */
-      user.wallet += prizeSplit[i];
-      await user.save();
+      await User.findByIdAndUpdate(
+        user._id,
+        { $inc: { wallet: prizeSplit[i] } },
+        { runValidators: false }
+      );
 
       const certificateId = `${Date.now()}-${user._id}`;
 
-      /* -------- PDF GENERATION -------- */
       const pdfBuffer = await new Promise((resolve, reject) => {
         const doc = new PDFDocument({
           size: "A4",
@@ -106,7 +112,8 @@ export const declareHackathonResult = async (req, res) => {
 
         doc.image(
           path.join(process.cwd(), "assets", "certificate-template.jpg"),
-          0, 0,
+          0,
+          0,
           { width: doc.page.width, height: doc.page.height }
         );
 
@@ -129,7 +136,6 @@ export const declareHackathonResult = async (req, res) => {
         doc.end();
       });
 
-      /* -------- EMAIL WITH ATTACHMENT -------- */
       await sendWinnerResultMail({
         userName: user.name,
         userEmail: user.email,
@@ -139,7 +145,6 @@ export const declareHackathonResult = async (req, res) => {
         pdfBuffer
       });
 
-      /* -------- SAVE CERTIFICATE (FIXED) -------- */
       await Certificate.create({
         user: user._id,
         hackathon: hackathonId,
@@ -154,14 +159,13 @@ export const declareHackathonResult = async (req, res) => {
       });
     }
 
-    hackathon.winners = winners;
     hackathon.winnerDetails = winnerDetails;
     hackathon.status = "completed";
     await hackathon.save();
 
     res.json({
       success: true,
-      message: "Results declared & certificates mailed successfully",
+      message: "Results declared & certificates sent successfully",
       winnerDetails
     });
 

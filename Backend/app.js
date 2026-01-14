@@ -18,7 +18,7 @@ import collegeRoutes from "./routes/college.routes.js";
 import partnerRoutes from "./routes/partner.routes.js";
 import "./cron/hackathonStart.cron.js";
 import "./cron/hackathonReminder.cron.js";
-
+import judgeRoutes from "./routes/judge.routes.js";
 const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -45,7 +45,7 @@ app.use("/api", analyticsRoutes);
 app.use("/api", transactionRoutes);
 app.use("/api", commentRoutes);
 app.use("/api", adminRoutes);
-
+app.use("/api", judgeRoutes)
 app.get("/health", (_, res) => {
   res.status(200).json({ status: "OK" });
 });

@@ -14,7 +14,7 @@ export const updateProfile = async (req, res) => {
   try {
     const updateData = { ...req.body };
 
-    // ✅ image upload handle
+
     if (req.file) {
       updateData.image = req.file.path;
     }
@@ -70,7 +70,7 @@ export const downloadCertificate = async (req, res) => {
       });
     }
 
-    // 👉 redirect to cloudinary
+
     return res.redirect(certificate.certificateUrl);
 
   } catch (error) {

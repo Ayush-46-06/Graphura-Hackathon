@@ -47,16 +47,14 @@ export const registerForHackathon = async (req, res) => {
     });
 
     await Hackathon.findByIdAndUpdate(hackathonId, {
-      $addToSet: { participants: userId },
+      $addToSet: { participants: { user: userId } },
     });
 
-    // ✅ Registration confirmation mail ONLY
     sendHackathonRegistrationMail({
       userName: req.user.name,
       userEmail: req.user.email,
       hackathonTitle: hackathon.title,
       startDate: hackathon.startDate,
-      // ❌ activityPdf intentionally removed
     }).catch(() => {});
 
     res.status(201).json({
@@ -322,5 +320,98 @@ export const addTeamMember = async (req, res) => {
   } catch (error) {
     console.error("ADD TEAM MEMBER ERROR:", error);
     res.status(500).json({ success: false, message: "Failed to add members" });
+  }
+};
+
+
+export const submitHackathonProject = async (req, res) => {
+  try {
+    const { hackathonId } = req.params;
+    const { githubLink, driveVideoLink } = req.body;
+    const userId = req.user._id;
+
+    if (!githubLink || !driveVideoLink) {
+      return res.status(400).json({
+        success: false,
+        message: "GitHub and Drive links are required"
+      });
+    }
+
+    if (!githubLink.startsWith("https://github.com/")) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid GitHub link"
+      });
+    }
+
+    if (!driveVideoLink.includes("drive.google.com")) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Google Drive link"
+      });
+    }
+
+    const hackathon = await Hackathon.findById(hackathonId);
+    if (!hackathon) {
+      return res.status(404).json({
+        success: false,
+        message: "Hackathon not found"
+      });
+    }
+
+    if (hackathon.status !== "ongoing") {
+      return res.status(400).json({
+        success: false,
+        message: "Submission not allowed at this stage"
+      });
+    }
+
+    const registration = await Registration.findOne({
+      hackathon: hackathonId,
+      user: userId
+    });
+
+    if (!registration) {
+      return res.status(403).json({
+        success: false,
+        message: "Register for hackathon first"
+      });
+    }
+
+    const participant = hackathon.participants.find(
+      p => p.user.toString() === userId.toString()
+    );
+
+    if (!participant) {
+      return res.status(400).json({
+        success: false,
+        message: "Participant not found"
+      });
+    }
+
+    if (participant.submittedAt) {
+      return res.status(400).json({
+        success: false,
+        message: "Project already submitted"
+      });
+    }
+
+    participant.githubLink = githubLink;
+    participant.driveVideoLink = driveVideoLink;
+    participant.submittedAt = new Date();
+
+    await hackathon.save();
+
+    res.json({
+      success: true,
+      message: "Project submitted successfully"
+    });
+
+  } catch (error) {
+    console.error("SUBMIT PROJECT ERROR:", error);
+    res.status(500).json({
+      success: false,
+      message: "Submission failed"
+    });
   }
 };

@@ -1,7 +1,8 @@
 export const ROLES = {
   ADMIN: "admin",
   USER: "user",
-  COLLEGE: "college"
+  COLLEGE: "college",
+  JUDGE: "judge"
 };
 
 export const ROLE_ARRAY = Object.values(ROLES);

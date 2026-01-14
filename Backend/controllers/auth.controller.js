@@ -4,6 +4,7 @@ import User from "../models/User.model.js";
 import Admin from "../models/Admin.model.js";
 import { config } from "../config/env.js";
 import {sendResetPasswordMail} from "../services/mail.service.js"
+import Judge from "../models/Judge.model.js";
 import College from "../models/College.model.js";
 import crypto from "crypto"
 
@@ -122,20 +123,22 @@ export const login = async (req, res) => {
     let account = null;
     let role = null;
 
-    /* ================= ADMIN ================= */
     account = await Admin.findOne({ email }).select("+password");
     if (account) role = "admin";
 
-    /* ================= USER ================= */
+    if (!account) {
+      account = await Judge.findOne({ email }).select("+password");
+      if (account) role = "judge";
+    }
+
     if (!account) {
       account = await User.findOne({ email }).select("+password");
       if (account) role = "user";
     }
 
-    /* ================= COLLEGE LOGIN (DISABLED) ================= */
     if (!account) {
-     account = await College.findOne({ email }).select("+password");
-     if (account) role = "college";
+      account = await College.findOne({ email }).select("+password");
+      if (account) role = "college";
     }
 
     if (!account || !account.password) {
@@ -181,7 +184,8 @@ export const forgotPassword = async (req, res) => {
 
     let account =
       (await User.findOne({ email })) ||
-      (await Admin.findOne({ email }));
+      (await Admin.findOne({ email })) ||
+      (await Judge.findOne({ email }));   
 
     if (!account) {
       return res.json({
@@ -196,7 +200,6 @@ export const forgotPassword = async (req, res) => {
       .createHash("sha256")
       .update(resetToken)
       .digest("hex");
-
 
     account.resetPasswordToken = hashedToken;
     account.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
@@ -250,13 +253,18 @@ export const resetPassword = async (req, res) => {
       .update(token)
       .digest("hex");
 
-  
     let account =
       (await User.findOne({
         resetPasswordToken: hashedToken,
         resetPasswordExpire: { $gt: Date.now() }
       }).select("+password")) ||
+
       (await Admin.findOne({
+        resetPasswordToken: hashedToken,
+        resetPasswordExpire: { $gt: Date.now() }
+      }).select("+password")) ||
+
+      (await Judge.findOne({                                   
         resetPasswordToken: hashedToken,
         resetPasswordExpire: { $gt: Date.now() }
       }).select("+password"));
@@ -284,6 +292,76 @@ export const resetPassword = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to reset password"
+    });
+  }
+};
+
+
+export const judgeRegister = async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      password,
+      address,
+      contactNumber,
+      university,
+      collegeName,
+      occupation,
+      company,
+      courseName,
+      yearOfStudy,
+      judgeSecret
+    } = req.body;
+
+    const image = req.file ? req.file.path : null;
+
+
+    if (!judgeSecret || judgeSecret !== config.JUDGE_SECRET_KEY) {
+      return res.status(403).json({
+        success: false,
+        message: "Invalid judge secret key"
+      });
+    }
+
+
+    const existingJudge = await Judge.findOne({ email });
+    if (existingJudge) {
+      return res.status(400).json({
+        success: false,
+        message: "Email already registered as judge"
+      });
+    }
+
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+
+    await Judge.create({
+      name,
+      email,
+      password: hashedPassword,
+      address,
+      contactNumber,
+      university,
+      collegeName: collegeName || null,
+      occupation: occupation || null,
+      company: company || null,
+      image,
+      courseName,
+      yearOfStudy
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Judge registered successfully"
+    });
+
+  } catch (error) {
+    console.error("JUDGE REGISTER ERROR:", error);
+    res.status(500).json({
+      success: false,
+      message: "Judge registration failed"
     });
   }
 };

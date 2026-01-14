@@ -17,7 +17,8 @@ import {
   createPaidOrder,
   verifyPaidRegistration,
   createTeamRegistration,
-  addTeamMember
+  addTeamMember,
+  submitHackathonProject
 } from "../controllers/registration.controller.js";
 
 /* ================= VALIDATORS ================= */
@@ -135,5 +136,12 @@ router.post(
   roleMiddleware(ROLES.ADMIN),
   upload.single("activityPdf"),
   uploadActivityPdf
+);
+
+router.post(
+  "/hackathon/:hackathonId/submit",
+  authMiddleware,
+  roleMiddleware(ROLES.USER),
+  submitHackathonProject
 );
 export default router;
