@@ -5,8 +5,9 @@ export const createTransaction = async (req, res) => {
 
   const transaction = await Transaction.create({
     user: req.user._id,
-    hackathon: hackathonId, 
-    amount
+    hackathon: hackathonId,
+    amount,
+    status: "pending"
   });
 
   res.status(201).json({
@@ -14,6 +15,7 @@ export const createTransaction = async (req, res) => {
     data: transaction
   });
 };
+
 export const updateTransactionStatus = async (req, res) => {
   const transaction = await Transaction.findByIdAndUpdate(
     req.params.id,

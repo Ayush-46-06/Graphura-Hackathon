@@ -5,6 +5,7 @@ import razorpay from "../services/razorpay.service.js";
 import crypto from "crypto";
 import mongoose from "mongoose";
 import User from "../models/User.model.js"
+import Transaction from "../models/Transaction.model.js";
 
 /* ================= REGISTER FOR HACKATHON ================= */
 export const registerForHackathon = async (req, res) => {
@@ -148,10 +149,25 @@ export const createPaidOrder = async (req, res) => {
     registration.razorpayOrderId = order.id;
     await registration.save();
 
+    // 🔐 Create / update pending transaction (NO DUPLICATE)
+    await Transaction.findOneAndUpdate(
+      {
+        user: userId,
+        hackathon: hackathonId,
+        status: "pending",
+      },
+      {
+        amount: hackathon.entryFee,
+        razorpayOrderId: order.id,
+      },
+      { upsert: true, new: true }
+    );
+
     res.json({
       success: true,
       order,
     });
+
   } catch (error) {
     console.error("CREATE ORDER ERROR:", error);
     res.status(500).json({
@@ -161,10 +177,12 @@ export const createPaidOrder = async (req, res) => {
   }
 };
 
+
 export const verifyPaidRegistration = async (req, res) => {
   try {
     const { orderId, paymentId, signature } = req.body;
 
+    // 🔐 Verify Razorpay signature
     const generatedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_SECRET)
       .update(`${orderId}|${paymentId}`)
@@ -181,18 +199,42 @@ export const verifyPaidRegistration = async (req, res) => {
       { razorpayOrderId: orderId },
       {
         paymentStatus: "paid",
-        status: "completed", // ✅ VERY IMPORTANT
+        status: "completed",
         razorpayPaymentId: paymentId,
         razorpaySignature: signature,
       },
       { new: true }
-    );
+    ).populate("hackathon");
+
+    if (!registration) {
+      return res.status(404).json({
+        success: false,
+        message: "Registration not found",
+      });
+    }
+
+    // 🔒 Prevent duplicate verification
+    const existingTransaction = await Transaction.findOne({
+      paymentId: paymentId,
+    });
+
+    if (!existingTransaction) {
+      await Transaction.findOneAndUpdate(
+        { razorpayOrderId: orderId },
+        {
+          paymentId,
+          status: "success",
+        },
+        { new: true }
+      );
+    }
 
     res.json({
       success: true,
       message: "Payment successful & registration completed",
       registration,
     });
+
   } catch (error) {
     console.error("VERIFY PAYMENT ERROR:", error);
     res.status(500).json({
@@ -201,6 +243,7 @@ export const verifyPaidRegistration = async (req, res) => {
     });
   }
 };
+
 
 /* ================= CREATE TEAM ================= */
 export const createTeamRegistration = async (req, res) => {
