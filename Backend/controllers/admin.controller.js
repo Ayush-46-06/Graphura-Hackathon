@@ -182,6 +182,9 @@ export const declareHackathonResult = async (req, res) => {
       });
 
       winnerDetails.push({
+        name:user.name,
+        email:user.email,
+        image:user.image || null,
         user: user._id,
         rank: i + 1,
         prizeAmount: prizeSplit[i]

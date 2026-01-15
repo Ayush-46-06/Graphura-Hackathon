@@ -4,6 +4,7 @@ import { sendHackathonRegistrationMail } from "../services/mail.service.js";
 import razorpay from "../services/razorpay.service.js";
 import crypto from "crypto";
 import mongoose from "mongoose";
+import User from "../models/User.model.js"
 
 /* ================= REGISTER FOR HACKATHON ================= */
 export const registerForHackathon = async (req, res) => {
@@ -243,71 +244,83 @@ export const createTeamRegistration = async (req, res) => {
 };
 
 /* ================= ADD TEAM MEMBERS ================= */
+
 export const addTeamMember = async (req, res) => {
   try {
-    const { hackathonId, memberId } = req.body;
+    const { hackathonId, memberEmails } = req.body;
 
-    if (!Array.isArray(memberId) || memberId.length === 0) {
+    if (!Array.isArray(memberEmails) || memberEmails.length === 0) {
       return res.status(400).json({
         success: false,
-        message: "memberId must be a non-empty array",
+        message: "memberEmails must be a non-empty array"
       });
     }
 
-    const invalidId = memberId.find(
-      (id) => !mongoose.Types.ObjectId.isValid(id)
-    );
-    if (invalidId) {
+    // 🔍 Find users by email
+    const users = await User.find({
+      email: { $in: memberEmails }
+    }).select("_id email");
+
+    if (users.length !== memberEmails.length) {
       return res.status(400).json({
         success: false,
-        message: "Invalid member ID provided",
+        message: "Some emails are not registered users"
       });
     }
 
-    if (memberId.includes(req.user._id.toString())) {
+    const memberIds = users.map(user => user._id.toString());
+
+    // ❌ Team leader cannot be added
+    if (memberIds.includes(req.user._id.toString())) {
       return res.status(400).json({
         success: false,
-        message: "Team leader cannot be added as member",
+        message: "Team leader cannot be added as member"
       });
     }
 
     const registration = await Registration.findOne({
       hackathon: hackathonId,
       teamLeader: req.user._id,
-      participationType: "team",
+      participationType: "team"
     });
 
     if (!registration) {
       return res.status(403).json({
         success: false,
-        message: "Only team leader can add members",
+        message: "Only team leader can add members"
       });
     }
 
     const hackathon = await Hackathon.findById(hackathonId);
+    if (!hackathon) {
+      return res.status(404).json({
+        success: false,
+        message: "Hackathon not found"
+      });
+    }
 
     if (hackathon.isPaid && registration.paymentStatus !== "paid") {
       return res.status(403).json({
         success: false,
-        message: "Complete payment before adding team members",
+        message: "Complete payment before adding team members"
       });
     }
 
-    if (
-      registration.teamMembers.length + memberId.length >
-      hackathon.maxTeamSize - 1
-    ) {
+    const maxAllowed = hackathon.maxTeamSize - 1;
+
+    if (registration.teamMembers.length + memberIds.length > maxAllowed) {
       return res.status(400).json({
         success: false,
-        message: `Max ${hackathon.maxTeamSize - 1} members allowed`,
+        message: `Max ${maxAllowed} team members allowed`
       });
     }
 
+    // ✅ Prevent duplicates automatically
     registration.teamMembers = [
       ...new Set([
-        ...registration.teamMembers.map((id) => id.toString()),
-        ...memberId,
-      ]),
+        ...registration.teamMembers.map(id => id.toString()),
+        ...memberIds
+      ])
     ];
 
     await registration.save();
@@ -315,11 +328,15 @@ export const addTeamMember = async (req, res) => {
     res.json({
       success: true,
       message: "Team members added successfully",
-      teamMembers: registration.teamMembers,
+      teamMembers: registration.teamMembers
     });
+
   } catch (error) {
     console.error("ADD TEAM MEMBER ERROR:", error);
-    res.status(500).json({ success: false, message: "Failed to add members" });
+    res.status(500).json({
+      success: false,
+      message: "Failed to add members"
+    });
   }
 };
 
