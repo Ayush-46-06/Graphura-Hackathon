@@ -57,13 +57,6 @@ export const reviewAndRankParticipant = async (req, res) => {
     const judgeId = req.judge._id;
     const judgeName = req.judge.name;
 
-    if (![1, 2, 3].includes(rank)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid rank"
-      });
-    }
-
     const hackathon = await Hackathon.findById(hackathonId);
     if (!hackathon) {
       return res.status(404).json({
@@ -90,7 +83,30 @@ export const reviewAndRankParticipant = async (req, res) => {
       });
     }
 
-    participant.rank = rank;
+    /* ✅ Rank validation ONLY if provided */
+    if (rank !== undefined) {
+      if (![1, 2, 3].includes(rank)) {
+        return res.status(400).json({
+          success: false,
+          message: "Rank must be 1, 2 or 3"
+        });
+      }
+
+      /* 🚫 Prevent duplicate ranks */
+      const rankAlreadyUsed = hackathon.participants.some(
+        p => p.rank === rank && p.user.toString() !== userId
+      );
+
+      if (rankAlreadyUsed) {
+        return res.status(400).json({
+          success: false,
+          message: `Rank ${rank} already assigned`
+        });
+      }
+
+      participant.rank = rank;
+    }
+
     participant.reviewedBy = judgeId;
     participant.reviewedByName = judgeName;
 
@@ -98,10 +114,13 @@ export const reviewAndRankParticipant = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Participant reviewed successfully"
+      message: rank
+        ? "Participant ranked successfully"
+        : "Participant reviewed successfully"
     });
 
   } catch (error) {
+    console.error("REVIEW ERROR:", error);
     res.status(500).json({
       success: false,
       message: "Failed to review participant"

@@ -3,7 +3,7 @@ import Hackathon from "../models/Hackathon.model.js";
 import Registration from "../models/Registration.model.js";
 import Certificate from "../models/Certificate.model.js";
 import googleSheetService from "../services/googleSheet.service.js";
-import { sendWinnerResultMail } from "../services/mail.service.js";
+import { sendWinnerResultMail,sendParticipantsMail } from "../services/mail.service.js";
 
 import PDFDocument from "pdfkit";
 import path from "path";
@@ -86,6 +86,9 @@ export const declareHackathonResult = async (req, res) => {
     const prizeSplit = getPrizeSplit(hackathon.prizePool, winners.length);
     const winnerDetails = [];
 
+    /* =======================
+       🏆 WINNER CERTIFICATES
+    ======================= */
     for (let i = 0; i < winners.length; i++) {
       const user = await User.findById(winners[i]);
       if (!user) continue;
@@ -98,43 +101,69 @@ export const declareHackathonResult = async (req, res) => {
 
       const certificateId = `${Date.now()}-${user._id}`;
 
-      const pdfBuffer = await new Promise((resolve, reject) => {
-        const doc = new PDFDocument({
-          size: "A4",
-          layout: "landscape",
-          margin: 0
-        });
+     const pdfBuffer = await new Promise((resolve, reject) => {
+  const doc = new PDFDocument({
+    size: [1754, 1240],
+    margin: 0
+  });
 
-        const buffers = [];
-        doc.on("data", buffers.push.bind(buffers));
-        doc.on("end", () => resolve(Buffer.concat(buffers)));
-        doc.on("error", reject);
+  const buffers = [];
+  doc.on("data", buffers.push.bind(buffers));
+  doc.on("end", () => resolve(Buffer.concat(buffers)));
+  doc.on("error", reject);
 
-        doc.image(
-          path.join(process.cwd(), "assets", "certificate-template.jpg"),
-          0,
-          0,
-          { width: doc.page.width, height: doc.page.height }
-        );
+  // 🏆 WINNER CERTIFICATE IMAGE
+  doc.image(
+    path.join(process.cwd(), "assets", "Winner_certificates.png"),
+    0,
+    0,
+    { width: 1754, height: 1240 }
+  );
 
-        doc.font("Helvetica-Bold")
-          .fontSize(28)
-          .text(hackathon.title, 0, 200, { align: "center" });
+  // 👤 NAME
+  doc
+    .font("Helvetica-Bold")
+    .fontSize(78)
+    .fillColor("#000000")
+    .text(user.name, 200, 460, {
+      width: 600,
+      align: "center",
+      lineBreak: false
+    });
 
-        doc.font("Helvetica-Bold")
-          .fontSize(34)
-          .text(user.name, 0, 315, { align: "center" });
+  // 🥇 POSITION
+  const positionText =
+    i === 0 ? "1st" :
+    i === 1 ? "2nd" :
+    "3rd";
 
-        const place =
-          i === 0 ? "First Place" :
-          i === 1 ? "Second Place" :
-          "Third Place";
+  doc
+    .font("Helvetica-Bold")
+    .fontSize(37)
+    .fillColor("#000000")
+    .text(positionText, 875, 629, {
+      width: 95,
+      align: "center"
+    });
 
-        doc.fontSize(14)
-          .text(`${place} – ${hackathon.title}`, 0, 520, { align: "center" });
+  // 📅 DATE
+  const dateText = new Date().toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric"
+  }).toUpperCase();
 
-        doc.end();
-      });
+  doc
+    .font("Helvetica-Bold")
+    .fontSize(26)
+    .fillColor("#ffffff")
+    .text(dateText, 180, 927, {
+      width: 320,
+      align: "center"
+    });
+
+  doc.end();
+});
 
       await sendWinnerResultMail({
         userName: user.name,
@@ -159,13 +188,89 @@ export const declareHackathonResult = async (req, res) => {
       });
     }
 
+    /* ==========================
+       🎓 PARTICIPATION CERTIFICATES
+    ========================== */
+    const winnerUserIds = winners.map(id => id.toString());
+
+    for (const participant of hackathon.participants) {
+      const userId = participant.user.toString();
+
+      // ❌ Winners skip
+      if (winnerUserIds.includes(userId)) continue;
+
+      const user = await User.findById(userId);
+      if (!user) continue;
+
+      const pdfBuffer = await new Promise((resolve, reject) => {
+        const doc = new PDFDocument({
+          size: [1754, 1240],
+          margin: 0
+        });
+
+        const buffers = [];
+        doc.on("data", buffers.push.bind(buffers));
+        doc.on("end", () => resolve(Buffer.concat(buffers)));
+        doc.on("error", reject);
+
+        // ✅ PARTICIPATION CERTIFICATE IMAGE
+        doc.image(
+          path.join(process.cwd(), "assets", "Participation_certificate.png"),
+          0,
+          0,
+          { width: 1754, height: 1240 }
+        );
+
+        doc
+          .font("Helvetica-Bold")
+          .fontSize(78)
+          .fillColor("#000000")
+          .text(user.name, 200, 460, {
+            width: 600,
+            align: "center",
+            lineBreak: false
+          });
+
+        const dateText = new Date().toLocaleDateString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric"
+        }).toUpperCase();
+
+        doc
+          .font("Helvetica-Bold")
+          .fontSize(26)
+          .fillColor("#ffffff")
+          .text(dateText, 180, 927, {
+            width: 320,
+            align: "center"
+          });
+
+        doc.end();
+      });
+
+      await sendParticipantsMail({
+        userName: user.name,
+        userEmail: user.email,
+        hackathonTitle: hackathon.title,
+        pdfBuffer
+      });
+
+      await Certificate.create({
+        user: user._id,
+        hackathon: hackathonId,
+        certificateId: `participation-${Date.now()}-${user._id}`,
+        certificateUrl: `sent-via-email://participation`
+      });
+    }
+
     hackathon.winnerDetails = winnerDetails;
     hackathon.status = "completed";
     await hackathon.save();
 
     res.json({
       success: true,
-      message: "Results declared & certificates sent successfully",
+      message: "Results declared & all certificates sent successfully",
       winnerDetails
     });
 

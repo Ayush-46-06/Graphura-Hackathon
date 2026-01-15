@@ -579,3 +579,56 @@ export const sendHackathonReminderMail = async ({
     console.error("❌ Reminder Mail Error:", error);
   }
 };
+
+export const sendParticipantsMail = async ({
+  userName,
+  userEmail,
+  hackathonTitle,
+  pdfBuffer
+}) => {
+  try {
+    await emailApi.sendTransacEmail({
+      sender: {
+        email: config.BREVO_SENDER_EMAIL,
+        name: "Graphura"
+      },
+      to: [{ email: userEmail }],
+      subject: `🎉 Participation Certificate – ${hackathonTitle}`,
+      htmlContent: `
+        <p>Dear <b>${userName}</b>,</p>
+
+        <p>
+          Thank you for participating in the <b>${hackathonTitle}</b>
+          organized by <b>Graphura India Private Limited</b>.
+        </p>
+
+        <p>
+          We truly appreciate your effort, dedication, and enthusiasm
+          throughout the hackathon.
+        </p>
+
+        <p>
+          📎 Your <b>Participation Certificate</b> is attached with this email.
+        </p>
+
+        <p>
+          We look forward to your participation in our future hackathons.
+        </p>
+
+        <p>
+          Warm regards,<br/>
+          <b>Team Graphura</b>
+        </p>
+      `,
+      attachment: [
+        {
+          content: pdfBuffer.toString("base64"),
+          name: `Participation-Certificate-${hackathonTitle}.pdf`,
+          type: "application/pdf"
+        }
+      ]
+    });
+  } catch (error) {
+    console.error("❌ Participation Mail Error:", error);
+  }
+};
