@@ -33,15 +33,7 @@ const judgeSchema = new mongoose.Schema(
       required: true
     },
 
-    university: {
-      type: String,
-      required: true
-    },
 
-    collegeName: {
-      type: String,
-      default: null
-    },
 
     occupation: {
       type: String,
