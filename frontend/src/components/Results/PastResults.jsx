@@ -6,13 +6,18 @@ export default function PastResults({ pastHackathons }) {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef(null);
 
-  // Scroll into view animation
+  // ✅ Filter ONLY completed + limit to 3
+  const completedHackathons = pastHackathons
+    .filter(hack => hack.status === "completed")
+    .slice(0, 3);
+
+  // Scroll animation
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          observer.disconnect(); // animate once
+          observer.disconnect();
         }
       },
       { threshold: 0.2 }
@@ -27,7 +32,7 @@ export default function PastResults({ pastHackathons }) {
       ref={sectionRef}
       className="relative overflow-hidden py-10 sm:py-14 lg:py-20 bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]"
     >
-      {/* Animated Background Blobs */}
+      {/* Background blobs */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-[#1AB69D]/25 rounded-full blur-3xl animate-pulse" />
         <div
@@ -36,10 +41,9 @@ export default function PastResults({ pastHackathons }) {
         />
       </div>
 
-      {/* HEADER */}
+      {/* Header */}
       <div
-        className={`relative max-w-7xl mx-auto px-6 text-center mb-8 sm:mb-12 lg:mb-14 z-10
-          transition-all duration-700 ease-out
+        className={`relative max-w-7xl mx-auto px-6 text-center mb-10 z-10 transition-all duration-700
           ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
         `}
       >
@@ -47,101 +51,83 @@ export default function PastResults({ pastHackathons }) {
           Results Declared
         </span>
 
-        <h2 className="
-          text-2xl
-          sm:text-3xl
-          lg:text-4xl
-          font-bold
-          text-white
-          mb-3 sm:mb-4
-        ">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3">
           Past Hackathon Results
         </h2>
 
-        <p className="
-          text-sm
-          sm:text-base
-          text-white/80
-          max-w-xl
-          mx-auto
-        ">
+        <p className="text-sm sm:text-base text-white/80 max-w-xl mx-auto">
           Celebrating teams who stood out and made their mark.
         </p>
       </div>
 
-      {/* GRID */}
-      <div className="relative max-w-7xl mx-auto px-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 z-10">
-        {pastHackathons.map((hack, index) => (
+      {/* Cards Grid */}
+      <div className="relative max-w-7xl mx-auto px-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 z-10">
+        {completedHackathons.map((hack, index) => (
           <div
-            key={hack.id}
+            key={hack._id}
             style={{ transitionDelay: `${index * 120}ms` }}
-            className={`
-              group relative rounded-2xl 
-              p-3 sm:p-4 lg:p-6
-              bg-white/95 backdrop-blur-xl
+            className={`group relative rounded-2xl p-4 bg-white/95 backdrop-blur-xl
               border border-white/30
               shadow-[0_20px_50px_rgba(3,89,78,0.35)]
-              transition-all duration-700 ease-out
-              hover:-translate-y-3
-              hover:shadow-[0_30px_70px_rgba(3,89,78,0.55)]
+              transition-all duration-700
+              hover:-translate-y-3 hover:shadow-[0_30px_70px_rgba(3,89,78,0.55)]
               ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"}
             `}
           >
-            {/* CATEGORY */}
-            <span className="absolute top-6 right-6 text-[11px] bg-[#E6F4F1] text-[#03594E] px-4 py-1 rounded-full font-semibold uppercase">
+            {/* Category */}
+            <span className="absolute top-5 right-5 text-[11px] bg-[#E6F4F1] text-[#03594E] px-4 py-1 rounded-full font-semibold uppercase">
               {hack.category}
             </span>
 
-            {/* PODIUM */}
-            <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-10 sm:pt-12 mt-3 sm:mt-5 mb-4 sm:mb-5">
-              {[1, 0, 2].map((i) => (
-                <div key={i} className="text-center">
-                  <div
-                    className={`
-                      aspect-square max-w-[80px] sm:max-w-[96px]
-                      rounded-lg
-                      overflow-hidden
-                      bg-white
-                      transition-all duration-300
-                      group-hover:scale-[1.03]
-                      ${i === 0 ? "border-2 border-[#F8C62F]" : "border border-[#DDEAE7]"}
-                    `}
-                  >
-                    <img
-                      src={hack.winners[i]}
-                      alt="Winner"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
+            {/* Winners Podium */}
+            <div className="grid grid-cols-3 gap-3 pt-10 mt-4 mb-5">
+              {[1, 2, 3].map(rank => {
+                const winner = hack.winnerDetails?.find(w => w.rank === rank);
 
-                  <p className="mt-3 text-[10px] uppercase tracking-wide text-[#6C757D] font-medium">
-                    {i === 0 ? "Winner" : i === 1 ? "2nd Runner Up" : "3rd Runner Up"}
-                  </p>
-                </div>
-              ))}
+                return (
+                  <div key={rank} className="text-center">
+                    <div
+                      className={`aspect-square max-w-[90px] mx-auto rounded-lg overflow-hidden bg-white
+                        transition-all duration-300 group-hover:scale-105
+                        ${rank === 1 ? "border-2 border-[#F8C62F]" : "border border-[#DDEAE7]"}
+                      `}
+                    >
+                      <img
+                        src={winner?.user?.image || "/default-avatar.png"}
+                        alt={winner?.user?.name || "Winner"}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+
+                    <p className="mt-2 text-[10px] uppercase tracking-wide text-[#6C757D] font-medium">
+                      {rank === 1 ? "Winner" : rank === 2 ? "2nd Place" : "3rd Place"}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
 
-
-            {/* META */}
-            <div className="flex justify-between items-center text-xs sm:text-sm text-[#6C757D] mb-4">
-              <span>📅 {hack.date}</span>
+            {/* Meta */}
+            <div className="flex justify-between items-center text-xs text-[#6C757D] mb-4">
+              <span>📅 {new Date(hack.endDate).toDateString()}</span>
               <span className="px-3 py-1 text-[10px] rounded-full bg-[#E6F4F1] text-[#03594E] font-semibold uppercase">
                 Declared
               </span>
             </div>
 
-            {/* TITLE */}
+            {/* Title */}
             <h3 className="font-semibold text-base sm:text-lg text-[#0C121D] leading-snug">
               {hack.title}
             </h3>
 
-            {/* ACCENT */}
+            {/* Accent */}
             <div className="mt-4 h-[4px] w-16 bg-[#F8C62F] rounded-full group-hover:w-32 transition-all duration-500" />
 
-            {/* ACTION */}
+            {/* Action */}
             <button
               onClick={() => setSelectedHackathon(hack)}
-              className="mt-4 sm:mt-5 px-5 py-1.5 text-[10px] sm:text-[11px] font-bold tracking-widest rounded-full border text-[#03594E] hover:bg-[#03594E] hover:text-white transition-all"
+              className="mt-5 px-5 py-1.5 text-[11px] font-bold tracking-widest rounded-full border
+                text-[#03594E] hover:bg-[#03594E] hover:text-white transition-all"
             >
               SHOW RESULT
             </button>
@@ -149,23 +135,7 @@ export default function PastResults({ pastHackathons }) {
         ))}
       </div>
 
-      {/* SVG Wave Divider */}
-      <div className="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 100" fill="none">
-          <path
-            d="M0,50 C360,100 720,0 1080,50 C1200,65 1320,80 1440,80 L1440,100 L0,100 Z"
-            fill="white"
-            fillOpacity="0.1"
-          />
-          <path
-            d="M0,70 C360,30 720,90 1080,60 C1200,50 1320,40 1440,50 L1440,100 L0,100 Z"
-            fill="white"
-            fillOpacity="0.05"
-          />
-        </svg>
-      </div>
-
-      {/* RESULT MODAL */}
+      {/* Result Modal */}
       {selectedHackathon && (
         <ResultModal
           hackathon={selectedHackathon}
@@ -175,4 +145,3 @@ export default function PastResults({ pastHackathons }) {
     </section>
   );
 }
-

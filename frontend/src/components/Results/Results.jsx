@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, Pagination, Navigation } from 'swiper/modules';
 
@@ -11,45 +11,59 @@ import CurrentResults from './CurrentResults';
 import PastResults from './PastResults';
 import Navbar from '../Navbar';
 import Footer from '../Footer';
+import axios from 'axios';
 
 const Results = () => {
+  const [pastHackathons, setPastHackathons] = useState([]);
+  useEffect(()=>{
+    const fetchPastHackathons = async ()=> {
+      try {
+        const res = await axios.get("http://localhost:5001/api/hackathon");
+        setPastHackathons(res.data.data);
+        console.log(res.data.data);
+      } catch(err) {
+        console.error("error fetching results",err)
+      }
+    }
+    fetchPastHackathons();
+  },[])
   // Mock Data
-  const pastHackathons = [
-  {
-    id: 1,
-    title: "WEB DEVELOPMENT HACKATHON",
-    category: "WEB DEVELOPMENT",
-    date: "18 Oct 2025",
-    winners: [
-      "results_img/winner1.webp",
-      "results_img/testimonial1.webp",
-      "results_img/testimonial2.webp",
-    ],
-  },
-  {
-    id: 2,
-    title: "AI / ML INNOVATION CHALLENGE",
-    category: "AI / ML",
-    date: "15 Oct 2025",
-    winners: [
-      "results_img/winner2.webp",
-      "results_img/testimonial3.webp",
-      "results_img/testimonial4.webp",
-    ],
-  },
-  {
-    id: 3,
-    title: "CYBER SECURITY HACKATHON",
-    category: "CYBER SECURITY",
-    date: "10 Oct 2025",
-    winners: [
-      "results_img/winner3.webp",
-      "results_img/testimonial1.webp",
-      "results_img/testimonial3.webp",
-    ]
+//   const pastHackathons = [
+//   {
+//     id: 1,
+//     title: "WEB DEVELOPMENT HACKATHON",
+//     category: "WEB DEVELOPMENT",
+//     date: "18 Oct 2025",
+//     winners: [
+//       "results_img/winner1.webp",
+//       "results_img/testimonial1.webp",
+//       "results_img/testimonial2.webp",
+//     ],
+//   },
+//   {
+//     id: 2,
+//     title: "AI / ML INNOVATION CHALLENGE",
+//     category: "AI / ML",
+//     date: "15 Oct 2025",
+//     winners: [
+//       "results_img/winner2.webp",
+//       "results_img/testimonial3.webp",
+//       "results_img/testimonial4.webp",
+//     ],
+//   },
+//   {
+//     id: 3,
+//     title: "CYBER SECURITY HACKATHON",
+//     category: "CYBER SECURITY",
+//     date: "10 Oct 2025",
+//     winners: [
+//       "results_img/winner3.webp",
+//       "results_img/testimonial1.webp",
+//       "results_img/testimonial3.webp",
+//     ]
 
-  },
-];
+//   },
+// ];
 
 
   return (

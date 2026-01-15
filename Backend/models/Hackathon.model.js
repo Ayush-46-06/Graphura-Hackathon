@@ -5,39 +5,39 @@ const participantSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Hackathon_User",
-      required: true
+      required: true,
     },
 
     githubLink: {
       type: String,
-      default: null
+      default: null,
     },
 
     driveVideoLink: {
       type: String,
-      default: null
+      default: null,
     },
 
     submittedAt: {
       type: Date,
-      default: null
+      default: null,
     },
 
     reviewedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Hackathon_Judge",
-      default: null
+      default: null,
     },
     reviewedByName: {
-  type: String,
-  default: null
-},
+      type: String,
+      default: null,
+    },
 
     rank: {
       type: Number,
       enum: [1, 2, 3],
-      default: null
-    }
+      default: null,
+    },
   },
   { _id: false }
 );
@@ -47,17 +47,34 @@ const winnerDetailSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Hackathon_User",
-      required: true
+      required: true,
     },
+
+    name: {
+      type: String,
+      required: true,
+    },
+
+    email: {
+      type: String,
+      required: true,
+    },
+
+    image: {
+      type: String,
+      default: null,
+    },
+
     rank: {
       type: Number,
       enum: [1, 2, 3],
-      required: true
+      required: true,
     },
+
     prizeAmount: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
   { _id: false }
 );
@@ -67,22 +84,22 @@ const hackathonSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
 
     description: {
       type: String,
-      required: true
+      required: true,
     },
 
     image: {
       type: String,
-      required: true
+      required: true,
     },
 
     prizePool: {
       type: Number,
-      required: true
+      required: true,
     },
 
     category: {
@@ -93,14 +110,14 @@ const hackathonSchema = new mongoose.Schema(
         "AI/ML",
         "Blockchain",
         "Web Development",
-        "Mobile Apps"
+        "Mobile Apps",
       ],
-      required: true
+      required: true,
     },
 
     tags: {
       type: [String],
-      default: ["Open for All"]
+      default: ["Open for All"],
     },
 
     startDate: Date,
@@ -111,24 +128,24 @@ const hackathonSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["upcoming", "ongoing", "completed"],
-      default: "upcoming"
+      default: "upcoming",
     },
 
     participants: {
       type: [participantSchema],
-      default: []
+      default: [],
     },
 
     judges: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Hackathon_Judge"
-      }
+        ref: "Hackathon_Judge",
+      },
     ],
 
     winnerDetails: {
       type: [winnerDetailSchema],
-      default: []
+      default: [],
     },
 
     about: String,
@@ -137,44 +154,44 @@ const hackathonSchema = new mongoose.Schema(
     sponsors: [
       {
         name: String,
-        logo: String
-      }
+        logo: String,
+      },
     ],
 
     isPaid: {
       type: Boolean,
-      default: false
+      default: false,
     },
 
     entryFee: {
       type: Number,
-      default: 0
+      default: 0,
     },
 
     participationType: {
       type: String,
       enum: ["solo", "team"],
-      default: "solo"
+      default: "solo",
     },
 
     maxTeamSize: {
       type: Number,
-      default: 1
+      default: 1,
     },
 
     activityPdf: {
-      type: String
+      type: String,
     },
 
     activityMailSent: {
       type: Boolean,
-      default: false
+      default: false,
     },
 
     reminderMailSent: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   { timestamps: true }
 );
