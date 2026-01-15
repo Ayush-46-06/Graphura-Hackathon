@@ -4,8 +4,6 @@ import { Link } from "react-router-dom";
 
 // HERO ASSETS
 import heroImg from "../../assets/blogs/blog-hero.png";
-import brushImg from "../../assets/blogs/breadcrumb-1-2.png";
-import dotsImg from "../../assets/blogs/breadcrumb-1-1.png";
 import circleImg from "../../assets/blogs/breadcrumb-circle.png";
 import Footer from "../Footer";
 import Navbar from "../Navbar";
@@ -139,7 +137,7 @@ const AllBlog = () => {
                     </h3>
 
                     {/* SEND USER TO /blog */}
-                    <Link to="/blog">
+                    <Link to={`/blog/${blog._id}`}>
                       <button className="text-sm font-medium flex items-center gap-2 hover:gap-3 transition-all text-[#03594E]">
                         More Details <span>→</span>
                       </button>

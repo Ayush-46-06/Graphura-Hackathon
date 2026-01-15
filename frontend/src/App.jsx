@@ -103,20 +103,20 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/results" element={<Results />} />
-        <Route path="/all-blog" element={<AllBlog />} />
+        <Route path="/blog" element={<AllBlog />} />
         <Route path="/hackathons" element={<Hackathon />} />
         <Route path="/hackathons/:id" element={<HackathonDetail />} />
         <Route path="/dashboards" element={<AdminDashboard />} />
         <Route path="/partner" element={<PartnerPage />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/result" element={<Results />} />
-        <Route path="/blog" element={<BlogDetailsPage />} />
+        <Route path="/blog/:id" element={<BlogDetailsPage />} />
         <Route path="/sponsors" element={<Sponsor />} />
         <Route path="/career" element={<Career />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
-                <Route path="/terms&conditions" element={<TermsCondition />} />
+        <Route path="/terms&conditions" element={<TermsCondition />} />
         <Route path="/Rules" element={<GeneralRule />} />
         {/* Public Auth Routes */}
         {/* Auth */}

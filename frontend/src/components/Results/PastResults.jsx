@@ -86,12 +86,16 @@ export default function PastResults({ pastHackathons }) {
 
                 return (
                   <div key={rank} className="text-center">
+                    <p className="mt-2 text-[10px] uppercase tracking-wide text-[#6C757D] font-medium">
+                      {rank === 1 ? "Winner" : rank === 2 ? "2nd Place" : "3rd Place"}
+                    </p>
                     <div
                       className={`aspect-square max-w-[90px] mx-auto rounded-lg overflow-hidden bg-white
                         transition-all duration-300 group-hover:scale-105
                         ${rank === 1 ? "border-2 border-[#F8C62F]" : "border border-[#DDEAE7]"}
                       `}
                     >
+                      
                       <img
                         src={winner?.user?.image || "/default-avatar.png"}
                         alt={winner?.user?.name || "Winner"}
@@ -100,7 +104,7 @@ export default function PastResults({ pastHackathons }) {
                     </div>
 
                     <p className="mt-2 text-[10px] uppercase tracking-wide text-[#6C757D] font-medium">
-                      {rank === 1 ? "Winner" : rank === 2 ? "2nd Place" : "3rd Place"}
+                      {winner?.user?.name || "—"}
                     </p>
                   </div>
                 );
@@ -129,7 +133,7 @@ export default function PastResults({ pastHackathons }) {
               className="mt-5 px-5 py-1.5 text-[11px] font-bold tracking-widest rounded-full border
                 text-[#03594E] hover:bg-[#03594E] hover:text-white transition-all"
             >
-              SHOW RESULT
+              SHOW DETAILS
             </button>
           </div>
         ))}

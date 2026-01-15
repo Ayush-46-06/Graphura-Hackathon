@@ -378,113 +378,98 @@ const Career = () => {
       </section>
 
       {/* Testimonial section */}
-      <section>
-        <div className="mt-20">
-          <h1 className="text-xl font-extrabold w-full text-center md:text-2xl lg:text-3xl">
-            What Our Interns Say
-          </h1>
-          {/* card */}
-          <div className="relative max-w-6xl mx-auto mt-15">
-            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-500 hover:shadow-3xl">
-              <div className="grid md:grid-cols-5 gap-8 h-100">
-                {/* Image Section */}
-                <div className="md:col-span-2 relative h-96 md:h-auto">
-                  <div className="absolute inset-0 bg-gradient-to-br from-teal-600 to-teal-800"></div>
-                  <img
-                    src={currentReviews?.user?.image}
-                    alt={currentReviews?.user?.name}
-                    className="w-full h-full object-cover mix-blend-overlay opacity-90"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-teal-900/50 to-transparent"></div>
-                </div>
+      // Replace the existing testimonial section (around line 390-480) with this:
 
-                {/* Content Section */}
-                <div className="md:col-span-3 p-8 md:p-12 flex flex-col justify-between">
-                  <Quote className="w-16 h-16 text-teal-600 mb-6 opacity-50" />
+{/* Testimonial section */}
+<section className="py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 overflow-hidden">
+  <div className="max-w-7xl mx-auto px-4">
+    {/* Heading */}
+    <h2 className="text-4xl md:text-5xl font-extrabold text-center text-gray-900 mb-16">
+      What Our Interns Say
+    </h2>
 
-                  <p className="md:text-lg text-gray-700 leading-relaxed mb-8 line-clamp-5">
-                    {currentReviews?.text}
-                  </p>
+    {/* Testimonial Card */}
+    <div className="relative max-w-6xl mx-auto">
+      <div className="bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-500 hover:shadow-3xl">
+        <div className="grid md:grid-cols-5 gap-8 h-full">
+          {/* Image Section */}
+          <div className="md:col-span-2 relative h-96 md:h-auto">
+            <div className="absolute inset-0 bg-gradient-to-br from-teal-600 to-teal-800"></div>
+            <img
+              src={currentReviews?.user?.image}
+              alt={currentReviews?.user?.name}
+              className="w-full h-full object-cover opacity-90"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-teal-900/50 to-transparent"></div>
+          </div>
 
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-2xl font-bold text-gray-900 mb-1">
-                        {currentReviews?.user?.name}
-                      </h4>
-                    </div>
+          {/* Content Section */}
+          <div className="md:col-span-3 p-8 md:p-12 flex flex-col justify-between">
+            <Quote className="w-16 h-16 text-teal-600 mb-6 opacity-50" />
 
-                    {/* Rating Stars */}
-                    <div className="flex gap-1">
-                        <svg
-                          className="w-6 h-6 text-yellow-400 fill-current"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                        <svg
-                          className="w-6 h-6 text-yellow-400 fill-current"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                        <svg
-                          className="w-6 h-6 text-yellow-400 fill-current"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                        <svg
-                          className="w-6 h-6 text-yellow-400 fill-current"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                        <svg
-                          className="w-6 h-6 text-yellow-400 fill-current"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                    </div>
-                  </div>
-                </div>
+            <p className="md:text-lg text-gray-700 leading-relaxed mb-8 line-clamp-6">
+              {currentReviews?.text}
+            </p>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="text-2xl font-bold text-gray-900 mb-1">
+                  {currentReviews?.user?.name}
+                </h4>
+              </div>
+
+              {/* Rating Stars */}
+              <div className="flex gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <svg
+                    key={i}
+                    className="w-6 h-6 text-yellow-400 fill-current"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                  </svg>
+                ))}
               </div>
             </div>
-
-            {/* Navigation Buttons */}
-            <button
-              onClick={prevReview}
-              className="absolute left-4 md:-left-6 top-1/2 -translate-y-1/2 bg-white w-12 h-12 rounded-full shadow-xl flex items-center justify-center text-teal-600 hover:bg-teal-600 hover:text-white transition-all duration-300 hover:scale-110 z-10"
-              aria-label="Previous testimonial"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-
-            <button
-              onClick={nextReview}
-              className="absolute right-4 md:-right-6 top-1/2 -translate-y-1/2 bg-white w-12 h-12 rounded-full shadow-xl flex items-center justify-center text-teal-600 hover:bg-teal-600 hover:text-white transition-all duration-300 hover:scale-110 z-10"
-              aria-label="Next testimonial"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
-          </div>
-          {/* Dots Indicator */}
-          <div className="flex justify-center gap-3 mt-12">
-            {reviews.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentReview(index)}
-                className={`transition-all duration-300 rounded-full ${
-                  index === currentReview
-                    ? "w-12 h-3 bg-teal-600"
-                    : "w-3 h-3 bg-gray-300 hover:bg-teal-400"
-                }`}
-                aria-label={`Go to testimonial ${index + 1}`}
-              />
-            ))}
           </div>
         </div>
-      </section>
+      </div>
+
+      {/* Navigation Buttons */}
+      <button
+        onClick={prevReview}
+        className="absolute left-4 md:-left-6 top-1/2 -translate-y-1/2 bg-white w-12 h-12 rounded-full shadow-xl flex items-center justify-center text-teal-600 hover:bg-teal-600 hover:text-white transition-all duration-300 hover:scale-110 z-10"
+        aria-label="Previous testimonial"
+      >
+        <ChevronLeft className="w-6 h-6" />
+      </button>
+
+      <button
+        onClick={nextReview}
+        className="absolute right-4 md:-right-6 top-1/2 -translate-y-1/2 bg-white w-12 h-12 rounded-full shadow-xl flex items-center justify-center text-teal-600 hover:bg-teal-600 hover:text-white transition-all duration-300 hover:scale-110 z-10"
+        aria-label="Next testimonial"
+      >
+        <ChevronRight className="w-6 h-6" />
+      </button>
+    </div>
+
+    {/* Dots Indicator */}
+    <div className="flex justify-center gap-3 mt-12">
+      {reviews.map((_, index) => (
+        <button
+          key={index}
+          onClick={() => setCurrentReview(index)}
+          className={`transition-all duration-300 rounded-full ${
+            index === currentReview
+              ? "w-12 h-3 bg-teal-600"
+              : "w-3 h-3 bg-gray-300 hover:bg-teal-400"
+          }`}
+          aria-label={`Go to testimonial ${index + 1}`}
+        />
+      ))}
+    </div>
+  </div>
+</section>
 
       {/* FAQ section */}
       <section className="mt-15 flex justify-center">
