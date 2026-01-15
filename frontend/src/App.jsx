@@ -38,6 +38,8 @@ import CollegeProtectedRoute from "./CollegeProtectedRoute";
 import JudgeDashboard from "./components/Dashboard/JudgeDasboard";
 import ForgotPassword from "./components/Auth/ForgotPasswordModal";
 import ResetPassword from "./components/Auth/ResetPasswordModal";
+import GeneralRule from "./components/Generalrules/GeneralRule";
+import TermsCondition from "./components/TermsCondition/TermsCondition";
 
 
 /* ================== ROUTE GUARDS ================== */
@@ -114,6 +116,8 @@ function App() {
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+                <Route path="/terms&conditions" element={<TermsCondition />} />
+        <Route path="/Rules" element={<GeneralRule />} />
         {/* Public Auth Routes */}
         {/* Auth */}
         <Route

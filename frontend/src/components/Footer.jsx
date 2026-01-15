@@ -169,8 +169,7 @@ const Footer = () => {
             {/* Column 1 - Logo & Description */}
             <div className="space-y-6">
               <div className="flex items-center gap-3">
-                
-                 <img src="/Hackathon.png" alt="" />
+                <img src="/Hackathon.png" alt="" />
               </div>
               <p className="text-gray-700 leading-relaxed">
                 Graphura — Where Hackathons Meet Esports.
@@ -274,10 +273,27 @@ const Footer = () => {
 
                 <li>
                   <Link
-                    to="/privacy"
+                    to="/terms&conditions"
                     className="text-gray-700 hover:text-teal-600 transition-colors"
                   >
                     Terms & Conditions
+                  </Link>
+                  
+                </li>
+                <li>
+                  <Link
+                    to="/sponsors"
+                    className="text-gray-700 hover:text-teal-600 transition-colors"
+                  >
+                    Sponsor
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/career"
+                    className="text-gray-700 hover:text-teal-600 transition-colors"
+                  >
+                    Career
                   </Link>
                 </li>
               </ul>
@@ -324,7 +340,7 @@ const Footer = () => {
               {/* Social Icons */}
               <div className="flex gap-4">
                 <a
-                  href="#"
+                  href="https://x.com/Graphura"
                   className="text-gray-800 hover:text-teal-600 transition-colors"
                   aria-label="Twitter"
                 >
@@ -337,7 +353,7 @@ const Footer = () => {
                   </svg>
                 </a>
                 <a
-                  href="#"
+                  href="https://www.facebook.com/Graphura.in?rdid=H1CC7AZq9ZcNlicJ&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F19nKAMTopZ%2F#"
                   className="text-gray-800 hover:text-teal-600 transition-colors"
                   aria-label="Facebook"
                 >
@@ -350,7 +366,7 @@ const Footer = () => {
                   </svg>
                 </a>
                 <a
-                  href="#"
+                  href="https://www.instagram.com/graphura.in"
                   className="text-gray-800 hover:text-teal-600 transition-colors"
                   aria-label="Instagram"
                 >
@@ -363,7 +379,7 @@ const Footer = () => {
                   </svg>
                 </a>
                 <a
-                  href="#"
+                  href="https://in.linkedin.com/company/graphura-india-private-limited"
                   className="text-gray-800 hover:text-teal-600 transition-colors"
                   aria-label="LinkedIn"
                 >
