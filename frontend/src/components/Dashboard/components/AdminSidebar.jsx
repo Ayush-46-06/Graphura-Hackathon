@@ -12,6 +12,7 @@ import {
   ChevronRight,
   Bell,
   BarChart3,
+  Building2,
   Menu,
   User
 } from "lucide-react";
@@ -31,7 +32,7 @@ const menu = [
   {
     key: "college-register",
     label: "CreateCollege",
-    icon: BarChart3,
+    icon: Building2,
     badge: null
   },
 ];

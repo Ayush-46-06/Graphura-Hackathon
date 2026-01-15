@@ -163,7 +163,7 @@ const Career = () => {
   ];
   const navigate = useNavigate();
   return (
-    <div className="pb-15 overflow-hidden">
+    <div className=" overflow-hidden">
       <Navbar />
       {/* hero section */}
       <section className="pt-18 bg-linear-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] flex justify-center">

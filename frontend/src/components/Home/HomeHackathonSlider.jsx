@@ -34,10 +34,12 @@ const HomeHackathonSlider = () => {
     fetchHackathons();
   }, []);
 
-  // Filter data by category
-  const filteredData = data.filter((item) => {
-    return active === "All" || item.category === active;
-  });
+  // Filter data by category and limit to 3 cards
+  const filteredData = data
+    .filter((item) => {
+      return active === "All" || item.category === active;
+    })
+    .slice(0, 3); // LIMIT TO ONLY 3 CARDS
 
   // Reset index when filter changes
   useEffect(() => {

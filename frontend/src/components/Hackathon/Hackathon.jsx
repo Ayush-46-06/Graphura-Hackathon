@@ -134,7 +134,7 @@ const Hackathon = () => {
     <div className="overflow-x-hidden">
       <Navbar />
       {/* Hero section */}
-      <section className="bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] pt-20 pb-5 flex justify-center">
+      <section className="bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] pt-27  pb-5 flex justify-center">
         <div className="relative mx-4 md:mx-8 flex flex-col md:flex-row gap-5 md:justify-between items-center lg:h-[400px] max-w-[1280px] w-full">
           <div className="relative z-10 max-w-[300px] lg:max-w-[450px]">
             <h1 className="text-3xl lg:text-4xl xl:text-5xl font-extrabold text-white">

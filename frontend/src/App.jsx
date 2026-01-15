@@ -12,7 +12,7 @@ import Home from "./components/Home";
 import AllBlog from "./components/Blog/AllBlog";
 import Hackathon from "./components/Hackathon/Hackathon";
 import HackathonDetail from "./components/Hackathon/HackathonDetail";
-import Login from "./components/Auth/Login";
+import SlidingAuthPage from "./components/Auth/Login";
 import Signup from "./components/Auth/Signup";
 import OAuthSuccess from "./components/Auth/OAuthSuccess";
 
@@ -35,6 +35,9 @@ import ResetPasswordModal from "./components/Auth/ResetPasswordModal";
 import CollegeLogin from "./components/Auth/CollegeLogin";
 import CollegeStudents from "./components/Dashboard/components/CollegeDasboard";
 import CollegeProtectedRoute from "./CollegeProtectedRoute";
+import JudgeDashboard from "./components/Dashboard/JudgeDasboard";
+import ForgotPassword from "./components/Auth/ForgotPasswordModal";
+import ResetPassword from "./components/Auth/ResetPasswordModal";
 
 
 /* ================== ROUTE GUARDS ================== */
@@ -43,6 +46,19 @@ import CollegeProtectedRoute from "./CollegeProtectedRoute";
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
   return token ? children : <Navigate to="/login" replace />;
+};
+// 🔐 Judge only
+const JudgeRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+
+  if (!token) return <Navigate to="/login" replace />;
+
+  return role === "judge" ? (
+    children
+  ) : (
+    <Navigate to="/user/dashboard" replace />
+  );
 };
 
 // 🔐 Admin only
@@ -67,10 +83,13 @@ const PublicRoute = ({ children }) => {
   if (!token) return children;
 
   return role === "admin" ? (
-    <Navigate to="/admin/dashboard" replace />
-  ) : (
-    <Navigate to="/user/dashboard" replace />
-  );
+  <Navigate to="/admin/dashboard" replace />
+) : role === "judge" ? (
+  <Navigate to="/judge/dashboard" replace />
+) : (
+  <Navigate to="/user/dashboard" replace />
+);
+
 };
 function App() {
   return (
@@ -93,13 +112,15 @@ function App() {
         <Route path="/sponsors" element={<Sponsor />} />
         <Route path="/career" element={<Career />} />
         <Route path="/contact" element={<ContactUs />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         {/* Public Auth Routes */}
         {/* Auth */}
         <Route
           path="/login"
           element={
             <PublicRoute>
-              <Login />
+              <SlidingAuthPage />
             </PublicRoute>
           }
         />
@@ -133,10 +154,8 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-  path="/reset-password/:token"
-  element={<ResetPasswordModal onClose={() => navigate("/login")} />}
-/>
+        
+        
 <Route path="/college-login" element={<CollegeLogin />} />
 
 <Route
@@ -145,6 +164,14 @@ function App() {
     <CollegeProtectedRoute>
       <CollegeStudents />
     </CollegeProtectedRoute>
+  }
+/>
+<Route
+  path="/judge/dashboard"
+  element={
+    <JudgeRoute>
+      <JudgeDashboard />
+    </JudgeRoute>
   }
 />
 

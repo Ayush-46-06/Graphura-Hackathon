@@ -1,144 +1,78 @@
-import React, { useEffect, useRef, useState } from "react";
-import { BookOpen, GraduationCap, Book, Home } from "lucide-react";
+import React from "react";
 
-export default function Partner() {
-  const decorativeRef = useRef(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  const logos = [
-    { name: "Gardennook", icon: BookOpen, colors: "from-blue-400 to-pink-400" },
+const PartnerSection = () => {
+  const partners = [
     {
+      id: 1,
+      name: "Gardenbook",
+      logo: "https://via.placeholder.com/150x80/4299e1/ffffff?text=Gardenbook",
+    },
+    {
+      id: 2,
       name: "Education",
-      icon: GraduationCap,
-      colors: "from-red-500 to-blue-500",
+      logo: "https://via.placeholder.com/150x80/10b981/ffffff?text=Education",
     },
-    { name: "Penbook", icon: Book, colors: "from-blue-600 to-blue-400" },
-    { name: "Eduhouse", icon: Home, colors: "from-blue-500 to-orange-400" },
     {
-      name: "Learning Center",
-      icon: BookOpen,
-      colors: "from-orange-400 to-blue-400",
+      id: 3,
+      name: "Penbook",
+      logo: "https://via.placeholder.com/150x80/8b5cf6/ffffff?text=Penbook",
     },
-    { name: "Book Chat", icon: Book, colors: "from-pink-500 to-pink-400" },
     {
+      id: 4,
+      name: "Eduhouse",
+      logo: "https://via.placeholder.com/150x80/f59e0b/ffffff?text=Eduhouse",
+    },
+    {
+      id: 5,
+      name: "Book Library",
+      logo: "https://via.placeholder.com/150x80/ec4899/ffffff?text=Book+Library",
+    },
+    {
+      id: 6,
       name: "Owlbook",
-      icon: GraduationCap,
-      colors: "from-blue-500 to-orange-400",
-    },
-    {
-      name: "University",
-      icon: GraduationCap,
-      colors: "from-blue-600 to-red-500",
+      logo: "https://via.placeholder.com/150x80/6366f1/ffffff?text=Owlbook",
     },
   ];
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (decorativeRef.current) {
-        const element = decorativeRef.current;
-        const rect = element.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-
-        if (rect.top < windowHeight && rect.bottom > 0) {
-          const progress = Math.min(
-            Math.max((windowHeight - rect.top) / windowHeight, 0),
-            1
-          );
-          setScrollProgress(progress);
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const translateX = 100 - scrollProgress * 100;
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
-      <main className="container mx-auto px-8 py-16">
-        <h1 className="text-5xl md:text-6xl font-bold text-center text-gray-900 mb-16 max-w-5xl mx-auto leading-tight">
-          The trusted market leader in talent transformation through{" "}
-          <span className="relative inline-block">
-            education
-            <span className="absolute bottom-2 left-0 w-full h-3 bg-yellow-400 -z-10 transform -skew-y-1"></span>
+    <section className="w-full py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <span className="inline-block px-5 py-2 bg-green-50 text-green-700 rounded-full text-sm font-semibold mb-6 border border-green-200">
+            Our Partner
           </span>
-        </h1>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight px-4">
+            The trusted market leader in talent
+            <br className="hidden sm:block" />
+            transformation through{" "}
+            <span className="relative inline-block">
+              <span className="relative z-10">education</span>
+              <span className="absolute bottom-1 left-0 w-full h-3 bg-yellow-200 -rotate-1 -z-0"></span>
+            </span>
+          </h2>
+        </div>
 
-        {/* Logos Grid with rounded bottom */}
-        <div className="max-w-6xl mx-auto bg-gradient-to-br from-blue-50 to-teal-50 rounded-t-3xl p-12 shadow-lg relative">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {logos.map((logo, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-2xl p-8 flex flex-col items-center justify-center hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group cursor-pointer"
-              >
-                <div
-                  className={`w-16 h-16 bg-gradient-to-br ${logo.colors} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
-                >
-                  <logo.icon className="w-8 h-8 text-white" strokeWidth={2.5} />
-                </div>
-                <span className="text-gray-700 font-semibold text-center text-sm">
-                  {logo.name}
-                </span>
+        {/* Partner Grid - 3 cards per row on desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {partners.map((partner) => (
+            <div
+              key={partner.id}
+              className="bg-white rounded-2xl p-10 flex items-center justify-center hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-gray-200 min-h-[180px] group cursor-pointer"
+            >
+              <div className="transform group-hover:scale-105 transition-transform duration-300">
+                <img
+                  src={partner.logo}
+                  alt={partner.name}
+                  className="max-w-full h-auto max-h-24 object-contain"
+                />
               </div>
-            ))}
-          </div>
-
-          {/* Curved bottom edge with wave */}
-          <div className="absolute -bottom-1 left-0 w-full overflow-hidden">
-            <svg
-              className="w-full h-24"
-              viewBox="0 0 1200 100"
-              preserveAspectRatio="none"
-            >
-              <path
-                d="M0,50 Q300,20 600,50 T1200,50 L1200,100 L0,100 Z"
-                fill="url(#gradient)"
-                className="opacity-100"
-              />
-              <defs>
-                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#dbeafe" />
-                  <stop offset="100%" stopColor="#ccfbf1" />
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
+            </div>
+          ))}
         </div>
-
-        {/* * Decorative Wave Pattern - Animated on Scroll */}
-        <div
-          ref={decorativeRef}
-          className="relative overflow-hidden h-64 -mt-1"
-        >
-          {/* Background continuation */}
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-gray-50 to-white"></div>
-
-          {/* Light wave line across the top */}
-          <div className="absolute top-0 left-0 w-full">
-            <svg
-              className="w-full h-8"
-              viewBox="0 0 1200 30"
-              preserveAspectRatio="none"
-            >
-              <path
-                d="M0,15 Q300,5 600,15 T1200,15"
-                stroke="#e5e7eb"
-                strokeWidth="2"
-                fill="none"
-                strokeDasharray="5,5"
-              />
-            </svg>
-          </div>
-
-        </div>
-
-    
-      </main>
-    </div>
+      </div>
+    </section>
   );
-}
+};
+
+export default PartnerSection;

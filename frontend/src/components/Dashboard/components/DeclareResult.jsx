@@ -1,496 +1,284 @@
-import { useEffect, useState } from "react";
-import {
-  Trophy,
-  Loader,
-  Medal,
-  Award,
-  Crown,
-  Search,
-  Users,
-  CheckCircle,
-  XCircle,
-  Sparkles,
-  AlertCircle,
-  ChevronRight,
-  Star,
-} from "lucide-react";
-
-const API_BASE = "http://localhost:5001/api";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Trophy, Award, Medal, CheckCircle2, AlertCircle, ChevronDown } from "lucide-react";
 
 const DeclareResult = () => {
   const [hackathons, setHackathons] = useState([]);
-  const [selectedHackathon, setSelectedHackathon] = useState(null);
-  const [participants, setParticipants] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [winners, setWinners] = useState({
-    first: null,
-    second: null,
-    third: null,
-  });
+  const [selectedHackathon, setSelectedHackathon] = useState("");
+  const [winnerPreview, setWinnerPreview] = useState([]);
+
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const token = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
+  const token = localStorage.getItem("token");
+  const API_URL = "http://localhost:5001/api";
 
-  /* ================= FETCH HACKATHONS ================= */
+  /* ================= FETCH ALL HACKATHONS ================= */
   useEffect(() => {
     const fetchHackathons = async () => {
-      const res = await fetch(`${API_BASE}/hackathon`);
-      const data = await res.json();
-      setHackathons(
-        Array.isArray(data.data)
-          ? data.data.filter((h) => h.status !== "completed")
-          : []
-      );
+      try {
+        const res = await axios.get(`${API_URL}/hackathon`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        setHackathons(res.data?.data || []);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load hackathons");
+      }
     };
+
     fetchHackathons();
   }, []);
 
-  /* ================= FETCH PARTICIPANTS ================= */
-  const fetchParticipants = async (hackathon) => {
-    setSelectedHackathon(hackathon);
-    setParticipants([]);
-    setWinners({ first: null, second: null, third: null });
-    setSearchQuery("");
+  /* ================= FETCH JUDGE RESULTS ================= */
+  const fetchJudgeResult = async (hackathonId) => {
+    try {
+      setWinnerPreview([]);
+      setError("");
 
-    const res = await fetch(
-      `${API_BASE}/hackathon/${hackathon._id}/participants`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-    const data = await res.json();
+      const res = await axios.get(
+        `${API_URL}/hackathon/${hackathonId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
 
-    const list = Array.isArray(data.data)
-      ? data.data
-      : Array.isArray(data.data?.participants)
-      ? data.data.participants
-      : [];
+      const participants = res.data?.data?.participants || [];
 
-    setParticipants(list);
+      // 🔑 Get all ranked participants (1, 2, 3)
+      const ranked = participants
+        .filter(p => p.rank && [1, 2, 3].includes(p.rank))
+        .sort((a, b) => a.rank - b.rank);
+
+      setWinnerPreview(ranked);
+    } catch (err) {
+      console.error(err);
+      setWinnerPreview([]);
+      setError("Failed to fetch judge results");
+    }
   };
-
-  /* ================= SELECT WINNER ================= */
-  const selectWinner = (position, userId) => {
-    const newWinners = { ...winners };
-    Object.keys(newWinners).forEach((key) => {
-      if (newWinners[key] === userId) newWinners[key] = null;
-    });
-    newWinners[position] = userId;
-    setWinners(newWinners);
-  };
-
-  /* ================= CLEAR POSITION ================= */
-  const clearPosition = (position) => {
-    setWinners({ ...winners, [position]: null });
-  };
-
-  /* ================= GET USER BY ID ================= */
-  const getUserById = (userId) => {
-    return participants.find((p) => p.user?._id === userId)?.user;
-  };
-
-  /* ================= CHECK IF USER IS WINNER ================= */
-  const isUserWinner = (userId) => {
-    return Object.values(winners).includes(userId);
-  };
-
-  /* ================= FILTERED PARTICIPANTS ================= */
-  const filteredParticipants = Array.isArray(participants)
-    ? participants.filter(
-        (p) =>
-          p.user?.name
-            ?.toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          p.user?.email
-            ?.toLowerCase()
-            .includes(searchQuery.toLowerCase())
-      )
-    : [];
 
   /* ================= DECLARE RESULT ================= */
-  const declareResult = async () => {
+  const handleDeclareResult = async () => {
     if (!selectedHackathon) {
-      return alert("Please select a hackathon");
+      setError("Please select a hackathon");
+      return;
     }
 
-    const winnersList = [
-      winners.first,
-      winners.second,
-      winners.third,
-    ].filter(Boolean);
-
-    if (winnersList.length === 0) {
-      return alert("Please select at least one winner");
+    // ❌ Block if Rank 1 is missing
+    const hasRankOne = winnerPreview.some(w => w.rank === 1);
+    if (!hasRankOne) {
+      setError("Rank 1 must be selected by judge before declaring result");
+      return;
     }
 
     try {
       setLoading(true);
+      setError("");
+      setSuccess("");
 
-      const res = await fetch(
-        `${API_BASE}/admin/hackathon/declare-result`,
+      const res = await axios.post(
+        `${API_URL}/admin/hackathon/declare-result`,
+        { hackathonId: selectedHackathon },
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            hackathonId: selectedHackathon._id,
-            winners: winnersList,
-          }),
+          headers: { Authorization: `Bearer ${token}` }
         }
       );
 
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message || "Failed to declare result");
-      }
-
-      alert("✅ Result declared & certificates sent!");
-      setSelectedHackathon(null);
-      setParticipants([]);
-      setWinners({ first: null, second: null, third: null });
-      setSearchQuery("");
+      setSuccess(res.data.message || "Result declared successfully");
     } catch (err) {
-      alert(err.message || "Failed to declare result");
+      console.error(err);
+      setError(err.response?.data?.message || "Failed to declare result");
     } finally {
       setLoading(false);
     }
   };
 
-  const positionConfig = {
-    first: {
-      icon: Crown,
-      color: "text-yellow-600",
-      bg: "bg-gradient-to-br from-yellow-50 to-yellow-100",
-      border: "border-yellow-400",
-      hoverBorder: "hover:border-yellow-500",
-      label: "🥇 1st Place",
-      prize: "Champion",
-    },
-    second: {
-      icon: Medal,
-      color: "text-gray-500",
-      bg: "bg-gradient-to-br from-gray-50 to-gray-100",
-      border: "border-gray-300",
-      hoverBorder: "hover:border-gray-400",
-      label: "🥈 2nd Place",
-      prize: "Runner Up",
-    },
-    third: {
-      icon: Award,
-      color: "text-orange-600",
-      bg: "bg-gradient-to-br from-orange-50 to-orange-100",
-      border: "border-orange-400",
-      hoverBorder: "hover:border-orange-500",
-      label: "🥉 3rd Place",
-      prize: "Second Runner Up",
-    },
-  };
-
-  const getPositionForUser = (userId) => {
-    if (winners.first === userId) return "first";
-    if (winners.second === userId) return "second";
-    if (winners.third === userId) return "third";
-    return null;
+  const getRankConfig = (rank) => {
+    switch(rank) {
+      case 1:
+        return {
+          icon: <Trophy className="w-5 h-5" />,
+          color: "from-yellow-400 to-amber-500",
+          textColor: "text-yellow-700",
+          bgColor: "bg-gradient-to-br from-yellow-50 to-amber-50",
+          borderColor: "border-yellow-300",
+          label: "1st Place"
+        };
+      case 2:
+        return {
+          icon: <Award className="w-5 h-5" />,
+          color: "from-slate-300 to-slate-400",
+          textColor: "text-slate-700",
+          bgColor: "bg-gradient-to-br from-slate-50 to-gray-50",
+          borderColor: "border-slate-300",
+          label: "2nd Place"
+        };
+      case 3:
+        return {
+          icon: <Medal className="w-5 h-5" />,
+          color: "from-orange-400 to-amber-600",
+          textColor: "text-orange-700",
+          bgColor: "bg-gradient-to-br from-orange-50 to-amber-50",
+          borderColor: "border-orange-300",
+          label: "3rd Place"
+        };
+      default:
+        return {
+          icon: <Award className="w-5 h-5" />,
+          color: "from-blue-400 to-blue-500",
+          textColor: "text-blue-700",
+          bgColor: "bg-blue-50",
+          borderColor: "border-blue-300",
+          label: `${rank}th Place`
+        };
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
-
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl mb-4 shadow-xl">
-            <Trophy className="text-white" size={40} />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6 flex items-center justify-center">
+      <div className="w-full max-w-2xl">
+        <div className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+          
+          {/* Header */}
+          <div className="bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] p-8 text-white">
+            <div className="flex items-center gap-3 mb-2">
+              <Trophy className="w-8 h-8" />
+              <h2 className="text-3xl font-bold">
+                Declare Hackathon Result
+              </h2>
+            </div>
+            <p className="text-blue-100 text-sm">
+              Review and officially announce the winners
+            </p>
           </div>
-          <h1 className="text-4xl font-black mb-2 text-gray-900">
-            Declare Hackathon Results
-          </h1>
-          <p className="text-gray-600 text-base">
-            Select winners and declare official results with automated certificates
-          </p>
-        </div>
 
-        {/* Hackathon Selection */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border-2 border-gray-100 hover:border-teal-200 transition-all">
-          <label className="block mb-3 font-bold text-gray-800 flex items-center gap-2 text-base">
-            <div className="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center">
-              <Trophy size={18} className="text-teal-600" />
-            </div>
-            Select Hackathon
-          </label>
-          <select
-            className="w-full p-4 border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-teal-300 focus:border-teal-500 focus:outline-none transition-all cursor-pointer bg-gray-50"
-            onChange={(e) => {
-              const hackathon = hackathons.find(
-                (h) => h._id === e.target.value
-              );
-              if (hackathon) fetchParticipants(hackathon);
-            }}
-            value={selectedHackathon?._id || ""}
-          >
-            <option value="" disabled>
-              Choose a hackathon to declare results...
-            </option>
-            {hackathons.map((h) => (
-              <option key={h._id} value={h._id}>
-                {h.title}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div className="p-8 space-y-6">
+            {/* SELECT HACKATHON */}
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
+                Select Hackathon
+              </label>
+              <div className="relative">
+                <select
+                  className="w-full border-2 border-slate-200 p-3.5 pr-10 rounded-xl appearance-none bg-white hover:border-blue-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all cursor-pointer text-slate-700 font-medium"
+                  value={selectedHackathon}
+                  onChange={(e) => {
+                    const id = e.target.value;
+                    setSelectedHackathon(id);
+                    setWinnerPreview([]);
+                    setSuccess("");
+                    setError("");
 
-        {selectedHackathon && (
-          <>
-            {/* Selected Hackathon Info */}
-            <div className="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-2xl shadow-lg p-6 mb-6 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-semibold text-teal-100 mb-1 uppercase tracking-wide">Selected Hackathon</p>
-                  <h3 className="text-xl font-black">{selectedHackathon.title}</h3>
-                </div>
-                <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
-                  <Users size={16} />
-                  <span className="font-bold text-sm">{participants.length} Participants</span>
-                </div>
+                    if (id) fetchJudgeResult(id);
+                  }}
+                >
+                  <option value="">Choose a hackathon...</option>
+                  {hackathons.map(h => (
+                    <option key={h._id} value={h._id}>
+                      {h.title}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
               </div>
             </div>
 
-            {/* Winner Podium */}
-            <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 border-2 border-gray-100">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-black flex items-center gap-3 text-gray-900">
-                  <Sparkles className="text-yellow-500" size={28} />
-                  Winner Podium
-                </h2>
-                <div className="flex items-center gap-2 bg-teal-50 px-4 py-2 rounded-full">
-                  <CheckCircle size={16} className="text-teal-600" />
-                  <span className="text-xs font-bold text-teal-700">
-                    {Object.values(winners).filter(Boolean).length}/3 Selected
-                  </span>
+            {/* JUDGE RESULT PREVIEW */}
+            {winnerPreview.length > 0 && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-slate-700">
+                  <Trophy className="w-5 h-5 text-amber-500" />
+                  <h3 className="font-bold text-lg">
+                    Judge's Decision
+                  </h3>
                 </div>
-              </div>
 
-              <div className="grid md:grid-cols-3 gap-4 mb-6">
-                {Object.entries(positionConfig).map(
-                  ([position, config]) => {
-                    const Icon = config.icon;
-                    const winner = winners[position];
-                    const user = winner ? getUserById(winner) : null;
-
+                <div className="space-y-3">
+                  {winnerPreview.map((p, idx) => {
+                    const config = getRankConfig(p.rank);
                     return (
                       <div
-                        key={position}
-                        className={`relative p-5 rounded-2xl border-2 ${config.border} ${config.bg} transition-all hover:shadow-xl ${!user && 'hover:scale-105'}`}
+                        key={idx}
+                        className={`${config.bgColor} border-2 ${config.borderColor} rounded-xl p-4 transition-all hover:shadow-md`}
                       >
-                        {/* Position Header */}
-                        <div className="flex justify-between items-start mb-4">
-                          <div>
-                            <div className="flex items-center gap-2 mb-1">
-                              <Icon className={config.color} size={24} />
-                              <span className="font-black text-base text-gray-800">
-                                {config.label}
-                              </span>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className={`p-2.5 bg-gradient-to-br ${config.color} rounded-lg text-white shadow-sm`}>
+                              {config.icon}
                             </div>
-                            <p className="text-xs text-gray-500 font-semibold">{config.prize}</p>
-                          </div>
-                          {winner && (
-                            <button
-                              onClick={() => clearPosition(position)}
-                              className="w-8 h-8 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center transition-all hover:scale-110 shadow-md"
-                              title="Remove winner"
-                            >
-                              <XCircle className="text-white" size={18} />
-                            </button>
-                          )}
-                        </div>
-
-                        {/* Winner Display */}
-                        {user ? (
-                          <div className="bg-white p-4 rounded-xl border-2 border-gray-200 shadow-sm">
-                            <div className="flex items-start gap-3">
-                              <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-full flex items-center justify-center flex-shrink-0">
-                                <span className="text-white font-black text-sm">
-                                  {user.name?.charAt(0).toUpperCase()}
-                                </span>
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="font-bold text-sm text-gray-900 truncate">
-                                  {user.name}
-                                </p>
-                                <p className="text-xs text-gray-500 truncate">
-                                  {user.email}
-                                </p>
-                              </div>
+                            <div>
+                              <p className="font-bold text-slate-800 text-lg">
+                                {p.user?.name || "Unknown User"}
+                              </p>
+                              <p className="text-xs text-slate-500 font-medium">
+                                Participant
+                              </p>
                             </div>
                           </div>
-                        ) : (
-                          <div className="bg-white/50 backdrop-blur-sm p-4 rounded-xl border-2 border-dashed border-gray-300 text-center">
-                            <Star className="text-gray-300 mx-auto mb-2" size={24} />
-                            <p className="text-xs text-gray-400 font-semibold">
-                              Select participant below
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  }
-                )}
-              </div>
-
-              {/* Declare Button */}
-              <button
-                onClick={declareResult}
-                disabled={loading || Object.values(winners).filter(Boolean).length === 0}
-                className={`w-full py-4 rounded-xl font-black text-base flex items-center justify-center gap-3 transition-all shadow-lg ${
-                  loading || Object.values(winners).filter(Boolean).length === 0
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-gradient-to-r from-teal-600 to-cyan-600 text-white hover:shadow-2xl hover:scale-105 active:scale-95"
-                }`}
-              >
-                {loading ? (
-                  <>
-                    <Loader className="animate-spin" size={20} />
-                    Declaring Results...
-                  </>
-                ) : (
-                  <>
-                    <Trophy size={20} />
-                    Declare Results & Send Certificates
-                    <ChevronRight size={20} />
-                  </>
-                )}
-              </button>
-
-              {Object.values(winners).filter(Boolean).length === 0 && (
-                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-xl flex items-start gap-3">
-                  <AlertCircle size={18} className="text-yellow-600 flex-shrink-0 mt-0.5" />
-                  <p className="text-xs text-yellow-800 font-medium">
-                    Please select at least one winner to declare results
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Participants */}
-            <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-gray-100">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
-                  <Users size={24} className="text-teal-600" />
-                  All Participants
-                  <span className="text-sm font-bold text-teal-600 bg-teal-50 px-3 py-1 rounded-full">
-                    {filteredParticipants.length}
-                  </span>
-                </h2>
-
-                <div className="relative w-full sm:w-auto">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                  <input
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search by name or email..."
-                    className="w-full sm:w-80 pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-xl text-sm font-medium focus:border-teal-500 focus:outline-none transition-all"
-                  />
-                </div>
-              </div>
-
-              {filteredParticipants.length ? (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {filteredParticipants.map((p) => {
-                    const currentPosition = getPositionForUser(p.user?._id);
-                    const isWinner = currentPosition !== null;
-
-                    return (
-                      <div
-                        key={p._id}
-                        className={`relative p-4 rounded-xl border-2 transition-all hover:shadow-lg ${
-                          isWinner
-                            ? `${positionConfig[currentPosition].border} ${positionConfig[currentPosition].bg}`
-                            : "border-gray-200 bg-white hover:border-teal-300"
-                        }`}
-                      >
-                        {/* Winner Badge */}
-                        {isWinner && (
-                          <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
-                            <CheckCircle className="text-white" size={16} />
-                          </div>
-                        )}
-
-                        {/* User Info */}
-                        <div className="flex items-start gap-3 mb-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-full flex items-center justify-center flex-shrink-0">
-                            <span className="text-white font-black text-sm">
-                              {p.user?.name?.charAt(0).toUpperCase()}
+                          <div className="text-right">
+                            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold ${config.textColor} bg-white border-2 ${config.borderColor}`}>
+                              {config.label}
                             </span>
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="font-bold text-sm text-gray-900 truncate">
-                              {p.user?.name}
-                            </p>
-                            <p className="text-xs text-gray-500 truncate">
-                              {p.user?.email}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Position Buttons */}
-                        <div className="flex gap-2">
-                          {["first", "second", "third"].map((pos) => {
-                            const config = positionConfig[pos];
-                            const isSelected = currentPosition === pos;
-                            
-                            return (
-                              <button
-                                key={pos}
-                                onClick={() => selectWinner(pos, p.user._id)}
-                                className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition-all ${
-                                  isSelected
-                                    ? `${config.bg} ${config.border} border-2`
-                                    : "bg-gray-100 border-2 border-gray-200 hover:bg-gray-200 hover:border-gray-300"
-                                }`}
-                                title={`Select as ${config.label}`}
-                              >
-                                {pos === "first" ? "1st" : pos === "second" ? "2nd" : "3rd"}
-                              </button>
-                            );
-                          })}
                         </div>
                       </div>
                     );
                   })}
                 </div>
+              </div>
+            )}
+
+            {/* DECLARE BUTTON */}
+            <button
+              onClick={handleDeclareResult}
+              disabled={loading}
+              className="w-full bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] text-white py-4 px-6 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Declaring Result...
+                </span>
               ) : (
-                <div className="text-center py-16">
-                  <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Users className="text-gray-300" size={40} />
+                <span className="flex items-center justify-center gap-2">
+                  <CheckCircle2 className="w-5 h-5" />
+                  Declare Result Officially
+                </span>
+              )}
+            </button>
+
+            {/* SUCCESS */}
+            {success && (
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-green-500 rounded-full">
+                    <CheckCircle2 className="w-5 h-5 text-white" />
                   </div>
-                  <p className="text-gray-400 font-semibold text-base mb-2">
-                    No participants found
-                  </p>
-                  <p className="text-gray-400 text-sm">
-                    {searchQuery ? "Try a different search term" : "No participants have registered yet"}
+                  <p className="text-green-800 font-semibold flex-1">
+                    {success}
                   </p>
                 </div>
-              )}
-            </div>
-          </>
-        )}
+              </div>
+            )}
 
-        {/* Empty State */}
-        {!selectedHackathon && (
-          <div className="text-center py-20">
-            <div className="w-24 h-24 bg-gradient-to-br from-teal-100 to-cyan-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Trophy className="text-teal-600" size={48} />
-            </div>
-            <h3 className="text-2xl font-black text-gray-900 mb-2">
-              Select a Hackathon
-            </h3>
-            <p className="text-gray-500 text-sm max-w-md mx-auto">
-              Choose a hackathon from the dropdown above to view participants and declare winners
-            </p>
+            {/* ERROR */}
+            {error && (
+              <div className="bg-gradient-to-br from-red-50 to-rose-50 border-2 border-red-300 rounded-xl p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-red-500 rounded-full">
+                    <AlertCircle className="w-5 h-5 text-white" />
+                  </div>
+                  <p className="text-red-800 font-semibold flex-1">
+                    {error}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

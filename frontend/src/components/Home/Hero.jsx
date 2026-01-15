@@ -1,9 +1,12 @@
 import React from "react";
 import { Play, Users, BookOpen, Award } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Hero() {
+  const navigate = useNavigate();
+
   return (
-    <section className="relative overflow-hidden min-h-screen bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]">
+    <section className="relative overflow-hidden h-screen bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-10 sm:top-20 left-5 sm:left-10 w-40 h-40 sm:w-72 sm:h-72 bg-[#1AB69D]/20 rounded-full blur-3xl animate-pulse"></div>
         <div
@@ -12,7 +15,7 @@ export default function Hero() {
         ></div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-16 md:py-20 lg:py-32 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-16 md:py-20 lg:py-16 relative z-10">
         <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center min-h-[calc(100vh-4rem)] lg:min-h-0">
           <div className="space-y-4 sm:space-y-6 lg:space-y-8 text-center lg:text-left fade-in-animation flex flex-col justify-center items-center lg:items-start">
             <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-white/20">
@@ -42,8 +45,11 @@ export default function Hero() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start">
-              <button className="group bg-[#F8C62F] text-[#0C121D] px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-[#e0b429] transition-all hover:scale-105 hover:shadow-2xl hover:shadow-[#F8C62F]/50 flex items-center justify-center gap-2">
-                Find Courses
+              <button
+                onClick={() => navigate("/hackathons")}
+                className="group bg-[#F8C62F] text-[#0C121D] px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:bg-[#e0b429] transition-all hover:scale-105 hover:shadow-2xl hover:shadow-[#F8C62F]/50 flex items-center justify-center gap-2"
+              >
+                Join Hackathon
                 <svg
                   className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform"
                   fill="none"
@@ -58,24 +64,30 @@ export default function Hero() {
                   />
                 </svg>
               </button>
-              <button className="bg-white/10 backdrop-blur-sm text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold border-2 border-white/30 hover:bg-white/20 hover:border-white/50 transition-all flex items-center justify-center gap-2">
+              <button
+                onClick={() => navigate("/all-blog")}
+                className="bg-white/10 backdrop-blur-sm text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold border-2 border-white/30 hover:bg-white/20 hover:border-white/50 transition-all flex items-center justify-center gap-2"
+              >
                 <Play className="w-4 h-4 sm:w-5 sm:h-5" />
-                Watch Demo
+                Explore Upcoming Battles
               </button>
             </div>
           </div>
 
-          {/* Hide entire image section on mobile - only show on lg screens and up */}
-          <div className="hidden lg:flex relative justify-center lg:justify-end mt-12 lg:mt-0">
+          {/* Image section - hidden on mobile, visible on tablet and desktop */}
+          <div className="hidden md:flex relative justify-center items-center mt-8 lg:mt-0 lg:justify-end min-h-[400px] lg:min-h-[700px]">
+            {/* Animated background glow */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] md:w-[450px] md:h-[450px] bg-[#1AB69D]/30 rounded-full blur-2xl animate-pulse"></div>
+              <div className="w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] lg:w-[450px] lg:h-[450px] bg-[#1AB69D]/30 rounded-full blur-3xl animate-pulse"></div>
             </div>
 
+            {/* Spinning border ring */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-[260px] h-[260px] sm:w-[330px] sm:h-[330px] md:w-[420px] md:h-[420px] border-4 border-white/10 rounded-full spin-slow-animation"></div>
+              <div className="w-[230px] h-[230px] sm:w-[280px] sm:h-[280px] lg:w-[420px] lg:h-[420px] border-4 border-white/10 rounded-full spin-slow-animation"></div>
             </div>
 
-            <div className="relative pt-6 sm:pt-8 md:pt-10 w-[300px] h-[300px] sm:w-[375px] sm:h-[375px] md:w-[475px] md:h-[475px] flex items-center justify-center">
+            {/* Main image container */}
+            <div className="relative w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] lg:w-[500px] lg:h-[600px] flex items-center justify-center z-10">
               <img
                 src="https://ordainit.com/html/educeet/educeet/assets/img/hero/hero-1-1.png"
                 alt="Student learning"
@@ -83,51 +95,51 @@ export default function Hero() {
               />
             </div>
 
-            {/* All three cards also hidden on mobile */}
-            <div className="absolute top-0 sm:top-5 right-0 sm:-right-4 lg:-right-8 bg-white px-4 sm:px-6 py-3 sm:py-5 rounded-xl sm:rounded-2xl shadow-2xl flex items-center gap-2 sm:gap-4 w-[200px] sm:w-[240px] md:w-[280px] hover:scale-105 transition-transform float-animation">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-gradient-to-br from-[#03594E] to-[#1AB69D] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
-                <Play className="w-4 h-4 sm:w-5 sm:h-5 md:w-7 md:h-7 text-white" />
+            {/* Floating stat cards - optimized positioning with higher z-index */}
+            <div className="absolute top-20 sm:top-8 lg:top-25 right-4 sm:right-8 lg:-right-8 bg-white px-3 sm:px-5 lg:px-6 py-2.5 sm:py-4 lg:py-5 rounded-lg sm:rounded-xl lg:rounded-2xl shadow-2xl flex items-center gap-2 sm:gap-3 lg:gap-4 w-[160px] sm:w-[200px] lg:w-[280px] hover:scale-105 transition-transform float-animation z-20">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-[#03594E] to-[#1AB69D] rounded-lg sm:rounded-xl lg:rounded-2xl flex items-center justify-center shadow-lg">
+                <Play className="w-4 h-4 sm:w-5 sm:h-5 lg:w-7 lg:h-7 text-white" />
               </div>
               <div>
-                <span className="text-[10px] sm:text-xs md:text-sm text-gray-500 font-medium block">
-                  Online Video Courses
+                <span className="text-[9px] sm:text-[10px] lg:text-sm text-gray-500 font-medium block">
+                  Video Courses
                 </span>
-                <p className="text-lg sm:text-xl md:text-2xl font-bold text-[#0C121D]">
-                  10k<span className="text-[#F8C62F]">+</span>
+                <p className="text-sm sm:text-lg lg:text-2xl font-bold text-[#0C121D]">
+                  8<span className="text-[#F8C62F]">+</span>
                 </p>
               </div>
             </div>
 
             <div
-              className="absolute bottom-4 sm:bottom-8 left-0 sm:-left-4 lg:left-0 bg-white px-4 sm:px-6 py-3 sm:py-5 rounded-xl sm:rounded-2xl shadow-2xl flex items-center gap-2 sm:gap-4 w-[200px] sm:w-[240px] md:w-[280px] hover:scale-105 transition-transform float-animation"
+              className="absolute bottom-8 sm:bottom-12 lg:bottom-35 left-4 sm:left-8 lg:left-0 bg-white px-3 sm:px-5 lg:px-6 py-2.5 sm:py-4 lg:py-5 rounded-lg sm:rounded-xl lg:rounded-2xl shadow-2xl flex items-center gap-2 sm:gap-3 lg:gap-4 w-[160px] sm:w-[200px] lg:w-[280px] hover:scale-105 transition-transform float-animation z-20"
               style={{ animationDelay: "1s" }}
             >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-gradient-to-br from-[#F8C62F] to-[#FE8235] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
-                <Users className="w-4 h-4 sm:w-5 sm:h-5 md:w-7 md:h-7 text-[#0C121D]" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-[#F8C62F] to-[#FE8235] rounded-lg sm:rounded-xl lg:rounded-2xl flex items-center justify-center shadow-lg">
+                <Users className="w-4 h-4 sm:w-5 sm:h-5 lg:w-7 lg:h-7 text-[#0C121D]" />
               </div>
               <div>
-                <span className="text-[10px] sm:text-xs md:text-sm text-gray-500 font-medium block">
+                <span className="text-[9px] sm:text-[10px] lg:text-sm text-gray-500 font-medium block">
                   Active Students
                 </span>
-                <p className="text-lg sm:text-xl md:text-2xl font-bold text-[#0C121D]">
+                <p className="text-sm sm:text-lg lg:text-2xl font-bold text-[#0C121D]">
                   15k<span className="text-[#F8C62F]">+</span>
                 </p>
               </div>
             </div>
 
             <div
-              className="absolute w-[180px] sm:w-[220px] md:w-[260px] top-[60%] sm:top-[65%] -translate-y-1/2 right-2 sm:-right-2 lg:-right-25 bg-white px-4 sm:px-6 py-3 sm:py-5 rounded-xl sm:rounded-2xl shadow-2xl hover:scale-105 transition-transform float-animation"
+              className="absolute w-[140px] sm:w-[180px] lg:w-[260px] top-[55%] sm:top-[60%] lg:top-[65%] -translate-y-1/2 right-2 sm:right-4 lg:-right-20 bg-white px-3 sm:px-5 lg:px-6 py-2.5 sm:py-4 lg:py-5 rounded-lg sm:rounded-xl lg:rounded-2xl shadow-2xl hover:scale-105 transition-transform float-animation z-20"
               style={{ animationDelay: "0.5s" }}
             >
-              <div className="flex items-center gap-2 sm:gap-3">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-gradient-to-br from-[#1AB69D] to-[#03594E] rounded-lg sm:rounded-xl flex items-center justify-center">
-                  <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
+              <div className="flex items-center gap-2 sm:gap-2.5 lg:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-[#1AB69D] to-[#03594E] rounded-md sm:rounded-lg lg:rounded-xl flex items-center justify-center">
+                  <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-6 lg:h-6 text-white" />
                 </div>
                 <div>
-                  <span className="text-[10px] sm:text-xs text-gray-500">
+                  <span className="text-[9px] sm:text-[10px] lg:text-xs text-gray-500">
                     Success Rate
                   </span>
-                  <p className="text-base sm:text-lg font-bold text-[#0C121D]">
+                  <p className="text-sm sm:text-base lg:text-lg font-bold text-[#0C121D]">
                     98%
                   </p>
                 </div>

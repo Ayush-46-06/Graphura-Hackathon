@@ -22,7 +22,10 @@ const Navbar = () => {
   const role = localStorage.getItem("role");
   
   // Determine dashboard path based on role
-  const dashboardPath = role === "admin" ? "/admin/dashboard" : "/user/dashboard";
+  let dashboardPath = "/user/dashboard";
+
+  if (role === "admin") dashboardPath = "/admin/dashboard";
+  else if (role === "judge") dashboardPath = "/judge/dashboard";
   
   return (
     <>

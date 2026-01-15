@@ -4,6 +4,7 @@ import innovationAndImpact from "../../assets/partnerPage/innovationAndImpact.av
 import collaboration from "../../assets/partnerPage/Collaboration.avif";
 import brandVisibility from "../../assets/partnerPage/BrandVisibility.avif";
 import Navbar from "../Navbar";
+import Footer from "../Footer";
 
 export default function PartnerPage() {
   return (
@@ -184,6 +185,7 @@ export default function PartnerPage() {
           </div>
         </form>
       </section>
+      <Footer />
     </div>
   );
 }
