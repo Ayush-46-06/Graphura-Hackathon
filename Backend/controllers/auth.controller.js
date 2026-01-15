@@ -305,8 +305,6 @@ export const judgeRegister = async (req, res) => {
       password,
       address,
       contactNumber,
-      university,
-      collegeName,
       occupation,
       company,
       courseName,
@@ -343,8 +341,7 @@ export const judgeRegister = async (req, res) => {
       password: hashedPassword,
       address,
       contactNumber,
-      university,
-      collegeName: collegeName || null,
+
       occupation: occupation || null,
       company: company || null,
       image,
