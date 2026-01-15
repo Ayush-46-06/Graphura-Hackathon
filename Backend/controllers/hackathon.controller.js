@@ -175,15 +175,22 @@ export const deleteHackathon = async (req, res) => {
 export const getAllHackathons = async (req, res) => {
   try {
     const hackathons = await Hackathon.find()
-      .populate("judges", "name email occupation company image")
+      .populate(
+        "judges",
+        "name email occupation company image"
+      )
       // 🏆 WINNERS (name, email, image)
-      .populate("winnerDetails.user", "name email image")
+      .populate(
+        "winnerDetails.user",
+        "name email image"
+      )
       .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
       data: hackathons,
     });
+
   } catch (error) {
     console.error("GET ALL HACKATHONS ERROR:", error);
     res.status(500).json({
@@ -196,11 +203,20 @@ export const getAllHackathons = async (req, res) => {
 export const getHackathonById = async (req, res) => {
   try {
     const hackathon = await Hackathon.findById(req.params.id)
-      .populate("judges", "name email occupation company image")
+      .populate(
+        "judges",
+        "name email occupation company image"
+      )
       // 🏆 WINNERS DETAILS
-      .populate("winnerDetails.user", "name email image")
+      .populate(
+        "winnerDetails.user",
+        "name email image"
+      )
       // 👥 PARTICIPANTS DETAILS (optional but recommended)
-      .populate("participants.user", "name email image");
+      .populate(
+        "participants.user",
+        "name email image"
+      );
 
     if (!hackathon) {
       return res.status(404).json({
