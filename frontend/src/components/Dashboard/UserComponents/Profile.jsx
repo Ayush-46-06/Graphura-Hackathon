@@ -23,7 +23,7 @@ const Profile = () => {
   const [success, setSuccess] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [imageFile, setImageFile] = useState(null);
-const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
 
   /* ================= FETCH PROFILE ================= */
@@ -69,9 +69,10 @@ const [imagePreview, setImagePreview] = useState(null);
       newErrors.university = "University is required";
     }
 
-    if (!profile.college) {
-      newErrors.college = "College is required";
+    if (!profile.collegeName) {
+      newErrors.collegeName = "College is required";
     }
+
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -79,68 +80,69 @@ const [imagePreview, setImagePreview] = useState(null);
 
   /* ================= SAVE PROFILE ================= */
   const handleSubmit = async () => {
-  if (!validateForm()) return;
+    if (!validateForm()) return;
 
-  setLoading(true);
-  setSuccess(false);
+    setLoading(true);
+    setSuccess(false);
 
-  const token = localStorage.getItem("token");
-  const API = "http://localhost:5001/api/user/profile";
+    const token = localStorage.getItem("token");
+    const API = "http://localhost:5001/api/user/profile";
 
-  try {
-    const formData = new FormData();
+    try {
+      const formData = new FormData();
 
-    formData.append("name", profile.name);
-    formData.append("address", profile.address);
-    formData.append("contactNumber", profile.contactNumber);
-    formData.append("university", profile.university);
+      formData.append("name", profile.name);
+      formData.append("address", profile.address);
+      formData.append("contactNumber", profile.contactNumber);
+      formData.append("university", profile.university);
 
-    // 🔥 IMPORTANT FIX
-    formData.append("collegeName", profile.college);
+      // 🔥 IMPORTANT FIX
+      formData.append("collegeName", profile.collegeName);
 
-    formData.append("courseName", profile.courseName || "");
-    formData.append("yearOfStudy", profile.yearOfStudy || "");
 
-    if (imageFile) {
-      formData.append("image", imageFile);
+      formData.append("courseName", profile.courseName || "");
+      formData.append("yearOfStudy", profile.yearOfStudy || "");
+
+      if (imageFile) {
+        formData.append("image", imageFile);
+      }
+
+      const response = await fetch(API, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`, // ❗ NO Content-Type
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to update profile");
+      }
+
+      setProfile(data.data);
+      setOriginalProfile(data.data);
+      setIsEditing(false);
+      setSuccess(true);
+      setImageFile(null);
+      setImagePreview(null);
+
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (err) {
+      setErrors({ submit: err.message });
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const response = await fetch(API, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`, // ❗ NO Content-Type
-      },
-      body: formData,
-    });
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to update profile");
-    }
-
-    setProfile(data.data);
-    setOriginalProfile(data.data);
-    setIsEditing(false);
-    setSuccess(true);
-    setImageFile(null);
-    setImagePreview(null);
-
-    setTimeout(() => setSuccess(false), 3000);
-  } catch (err) {
-    setErrors({ submit: err.message });
-  } finally {
-    setLoading(false);
-  }
-};
-
-const handleImageChange = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  setImageFile(file);
-  setImagePreview(URL.createObjectURL(file));
-};
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
 
   /* ================= CANCEL EDIT ================= */
   const handleCancel = () => {
@@ -165,7 +167,7 @@ const handleImageChange = (e) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50 p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
-        
+
         {/* Header */}
         <div className="mb-8 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm mb-4">
@@ -192,33 +194,38 @@ const handleImageChange = (e) => {
           <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100 relative overflow-hidden">
             {/* Decorative Background */}
             <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] -z-0"></div>
-            
-            {/* Avatar */}
-           <div className="w-28 h-28 rounded-full border-4 border-white shadow-xl overflow-hidden bg-gradient-to-br from-teal-600 to-cyan-600 flex items-center justify-center mb-4 relative">
-  {imagePreview || profile.image ? (
-    <img
-      src={imagePreview || `http://localhost:5001/${profile.image}`}
-      alt="profile"
-      className="w-full h-full object-cover"
-    />
-  ) : (
-    <span className="text-white text-4xl font-bold">
-      {profile.name?.charAt(0).toUpperCase() || "U"}
-    </span>
-  )}
 
-  {isEditing && (
-    <label className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow cursor-pointer">
-      <Camera size={16} className="text-teal-600" />
-      <input
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={handleImageChange}
-      />
-    </label>
-  )}
-</div>
+            {/* Avatar */}
+            <div className="w-28 h-28 rounded-full border-4 border-white shadow-xl overflow-hidden bg-gradient-to-br from-teal-600 to-cyan-600 flex items-center justify-center mb-4 relative">
+              {imagePreview || profile.image ? (
+                <img
+  src={
+    imagePreview ||
+    `http://localhost:5001/${profile.image}?t=${Date.now()}`
+  }
+  alt="profile"
+  className="w-full h-full object-cover"
+/>
+
+
+              ) : (
+                <span className="text-white text-4xl font-bold">
+                  {profile.name?.charAt(0).toUpperCase() || "U"}
+                </span>
+              )}
+
+              {isEditing && (
+                <label className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow cursor-pointer">
+                  <Camera size={16} className="text-teal-600" />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageChange}
+                  />
+                </label>
+              )}
+            </div>
 
 
             {/* Info Cards */}
@@ -306,11 +313,10 @@ const handleImageChange = (e) => {
                   onChange={handleChange}
                   disabled={!isEditing}
                   placeholder="Enter your full name"
-                  className={`w-full px-4 py-3 border-2 rounded-xl transition-all ${
-                    isEditing 
-                      ? 'border-gray-200 focus:border-teal-600 focus:ring-4 focus:ring-teal-600/10 bg-white' 
+                  className={`w-full px-4 py-3 border-2 rounded-xl transition-all ${isEditing
+                      ? 'border-gray-200 focus:border-teal-600 focus:ring-4 focus:ring-teal-600/10 bg-white'
                       : 'border-gray-100 bg-gray-50 cursor-not-allowed text-gray-600'
-                  } ${errors.name ? 'border-red-500' : ''} outline-none`}
+                    } ${errors.name ? 'border-red-500' : ''} outline-none`}
                 />
                 {errors.name && <p className="text-red-500 text-sm mt-1 flex items-center gap-1"><span>⚠️</span>{errors.name}</p>}
               </div>
@@ -327,11 +333,10 @@ const handleImageChange = (e) => {
                   onChange={handleChange}
                   disabled={!isEditing}
                   placeholder="Enter your address"
-                  className={`w-full px-4 py-3 border-2 rounded-xl transition-all ${
-                    isEditing 
-                      ? 'border-gray-200 focus:border-teal-600 focus:ring-4 focus:ring-teal-600/10 bg-white' 
+                  className={`w-full px-4 py-3 border-2 rounded-xl transition-all ${isEditing
+                      ? 'border-gray-200 focus:border-teal-600 focus:ring-4 focus:ring-teal-600/10 bg-white'
                       : 'border-gray-100 bg-gray-50 cursor-not-allowed text-gray-600'
-                  } ${errors.address ? 'border-red-500' : ''} outline-none`}
+                    } ${errors.address ? 'border-red-500' : ''} outline-none`}
                 />
                 {errors.address && <p className="text-red-500 text-sm mt-1 flex items-center gap-1"><span>⚠️</span>{errors.address}</p>}
               </div>
@@ -348,11 +353,10 @@ const handleImageChange = (e) => {
                   onChange={handleChange}
                   disabled={!isEditing}
                   placeholder="10-digit phone number"
-                  className={`w-full px-4 py-3 border-2 rounded-xl transition-all ${
-                    isEditing 
-                      ? 'border-gray-200 focus:border-teal-600 focus:ring-4 focus:ring-teal-600/10 bg-white' 
+                  className={`w-full px-4 py-3 border-2 rounded-xl transition-all ${isEditing
+                      ? 'border-gray-200 focus:border-teal-600 focus:ring-4 focus:ring-teal-600/10 bg-white'
                       : 'border-gray-100 bg-gray-50 cursor-not-allowed text-gray-600'
-                  } ${errors.contactNumber ? 'border-red-500' : ''} outline-none`}
+                    } ${errors.contactNumber ? 'border-red-500' : ''} outline-none`}
                 />
                 {errors.contactNumber && <p className="text-red-500 text-sm mt-1 flex items-center gap-1"><span>⚠️</span>{errors.contactNumber}</p>}
               </div>
@@ -370,11 +374,10 @@ const handleImageChange = (e) => {
                     onChange={handleChange}
                     disabled={!isEditing}
                     placeholder="University name"
-                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all ${
-                      isEditing 
-                        ? 'border-gray-200 focus:border-teal-600 focus:ring-4 focus:ring-teal-600/10 bg-white' 
+                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all ${isEditing
+                        ? 'border-gray-200 focus:border-teal-600 focus:ring-4 focus:ring-teal-600/10 bg-white'
                         : 'border-gray-100 bg-gray-50 cursor-not-allowed text-gray-600'
-                    } ${errors.university ? 'border-red-500' : ''} outline-none`}
+                      } ${errors.university ? 'border-red-500' : ''} outline-none`}
                   />
                   {errors.university && <p className="text-red-500 text-sm mt-1 flex items-center gap-1"><span>⚠️</span>{errors.university}</p>}
                 </div>
@@ -385,18 +388,23 @@ const handleImageChange = (e) => {
                     College <span className="text-red-500">*</span>
                   </label>
                   <input
-                    name="college"
-                    value={profile.college || ""}
+                    name="collegeName"
+                    value={profile.collegeName || ""}
                     onChange={handleChange}
                     disabled={!isEditing}
                     placeholder="College name"
-                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all ${
-                      isEditing 
-                        ? 'border-gray-200 focus:border-teal-600 focus:ring-4 focus:ring-teal-600/10 bg-white' 
+                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all ${isEditing
+                        ? 'border-gray-200 focus:border-teal-600 focus:ring-4 focus:ring-teal-600/10 bg-white'
                         : 'border-gray-100 bg-gray-50 cursor-not-allowed text-gray-600'
-                    } ${errors.college ? 'border-red-500' : ''} outline-none`}
+                      } ${errors.university ? 'border-red-500' : ''} outline-none`}
                   />
-                  {errors.college && <p className="text-red-500 text-sm mt-1 flex items-center gap-1"><span>⚠️</span>{errors.college}</p>}
+
+                  {errors.collegeName && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.collegeName}
+                    </p>
+                  )}
+
                 </div>
               </div>
 
@@ -413,11 +421,10 @@ const handleImageChange = (e) => {
                     onChange={handleChange}
                     disabled={!isEditing}
                     placeholder="e.g., Computer Science"
-                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all ${
-                      isEditing 
-                        ? 'border-gray-200 focus:border-teal-600 focus:ring-4 focus:ring-teal-600/10 bg-white' 
+                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all ${isEditing
+                        ? 'border-gray-200 focus:border-teal-600 focus:ring-4 focus:ring-teal-600/10 bg-white'
                         : 'border-gray-100 bg-gray-50 cursor-not-allowed text-gray-600'
-                    } outline-none`}
+                      } outline-none`}
                   />
                 </div>
 
@@ -432,11 +439,10 @@ const handleImageChange = (e) => {
                     onChange={handleChange}
                     disabled={!isEditing}
                     placeholder="e.g., 2nd Year"
-                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all ${
-                      isEditing 
-                        ? 'border-gray-200 focus:border-teal-600 focus:ring-4 focus:ring-teal-600/10 bg-white' 
+                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all ${isEditing
+                        ? 'border-gray-200 focus:border-teal-600 focus:ring-4 focus:ring-teal-600/10 bg-white'
                         : 'border-gray-100 bg-gray-50 cursor-not-allowed text-gray-600'
-                    } outline-none`}
+                      } outline-none`}
                   />
                 </div>
               </div>

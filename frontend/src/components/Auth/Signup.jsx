@@ -11,20 +11,22 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
 
  const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    address: "",
-    contactNumber: "",
-    university: "",
-    college: "",
-    courseName: "",     // ✅ added
-    yearOfStudy: "",    // ✅ added
-    role: "user",
-    adminSecret: "",
-    agree: false,
-  });
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  address: "",
+  contactNumber: "",
+  university: "",
+  college: "",
+  courseName: "",
+  yearOfStudy: "",
+  role: "user",
+  adminSecret: "",
+  judgeSecret: "",   // ✅ ADD THIS
+  agree: false,
+});
+
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -38,12 +40,17 @@ const Signup = () => {
   e.preventDefault();
 
   if (!form.agree) {
-    alert("Please agree to the Terms & Conditions");
+    alert("Please agree to terms");
     return;
   }
 
   if (form.role === "admin" && !form.adminSecret) {
-    alert("Secret key is required for admin registration");
+    alert("Admin secret required");
+    return;
+  }
+
+  if (form.role === "judge" && !form.judgeSecret) {
+    alert("Judge secret required");
     return;
   }
 
@@ -57,20 +64,28 @@ const Signup = () => {
       address: form.address,
       contactNumber: form.contactNumber,
       university: form.university,
-
-      // ✅ FIX IS HERE
       collegeName: form.college,
-
       courseName: form.courseName,
       yearOfStudy: form.yearOfStudy,
-      role: form.role,
     };
 
+    let apiUrl = "";
+
     if (form.role === "admin") {
+      payload.role = "admin";
       payload.adminSecret = form.adminSecret;
+      apiUrl = "http://localhost:5001/api/auth/register";
+    }
+    else if (form.role === "judge") {
+      payload.judgeSecret = form.judgeSecret;
+      apiUrl = "http://localhost:5001/api/auth/judge-register"; // ✅ EXACT MATCH
+    }
+    else {
+      payload.role = "user";
+      apiUrl = "http://localhost:5001/api/auth/register";
     }
 
-    const res = await axios.post(API_URL, payload);
+    const res = await axios.post(apiUrl, payload);
 
     if (res.data.success) {
       alert(res.data.message);
@@ -78,7 +93,6 @@ const Signup = () => {
     }
 
   } catch (err) {
-    console.error("Signup error:", err);
     alert(err.response?.data?.message || "Signup failed");
   } finally {
     setLoading(false);
@@ -226,6 +240,7 @@ const Signup = () => {
                 >
                   <option value="user" className="bg-gray-800">User</option>
                   <option value="admin" className="bg-gray-800">Admin</option>
+                  <option value="judge" className="bg-gray-800">Judge</option> {/* ✅ */}
                 </select>
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">▼</span>
               </div>
@@ -246,6 +261,23 @@ const Signup = () => {
                   <p className="text-xs text-red-400 mt-1 ml-1">⚠️ Admin access requires secret key</p>
                 </div>
               )}
+              {form.role === "judge" && (
+  <div className="relative group animate-slideDown">
+    <input
+      type="password"
+      name="judgeSecret"
+      placeholder="Judge Secret Key"
+      value={form.judgeSecret}
+      onChange={handleChange}
+      required
+      className="w-full bg-blue-500/10 border border-blue-500 rounded-xl p-3 text-white"
+    />
+    <p className="text-xs text-blue-400 mt-1">
+      ⚠️ Judge access requires secret key
+    </p>
+  </div>
+)}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <input
                   type="text"

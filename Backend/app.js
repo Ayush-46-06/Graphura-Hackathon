@@ -32,6 +32,11 @@ app.use(
   "/certificates",
   express.static(path.join(__dirname, "uploads", "certificates"))
 );
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"))
+);
+
 app.use("/api", partnerRoutes);
 app.use("/api", sponsorRoutes);
 app.use("/api", contactRoutes);

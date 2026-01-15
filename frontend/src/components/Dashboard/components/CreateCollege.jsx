@@ -3,12 +3,15 @@ import { Building2, Mail, Lock, MapPin, CheckCircle2, AlertCircle, Loader2 } fro
 
 const CreateCollege = () => {
   const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    city: "",
-    state: ""
-  });
+  name: "",
+  shortName: "",          // ✅ ADD
+  email: "",
+  alternateEmail: "",     // ✅ ADD
+  password: "",
+  city: "",
+  state: ""
+});
+
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -45,12 +48,15 @@ const CreateCollege = () => {
 
       setSuccess(true);
       setForm({
-        name: "",
-        email: "",
-        password: "",
-        city: "",
-        state: ""
-      });
+  name: "",
+  shortName: "",
+  email: "",
+  alternateEmail: "",
+  password: "",
+  city: "",
+  state: ""
+});
+
 
       setTimeout(() => setSuccess(false), 5000);
 
@@ -66,7 +72,7 @@ const CreateCollege = () => {
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-600 rounded-2xl mb-4 shadow-lg">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] rounded-2xl mb-4 shadow-lg">
             <Building2 className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
@@ -125,6 +131,22 @@ const CreateCollege = () => {
                 />
               </div>
             </div>
+            {/* College Short Name */}
+<div>
+  <label className="block text-sm font-semibold text-gray-700 mb-2">
+    College Short Name
+  </label>
+  <input
+    type="text"
+    name="shortName"
+    placeholder="e.g. IITD, MDU"
+    value={form.shortName}
+    onChange={handleChange}
+    required
+    className="w-full px-4 py-3 border border-gray-300 rounded-xl
+      focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+  />
+</div>
 
             {/* Email */}
             <div>
@@ -146,6 +168,21 @@ const CreateCollege = () => {
                 />
               </div>
             </div>
+              {/* Alternate Email */}
+<div>
+  <label className="block text-sm font-semibold text-gray-700 mb-2">
+    Alternate Email (Optional)
+  </label>
+  <input
+    type="email"
+    name="alternateEmail"
+    placeholder="alternate@college.edu"
+    value={form.alternateEmail}
+    onChange={handleChange}
+    className="w-full px-4 py-3 border border-gray-300 rounded-xl
+      focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+  />
+</div>
 
             {/* Password */}
             <div>
@@ -209,7 +246,7 @@ const CreateCollege = () => {
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3.5 rounded-xl font-semibold hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+              className="w-full bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] text-white py-3.5 rounded-xl font-semibold hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -228,12 +265,12 @@ const CreateCollege = () => {
           {/* Info Box */}
           <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4">
             <div className="flex items-start gap-3">
-              <Mail className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+              <Mail className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
               <div>
-                <h4 className="font-semibold text-blue-900 text-sm">
+                <h4 className="font-semibold text-green-900 text-sm">
                   Automatic Email Notification
                 </h4>
-                <p className="text-sm text-blue-700 mt-1">
+                <p className="text-sm text-green-700 mt-1">
                   Login credentials will be automatically sent to the college's registered email address.
                 </p>
               </div>

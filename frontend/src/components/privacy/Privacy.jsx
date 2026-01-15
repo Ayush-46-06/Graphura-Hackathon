@@ -1,6 +1,7 @@
 import React from "react";
 import { Play, Users, BookOpen, Award } from "lucide-react";
 import Navbar from "../Navbar";
+import Footer from "../Footer";
 
 
 const PrivacyPolicy = () => {
@@ -270,6 +271,7 @@ const PrivacyPolicy = () => {
           animation: fade-in 1s ease-out;
         }
       `}</style>
+      <Footer />
     </section>
   );
 };

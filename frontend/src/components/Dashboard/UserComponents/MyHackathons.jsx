@@ -1,51 +1,42 @@
 import { useEffect, useState } from "react";
-import api from "./api"; // your axios instance
-import { Trophy, Calendar, Award, Users, Tag, Download } from "lucide-react";
-import ResultModal from "./ResultModal";
-import { getMyHackathonResult } from "./api";
+import api from "./api";
+import { Calendar, Users, Download, Clock, CheckCircle2, AlertCircle } from "lucide-react";
+import SubmitProjectModal from "./SubmitProjectModal";
 
 const MyHackathons = () => {
   const [loading, setLoading] = useState(true);
   const [registrations, setRegistrations] = useState([]);
-  const [showResult, setShowResult] = useState(false);
-  const [resultData, setResultData] = useState(null);
-  const [selectedHackathon, setSelectedHackathon] = useState(null);
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
+  const [activeHackathonId, setActiveHackathonId] = useState(null);
+
+  /* ================= HELPERS ================= */
+
+  const getHackathonStatus = (hackathon) => {
+    const now = new Date();
+    const start = new Date(hackathon.startDate);
+    const end = new Date(hackathon.endDate);
+
+    if (now < start) return "pending";
+    if (now >= start && now <= end) return "ongoing";
+    return "completed";
+  };
+
+  const hasUserSubmitted = (hackathon) => {
+    return hackathon.participants?.some(
+      (p) => p.user === undefined ? false : p.user.toString() === "self" || p.submittedAt
+    );
+  };
+
+  /* ================= FETCH ================= */
 
   const fetchMyHackathons = async () => {
     try {
       const res = await api.get("/user/hackathons");
-      const data = res.data.data;
-      
-      // Calculate status based on end date
-      const updatedRegistrations = data.map(item => {
-        const endDate = new Date(item.hackathon?.endDate);
-        const currentDate = new Date();
-        
-        // If end date has passed and status is not already completed, mark as completed
-        if (endDate < currentDate && item.status !== "completed") {
-          return { ...item, status: "completed" };
-        }
-        
-        return item;
-      });
-      
-      setRegistrations(updatedRegistrations);
-    } catch (error) {
-      console.error("Failed to fetch hackathons", error);
+      setRegistrations(res.data.data || []);
+    } catch (err) {
+      console.error("Failed to load hackathons", err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleViewProgress = async (hackathonId, status) => {
-    try {
-      const res = await getMyHackathonResult(hackathonId);
-      setResultData(res.data.data);
-      setSelectedHackathon({ id: hackathonId, status });
-      setShowResult(true);
-    } catch (error) {
-      console.error("Failed to load result", error);
-      alert("Result not available yet");
     }
   };
 
@@ -55,199 +46,192 @@ const MyHackathons = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F5F7F9]">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-t-transparent rounded-full animate-spin border-[#03594E]" />
-          <p className="mt-4 text-gray-500">Loading your hackathons...</p>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="w-12 h-12 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-slate-600 font-medium">Loading your hackathons...</p>
         </div>
       </div>
     );
   }
 
+  const downloadCertificate = async (hackathonId) => {
+    try {
+      const res = await api.get(`/user/certificate/${hackathonId}`, {
+        responseType: "blob"
+      });
+
+      const blob = new Blob([res.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "certificate.pdf";
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      alert("Certificate not available yet");
+    }
+  };
+
+  const getStatusConfig = (status) => {
+    switch(status) {
+      case "ongoing":
+        return {
+          bg: "bg-gradient-to-r from-emerald-500 to-green-600",
+          icon: <Clock className="w-3.5 h-3.5" />,
+          text: "LIVE NOW"
+        };
+      case "completed":
+        return {
+          bg: "bg-gradient-to-r from-blue-500 to-indigo-600",
+          icon: <CheckCircle2 className="w-3.5 h-3.5" />,
+          text: "COMPLETED"
+        };
+      default:
+        return {
+          bg: "bg-gradient-to-r from-slate-400 to-slate-500",
+          icon: <AlertCircle className="w-3.5 h-3.5" />,
+          text: "UPCOMING"
+        };
+    }
+  };
+
   return (
-    <div className="min-h-screen p-6 bg-[#F5F7F9]">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-4xl font-bold text-[#0C121D] mb-2">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+
+        <div className="space-y-2">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
             My Hackathons
           </h1>
-          <p className="text-gray-500">
-            Hackathons you have successfully registered for ({registrations.length} total)
-          </p>
+          <p className="text-slate-600">Track your registered hackathons and submissions</p>
         </div>
 
-        {/* Empty State */}
         {registrations.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl shadow-md">
-            <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-              <Trophy className="w-12 h-12 text-gray-400" />
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center">
+            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Calendar className="w-8 h-8 text-slate-400" />
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">No Hackathons Found</h3>
-            <p className="text-gray-500 mb-4">
-              You have not registered for any hackathons yet.
-            </p>
-            <button
-              onClick={() => window.location.href = '/explore'}
-              className="px-6 py-2 bg-[#03594E] text-white rounded-lg font-semibold hover:opacity-90"
-            >
-              Explore Hackathons
-            </button>
+            <h3 className="text-xl font-semibold text-slate-700 mb-2">No hackathons yet</h3>
+            <p className="text-slate-500">Register for a hackathon to get started!</p>
           </div>
         ) : (
-          /* Hackathon List */
-          <div className="space-y-6">
+          <div className="grid gap-6">
             {registrations.map((item) => {
               const h = item.hackathon;
-              
+              const status = getHackathonStatus(h);
+              const statusConfig = getStatusConfig(status);
+
+              const submitted = h.participants?.some(
+                (p) => p.user?.toString() === item.user?.toString() && p.submittedAt
+              );
+
               return (
                 <div
                   key={item._id}
-                  className="rounded-2xl shadow-md bg-white overflow-hidden hover:shadow-xl transition-all"
+                  className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-slate-200 hover:border-slate-300"
                 >
-                  <div className="flex flex-col md:flex-row">
-                    {/* Image */}
-                    <div className="md:w-80 h-64 md:h-auto relative overflow-hidden">
+                  <div className="flex flex-col lg:flex-row">
+
+                    {/* IMAGE */}
+                    <div className="relative w-full lg:w-80 h-56 lg:h-auto overflow-hidden">
                       <img
-                        src={h?.image || "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400"}
-                        alt={h?.title}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.target.src = "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400";
-                        }}
+                        src={h.image}
+                        alt={h.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute top-4 right-4 flex flex-col gap-2">
-                        <span
-                          className="px-4 py-2 rounded-full text-xs font-bold uppercase shadow-lg"
-                          style={{
-                            backgroundColor:
-                              item.status === "ongoing"
-                                ? "#E8F5E9"
-                                : item.status === "completed"
-                                ? "#E3F2FD"
-                                : "#F5F7F9",
-                            color:
-                              item.status === "ongoing"
-                                ? "#1AB69D"
-                                : item.status === "completed"
-                                ? "#1976D2"
-                                : "#6C757D",
-                          }}
-                        >
-                          {item.status}
+                      <div className="absolute top-4 right-4">
+                        <span className={`${statusConfig.bg} text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-lg backdrop-blur-sm`}>
+                          {statusConfig.icon}
+                          {statusConfig.text}
                         </span>
                       </div>
                     </div>
 
-                    {/* Content */}
-                    <div className="flex-1 p-6">
-                      <div className="mb-4">
-                        <h3 className="text-2xl font-bold mb-2 text-[#0C121D]">
-                          {h?.title}
-                        </h3>
-                        <p className="text-sm text-gray-600 line-clamp-2">
-                          {h?.description}
-                        </p>
+                    {/* CONTENT */}
+                    <div className="flex-1 p-6 lg:p-8 space-y-5">
+
+                      <div>
+                        <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-2 group-hover:text-emerald-700 transition-colors">
+                          {h.title}
+                        </h2>
+                        <p className="text-slate-600 leading-relaxed line-clamp-2">{h.description}</p>
                       </div>
 
-                      {/* Category & Tags */}
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {h?.category && (
-                          <span
-                            className="px-3 py-1 rounded-full text-xs font-semibold"
-                            style={{ backgroundColor: "#E3F2FD", color: "#1976D2" }}
-                          >
-                            {h.category}
-                          </span>
-                        )}
-                        {h?.tags?.slice(0, 3).map((tag, idx) => (
-                          <span
-                            key={idx}
-                            className="px-3 py-1 rounded-full text-xs flex items-center gap-1"
-                            style={{ backgroundColor: "#F5F7F9", color: "#6C757D" }}
-                          >
-                            <Tag className="w-3 h-3" />
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-
-                      {/* Dates & Participants */}
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 pb-4 border-b">
-                        <div>
-                          <p className="text-xs font-medium text-gray-500 flex items-center gap-1">
-                            <Calendar className="w-3 h-3" />
-                            Start Date
-                          </p>
-                          <p className="font-semibold text-sm mt-1">
-                            {h?.startDate ? new Date(h.startDate).toLocaleDateString() : "N/A"}
-                          </p>
+                      {/* META */}
+                      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg">
+                          <Calendar className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <div className="text-xs font-medium text-slate-500 uppercase mb-1">Start Date</div>
+                            <div className="text-sm font-semibold text-slate-900">
+                              {new Date(h.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-xs font-medium text-gray-500 flex items-center gap-1">
-                            <Calendar className="w-3 h-3" />
-                            End Date
-                          </p>
-                          <p className="font-semibold text-sm mt-1">
-                            {h?.endDate ? new Date(h.endDate).toLocaleDateString() : "N/A"}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs font-medium text-orange-500 flex items-center gap-1">
-                            <Calendar className="w-3 h-3" />
-                            Registration
-                          </p>
-                          <p className="font-semibold text-sm mt-1 text-orange-500">
-                            {h?.lastEnrollmentDate ? new Date(h.lastEnrollmentDate).toLocaleDateString() : "N/A"}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs font-medium text-gray-500 flex items-center gap-1">
-                            <Users className="w-3 h-3" />
-                            Participants
-                          </p>
-                          <p className="font-semibold text-sm mt-1 text-[#03594E]">
-                            {h?.participants?.length || 0} Registered
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex flex-wrap gap-3">
-                        {item.status === "completed" && (
-                          <a
-                            href={`${window.location.origin}/api/user/certificate/${h?._id}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="px-6 py-3 rounded-xl text-sm font-semibold transition-all hover:shadow-lg hover:scale-105 flex items-center gap-2"
-                            style={{ backgroundColor: "#03594E", color: "#fff" }}
-                          >
-                            <Download className="w-4 h-4" />
-                            Download Certificate
-                          </a>
-                        )}
                         
-                        {item.status === "ongoing" && (
+                        <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg">
+                          <Calendar className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <div className="text-xs font-medium text-slate-500 uppercase mb-1">End Date</div>
+                            <div className="text-sm font-semibold text-slate-900">
+                              {new Date(h.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg">
+                          <Users className="w-5 h-5 text-purple-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <div className="text-xs font-medium text-slate-500 uppercase mb-1">Participants</div>
+                            <div className="text-sm font-semibold text-slate-900">
+                              {h.participants?.length || 0} Registered
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* ACTIONS */}
+                      <div className="flex gap-3 flex-wrap pt-2">
+
+                        {/* SUBMIT */}
+                        {status === "ongoing" && !submitted && (
                           <button
-                            className="px-6 py-3 rounded-xl text-sm font-semibold transition-all hover:shadow-lg hover:scale-105"
-                            style={{ backgroundColor: "#03594E", color: "#fff" }}
+                            onClick={() => {
+                              setActiveHackathonId(h._id);
+                              setShowSubmitModal(true);
+                            }}
+                            className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
                           >
-                            View Hackathon Details
+                            Submit Project
                           </button>
                         )}
 
-                        <button
-                          onClick={() => handleViewProgress(h._id, item.status)}
-                          className="px-6 py-3 rounded-xl text-sm font-semibold transition-all hover:shadow-md border-2"
-                          style={{ 
-                            borderColor: "#03594E", 
-                            color: "#03594E",
-                            backgroundColor: "#fff"
-                          }}
-                        >
-                          View Progress
-                        </button>
+                        {/* SUBMITTED */}
+                        {status === "ongoing" && submitted && (
+                          <span className="px-6 py-3 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 text-green-700 rounded-xl text-sm font-semibold flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4" />
+                            Project Submitted
+                          </span>
+                        )}
+
+                        {/* CERTIFICATE */}
+                        {status === "completed" && (
+                          <button
+                            onClick={() => downloadCertificate(h._id)}
+                            className="px-6 py-3 bg-gradient-to-r from-[#03594E] to-teal-700 hover:from-[#024239] hover:to-teal-800 text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 flex items-center gap-2"
+                          >
+                            <Download className="w-4 h-4" />
+                            Download Certificate
+                          </button>
+                        )}
+
                       </div>
+
                     </div>
                   </div>
                 </div>
@@ -257,15 +241,14 @@ const MyHackathons = () => {
         )}
       </div>
 
-      {showResult && resultData && (
-        <ResultModal
-          open={showResult}
-          onClose={() => setShowResult(false)}
-          data={resultData}
-          hackathonId={selectedHackathon?.id}
-          completed={selectedHackathon?.status === "completed"}
-        />
-      )}
+      {/* SUBMIT MODAL */}
+      <SubmitProjectModal
+        open={showSubmitModal}
+        hackathonId={activeHackathonId}
+        onClose={() => setShowSubmitModal(false)}
+        onSuccess={fetchMyHackathons}
+      />
+
     </div>
   );
 };

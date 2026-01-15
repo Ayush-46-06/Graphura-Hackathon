@@ -7,6 +7,8 @@ import {
 } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import Navbar from "../Navbar";
+import Footer from "../Footer";
 
 /* ================= STATIC DATA ================= */
 
@@ -69,6 +71,7 @@ const BlogDetails = () => {
   const [activeQA, setActiveQA] = React.useState(null);
   return (
     <div className="bg-white">
+      <Navbar />
       {/* ================= HERO ================= */}
       <section className="bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] py-32 text-center text-white">
         <p className="text-sm mb-4">Home → Blog → Blog Details</p>
@@ -369,6 +372,7 @@ const BlogDetails = () => {
           ))}
         </div>
       </section>
+      <Footer />
     </div>
   );
 };

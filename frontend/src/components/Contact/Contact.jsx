@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Mail, Phone, MapPin, Send } from "lucide-react";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
 
@@ -21,19 +22,23 @@ const ContactUs = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const payload = {
+      ...formData,
+      phone: formData.phone.replace(/\D/g, "")
+    };
+
     try {
       const res = await fetch("http://localhost:5001/api/contact", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
       });
 
       const data = await res.json();
+      console.log("Backend response:", data);
 
       if (!res.ok) {
-        alert(data.message || "Something went wrong");
+        alert(data.message || "Body validation failed");
         return;
       }
 
@@ -46,18 +51,19 @@ const ContactUs = () => {
         subject: "",
         message: ""
       });
-
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
       alert("Server error ❌");
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      {/* Navbar Placeholder */}
+     <Navbar />
+
       {/* Header Section */}
-      <div className="bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] px-4 py-16 md:py-20 lg:py-24">
+      <div className="bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] px-4  py-16 md:py-20 lg:py-29">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="flex-1 text-center md:text-left">
@@ -106,11 +112,7 @@ const ContactUs = () => {
                 {/* Address */}
                 <li className="flex gap-4 items-start p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100">
                   <span className="bg-gradient-to-br from-gray-100 to-gray-200 p-3 rounded-xl border-r-4 border-b-4 border-[#03594E] flex-shrink-0">
-                    <svg width="28" height="34" viewBox="0 0 35 43" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M7.25 33.25C3.59214 34.0734 1.25 35.3386 1.25 36.7574C1.25 39.2386 8.41344 41.25 17.25 41.25C26.0866 41.25 33.25 39.2386 33.25 36.7574C33.25 35.3386 30.9078 34.0734 27.25 33.25" stroke="#ABB2C5" strokeWidth="2.5" strokeLinecap="round"></path>
-                      <path d="M22.25 15.25C22.25 18.0114 20.0114 20.25 17.25 20.25C14.4886 20.25 12.25 18.0114 12.25 15.25C12.25 12.4886 14.4886 10.25 17.25 10.25C20.0114 10.25 22.25 12.4886 22.25 15.25Z" stroke="#1F2432" strokeWidth="2.5"></path>
-                      <path d="M19.7648 32.2372C19.0902 32.8868 18.1886 33.25 17.2504 33.25C16.312 33.25 15.4104 32.8868 14.7358 32.2372C8.5586 26.2516 0.28038 19.565 4.31742 9.85746C6.5002 4.60864 11.7399 1.25 17.2504 1.25C22.7608 1.25 28.0004 4.60866 30.1832 9.85746C34.2152 19.5528 25.9572 26.2722 19.7648 32.2372Z" stroke="#ABB2C5" strokeWidth="2.5"></path>
-                    </svg>
+                    <MapPin className="w-7 h-7 text-gray-700" />
                   </span>
                   <span className="text-gray-700 hover:text-[#03594E] transition-colors text-base md:text-lg flex-1">
                     Graphura India Private Limited.
@@ -120,11 +122,7 @@ const ContactUs = () => {
                 {/* Phone */}
                 <li className="flex gap-4 items-start p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100">
                   <span className="bg-gradient-to-br from-gray-100 to-gray-200 p-3 rounded-xl border-r-4 border-b-4 border-[#03594E] flex-shrink-0">
-                    <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path opacity="0.3" d="M10.3056 6.93945L11.4134 8.92446C12.4131 10.7158 12.0118 13.0658 10.4372 14.6404C10.4372 14.6404 8.52731 16.5503 11.9902 20.0132C15.453 23.476 17.363 21.5661 17.363 21.5661C18.9375 19.9915 21.2875 19.5902 23.0789 20.5899L25.0639 21.6977C27.7689 23.2074 28.0883 27.0008 25.7107 29.3785C24.282 30.8071 22.5318 31.9188 20.5971 31.9922C17.3401 32.1156 11.8088 31.2913 6.26042 25.7429C0.711997 20.1945 -0.112289 14.6633 0.011183 11.4063C0.0845292 9.47152 1.1962 7.72132 2.62489 6.29264C5.00252 3.915 8.79597 4.23446 10.3056 6.93945Z" fill="#1F2432"></path>
-                      <path d="M15.8053 1.07506C15.9182 0.377126 16.578 -0.0963256 17.276 0.0166671C17.3192 0.0249367 17.4582 0.0509164 17.531 0.0671365C17.6766 0.0995731 17.8798 0.149513 18.1331 0.223296C18.6397 0.370846 19.3474 0.613917 20.1968 1.00332C21.8973 1.78296 24.1604 3.14678 26.5087 5.49514C28.8571 7.8435 30.2209 10.1065 31.0005 11.8071C31.39 12.6565 31.633 13.3642 31.7806 13.8707C31.8544 14.124 31.9043 14.3272 31.9367 14.4729C31.953 14.5457 31.9648 14.6042 31.9731 14.6474L31.9829 14.7006C32.0959 15.3986 31.6267 16.0856 30.9288 16.1986C30.2329 16.3113 29.5772 15.8401 29.4615 15.1455C29.4579 15.1268 29.4481 15.0767 29.4376 15.0294C29.4165 14.9349 29.3801 14.785 29.3224 14.5867C29.2069 14.1902 29.0062 13.6007 28.6731 12.8741C28.0077 11.4227 26.8112 9.4185 24.6983 7.30559C22.5854 5.19268 20.5811 3.99615 19.1298 3.33074C18.4032 2.99763 17.8137 2.79701 17.4171 2.6815C17.2189 2.62375 16.9697 2.56655 16.8751 2.5455C16.1805 2.42973 15.6926 1.771 15.8053 1.07506Z" fill="#1F2432"></path>
-                      <path fillRule="evenodd" clipRule="evenodd" d="M16.1914 6.96297C16.3857 6.28315 17.0942 5.8895 17.7741 6.08374L17.4224 7.31466C17.7741 6.08374 17.7741 6.08374 17.7741 6.08374L17.7765 6.08444L17.7791 6.0852L17.7848 6.08686L17.7981 6.09081L17.8318 6.10133C17.8576 6.10956 17.8897 6.12028 17.928 6.13388C18.0047 6.16108 18.106 6.19977 18.2303 6.25303C18.4789 6.3596 18.8187 6.52418 19.2361 6.77119C20.0716 7.26565 21.2121 8.08698 22.552 9.42685C23.8918 10.7667 24.7132 11.9072 25.2076 12.7427C25.4546 13.1601 25.6192 13.4999 25.7258 13.7485C25.779 13.8728 25.8177 13.9741 25.8449 14.0508C25.8585 14.0891 25.8692 14.1212 25.8775 14.147L25.888 14.1808L25.8919 14.194L25.8936 14.1997L25.8944 14.2023C25.8944 14.2023 25.8951 14.2047 24.6641 14.5564L25.8951 14.2047C26.0893 14.8846 25.6957 15.5931 25.0158 15.7874C24.3418 15.9799 23.6395 15.5946 23.4383 14.9254L23.432 14.907C23.4229 14.8813 23.404 14.8308 23.3724 14.7571C23.3093 14.6097 23.1947 14.3687 23.0042 14.0468C22.6236 13.4037 21.9363 12.432 20.7415 11.2373C19.5468 10.0425 18.5751 9.35516 17.932 8.97457C17.6101 8.78406 17.3691 8.66953 17.2217 8.60637C17.148 8.57476 17.0975 8.55593 17.0718 8.54683L17.0534 8.54052C16.3842 8.33932 15.9989 7.63701 16.1914 6.96297Z" fill="#1F2432"></path>
-                    </svg>
+                    <Phone className="w-7 h-7 text-gray-700" />
                   </span>
                   <a href="tel:+91-7378021327" className="text-gray-700 hover:text-[#03594E] transition-colors text-base md:text-lg flex-1">
                     +91-7378021327
@@ -134,11 +132,7 @@ const ContactUs = () => {
                 {/* Email */}
                 <li className="flex gap-4 items-start p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100">
                   <span className="bg-gradient-to-br from-gray-100 to-gray-200 p-3 rounded-xl border-r-4 border-b-4 border-[#03594E] flex-shrink-0">
-                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path opacity="0.3" d="M14 28C21.732 28 28 21.732 28 14C28 6.26801 21.732 0 14 0C6.26801 0 0 6.26801 0 14C0 16.2396 0.525864 18.3563 1.46085 20.2335C1.70931 20.7323 1.79201 21.3025 1.64797 21.8409L0.814116 24.9573C0.452137 26.3102 1.68982 27.5479 3.04269 27.1859L6.15914 26.352C6.69751 26.208 7.26769 26.2907 7.76654 26.5392C9.64371 27.4741 11.7604 28 14 28Z" fill="#1F2432"></path>
-                      <path d="M8.155 15.1893C7.51711 15.1893 7 15.7064 7 16.3443C7 16.9822 7.51711 17.4993 8.155 17.4993H16.625C17.2629 17.4993 17.78 16.9822 17.78 16.3443C17.78 15.7064 17.2629 15.1893 16.625 15.1893H8.155Z" fill="#1F2432"></path>
-                      <path d="M8.155 9.79932C7.51711 9.79932 7 10.3164 7 10.9543C7 11.5922 7.51711 12.1093 8.155 12.1093H20.475C21.1129 12.1093 21.63 11.5922 21.63 10.9543C21.63 10.3164 21.1129 9.79932 20.475 9.79932H8.155Z" fill="#1F2432"></path>
-                    </svg>
+                    <Mail className="w-7 h-7 text-gray-700" />
                   </span>
                   <div className="flex flex-col gap-1 flex-1">
                     <a href="mailto:Hackthon@graphura.in" className="text-gray-700 hover:text-[#03594E] transition-colors text-base md:text-lg break-all">
@@ -164,7 +158,9 @@ const ContactUs = () => {
                   rel="noopener noreferrer"
                   className="w-12 h-12 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg hover:bg-[#03594E] transition-all group border border-gray-200"
                 >
-                  <i className="fa-brands fa-facebook-f text-xl text-gray-700 group-hover:text-white transition-colors"></i>
+                  <svg className="w-6 h-6 text-gray-700 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
                 </a>
                 <a
                   href="https://share.google/w9KeZZ72v8KQxGpFn"
@@ -172,7 +168,9 @@ const ContactUs = () => {
                   rel="noopener noreferrer"
                   className="w-12 h-12 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg hover:bg-[#03594E] transition-all group border border-gray-200"
                 >
-                  <i className="fa-brands fa-twitter text-xl text-gray-700 group-hover:text-white transition-colors"></i>
+                  <svg className="w-6 h-6 text-gray-700 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                  </svg>
                 </a>
                 <a
                   href="https://www.instagram.com/graphura.in?igsh=MXNqNmtidzljNDJlag=="
@@ -180,7 +178,9 @@ const ContactUs = () => {
                   rel="noopener noreferrer"
                   className="w-12 h-12 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg hover:bg-[#03594E] transition-all group border border-gray-200"
                 >
-                  <i className="fa-brands fa-instagram text-xl text-gray-700 group-hover:text-white transition-colors"></i>
+                  <svg className="w-6 h-6 text-gray-700 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                  </svg>
                 </a>
                 <a
                   href="https://www.facebook.com/share/19nKAMTopZ/"
@@ -188,7 +188,9 @@ const ContactUs = () => {
                   rel="noopener noreferrer"
                   className="w-12 h-12 flex items-center justify-center bg-white rounded-full shadow-md hover:shadow-lg hover:bg-[#03594E] transition-all group border border-gray-200"
                 >
-                  <i className="fa-brands fa-youtube text-xl text-gray-700 group-hover:text-white transition-colors"></i>
+                  <svg className="w-6 h-6 text-gray-700 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                  </svg>
                 </a>
               </div>
             </div>
@@ -200,7 +202,7 @@ const ContactUs = () => {
               Submit Your Query
             </h4>
 
-            <div className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               {/* Name & Email Row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -244,12 +246,14 @@ const ContactUs = () => {
                   </label>
                   <input
                     className="w-full border-2 border-gray-300 rounded-lg bg-gray-50 px-4 py-3 text-base focus:outline-none focus:border-[#03594E] focus:ring-2 focus:ring-[#03594E] focus:ring-opacity-20 transition-all"
-                    type="text"
+                    type="tel"
                     id="phone"
                     name="phone"
                     placeholder="Enter your phone"
                     value={formData.phone}
                     onChange={handleChange}
+                    maxLength={10}
+                    pattern="[0-9]{10}"
                     required
                   />
                 </div>
@@ -267,10 +271,11 @@ const ContactUs = () => {
                     required
                   >
                     <option value="">Select Subject</option>
-                    <option value="Certificate">Certificate</option>
-                    <option value="Date">Date</option>
-                    <option value="Time Period">Time Period</option>
-                    <option value="Other">Other</option>
+                    <option value="General Query">General Query</option>
+                    <option value="Partnership">Partnership</option>
+                    <option value="Sponsorship">Sponsorship</option>
+                    <option value="Host a Hackathon">Host a Hackathon</option>
+                    <option value="Support">Support</option>
                   </select>
                 </div>
               </div>
@@ -295,20 +300,20 @@ const ContactUs = () => {
               {/* Submit Button */}
               <div className="text-center pt-4">
                 <button
-                  onClick={handleSubmit}
+                  type="submit"
                   className="bg-gradient-to-r from-[#03594E] to-[#1AB69D] text-white px-10 py-4 rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 flex items-center gap-2 mx-auto"
                 >
                   Send Message
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
+                  <Send className="w-5 h-5" />
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>
-      <Footer />
+
+      {/* Footer Placeholder */}
+     <Footer />
     </div>
   );
 };
