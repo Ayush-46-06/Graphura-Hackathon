@@ -2,37 +2,16 @@ import React from "react";
 
 const PartnerSection = () => {
   const partners = [
-    {
-      id: 1,
-      name: "Gardenbook",
-      logo: "https://via.placeholder.com/150x80/4299e1/ffffff?text=Gardenbook",
-    },
-    {
-      id: 2,
-      name: "Education",
-      logo: "https://via.placeholder.com/150x80/10b981/ffffff?text=Education",
-    },
-    {
-      id: 3,
-      name: "Penbook",
-      logo: "https://via.placeholder.com/150x80/8b5cf6/ffffff?text=Penbook",
-    },
-    {
-      id: 4,
-      name: "Eduhouse",
-      logo: "https://via.placeholder.com/150x80/f59e0b/ffffff?text=Eduhouse",
-    },
-    {
-      id: 5,
-      name: "Book Library",
-      logo: "https://via.placeholder.com/150x80/ec4899/ffffff?text=Book+Library",
-    },
-    {
-      id: 6,
-      name: "Owlbook",
-      logo: "https://via.placeholder.com/150x80/6366f1/ffffff?text=Owlbook",
-    },
+   "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700392/Hindustan_times_slsorl",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700392/Deewal_aa6obw",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700378/Accenture_bfsucq",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700378/Bajaj_sgqhky",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700377/TheAstroTalk_ztw8sq",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700377/Leans_Kart_tbzjbu",
   ];
+
+  // Duplicate partners array for seamless loop
+  const duplicatedPartners = [...partners, ...partners];
 
   return (
     <section className="w-full py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
@@ -53,22 +32,39 @@ const PartnerSection = () => {
           </h2>
         </div>
 
-        {/* Partner Grid - 3 cards per row on desktop */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {partners.map((partner) => (
-            <div
-              key={partner.id}
-              className="bg-white rounded-2xl p-10 flex items-center justify-center hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-gray-200 min-h-[180px] group cursor-pointer"
-            >
-              <div className="transform group-hover:scale-105 transition-transform duration-300">
+        {/* Partner Slider */}
+        <div className="relative overflow-hidden">
+          <style>{`
+            @keyframes scroll {
+              0% {
+                transform: translateX(0);
+              }
+              100% {
+                transform: translateX(-50%);
+              }
+            }
+            .animate-scroll {
+              animation: scroll 40s linear infinite;
+            }
+            .animate-scroll:hover {
+              animation-play-state: paused;
+            }
+          `}</style>
+
+          <div className="flex animate-scroll">
+            {duplicatedPartners.map((logo, index) => (
+              <div
+                key={index}
+                className="flex-shrink-0 px-8 py-10 flex items-center justify-center min-w-[300px]"
+              >
                 <img
-                  src={partner.logo}
-                  alt={partner.name}
-                  className="max-w-full h-auto max-h-24 object-contain"
+                  src={logo}
+                  alt={`Partner ${index + 1}`}
+                  className="max-w-full h-auto max-h-24 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300"
                 />
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -22,54 +22,33 @@ const Career = () => {
   const [currentReview, setCurrentReview] = useState(0);
 
   const faqQuestions = [
-    "What is the Graphothon Career Program?",
-    "Who can apply for roles on the career page?",
-    "Do I need technical skills to join the Graphothon team?",
-    "What types of roles are available?",
-    "Are these roles paid or unpaid?",
-    "Will I receive a certificate for volunteering or mentoring?",
-    "What is the time commitment?",
-    "Can I apply while also participating in the hackathon?",
-    "Will training or orientation be provided?",
-    "How will I know if I am selected?",
-    "Do mentors need previous hackathon experience?",
-    "Can I work remotely as a volunteer or mentor?",
-    "What benefits do I get from joining the Graphothon team?",
-    "How long does the recruitment process take?",
-    "How do I apply?",
+    "What is Graphura Hackathon?",
+    "Who can participate in Graphura Hackathon?",
+    "Do I need prior hackathon experience?",
+    "Can I participate individually or in a team?",
+    "Is Graphura Hackathon conducted online or offline?",
+    "What is the duration of the hackathon?",
+    "What domains or themes are covered?",
+    "How are projects evaluated?",
   ];
 
   const faqAnswers = [
-    "The Graphothon Career Program offers opportunities for students and professionals to contribute as volunteers, mentors, coordinators, and organizers during the hackathon.",
+   "Graphura Hackathon is a multi-domain innovation hackathon where participants collaborate to solve real-world problems using technology, creativity, and strategic thinking.",
+  
+    "Students, freshers, professionals, developers, designers, marketers, and innovators from any background are welcome to participate.",
 
-    "Anyone with enthusiasm for innovation, event management, mentoring, or community building—whether technical or non-technical—can apply.",
+    "No prior experience is required. Beginners are highly encouraged to participate and learn through hands-on collaboration and mentorship.",
 
-    "Not at all. We offer roles for both tech and non-tech applicants, including operations, design, marketing, content, mentor support, logistics, and more.",
+    "You can register as an individual or as a team. Team size requirements may vary depending on the hackathon edition.",
 
-    "You can apply as: Volunteer, Mentor, Event Coordinator, Technical Support, Social Media Handler, Judge (expert-level), Community Ambassador, or Sponsorship & Partnerships Assistant.",
+    "Graphura Hackathon can be conducted online, offline, or in a hybrid format. Event details are clearly mentioned on the respective hackathon page.",
 
-    "Most roles are voluntary, but selected key positions may include perks such as certificates, goodies, networking opportunities, and priority access to future Graphothon events.",
+    "Most Graphura Hackathon events run for 24 to 72 hours, depending on the challenge and format.",
 
-    "Yes, all selected volunteers, mentors, and coordinators receive an official Graphothon Experience Certificate recognizing their contribution.",
+    "Graphura Hackathon covers multiple domains including Web & App Development, AI / ML, Cybersecurity, UI/UX Design, Business & Marketing, Social Impact, and Open Innovation.",
 
-    "Time requirements vary based on your role. Volunteers generally commit 3–5 hours per week before the event, while mentors and coordinators have flexible schedules.",
-
-    "You must choose either team participation or event volunteering/mentoring to avoid conflicts of interest.",
-
-    "Yes, all selected applicants receive training, documentation, and onboarding sessions to clearly understand their responsibilities.",
-
-    "Once you submit your application, our team will review your profile. Shortlisted applicants will receive an email or call from the Graphothon organizing committee.",
-
-    "Not required, but prior experience in tech, business, or creative fields helps with guiding participants effectively.",
-
-    "Yes. Many roles—such as social media, content creation, and mentoring—are fully remote and flexible.",
-
-    "Benefits include certificates, LinkedIn credibility, networking with industry experts, priority access to future events, mentorship experience, behind-the-scenes exposure to hackathon management, and leadership opportunities.",
-
-    "The recruitment process usually takes 3–7 days after application, depending on the role and number of applicants.",
-
-    "Simply click the Apply Now button on the career page, select your preferred role, and fill out the application form.",
-  ];
+    "Projects are judged based on innovation, problem-solving, execution, feasibility, presentation, and real-world impact.",
+];
 
   const logos = [
     "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1767700392/Hindustan_times_slsorl",
@@ -163,7 +142,7 @@ const Career = () => {
   ];
   const navigate = useNavigate();
   return (
-    <div className=" overflow-hidden">
+    <div className="pb-15 overflow-hidden">
       <Navbar />
       {/* hero section */}
       <section className="pt-18 bg-linear-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] flex justify-center">
@@ -399,113 +378,98 @@ const Career = () => {
       </section>
 
       {/* Testimonial section */}
-      <section>
-        <div className="mt-20">
-          <h1 className="text-xl font-extrabold w-full text-center md:text-2xl lg:text-3xl">
-            What Our Interns Say
-          </h1>
-          {/* card */}
-          <div className="relative max-w-6xl mx-auto mt-15">
-            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-500 hover:shadow-3xl">
-              <div className="grid md:grid-cols-5 gap-8 h-100">
-                {/* Image Section */}
-                <div className="md:col-span-2 relative h-96 md:h-auto">
-                  <div className="absolute inset-0 bg-gradient-to-br from-teal-600 to-teal-800"></div>
-                  <img
-                    src={currentReviews?.user?.image}
-                    alt={currentReviews?.user?.name}
-                    className="w-full h-full object-cover mix-blend-overlay opacity-90"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-teal-900/50 to-transparent"></div>
-                </div>
+      // Replace the existing testimonial section (around line 390-480) with this:
 
-                {/* Content Section */}
-                <div className="md:col-span-3 p-8 md:p-12 flex flex-col justify-between">
-                  <Quote className="w-16 h-16 text-teal-600 mb-6 opacity-50" />
+{/* Testimonial section */}
+<section className="py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 overflow-hidden">
+  <div className="max-w-7xl mx-auto px-4">
+    {/* Heading */}
+    <h2 className="text-4xl md:text-5xl font-extrabold text-center text-gray-900 mb-16">
+      What Our Interns Say
+    </h2>
 
-                  <p className="md:text-lg text-gray-700 leading-relaxed mb-8 line-clamp-5">
-                    {currentReviews?.text}
-                  </p>
+    {/* Testimonial Card */}
+    <div className="relative max-w-6xl mx-auto">
+      <div className="bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-500 hover:shadow-3xl">
+        <div className="grid md:grid-cols-5 gap-8 h-full">
+          {/* Image Section */}
+          <div className="md:col-span-2 relative h-96 md:h-auto">
+            <div className="absolute inset-0 bg-gradient-to-br from-teal-600 to-teal-800"></div>
+            <img
+              src={currentReviews?.user?.image}
+              alt={currentReviews?.user?.name}
+              className="w-full h-full object-cover opacity-90"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-teal-900/50 to-transparent"></div>
+          </div>
 
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-2xl font-bold text-gray-900 mb-1">
-                        {currentReviews?.user?.name}
-                      </h4>
-                    </div>
+          {/* Content Section */}
+          <div className="md:col-span-3 p-8 md:p-12 flex flex-col justify-between">
+            <Quote className="w-16 h-16 text-teal-600 mb-6 opacity-50" />
 
-                    {/* Rating Stars */}
-                    <div className="flex gap-1">
-                        <svg
-                          className="w-6 h-6 text-yellow-400 fill-current"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                        <svg
-                          className="w-6 h-6 text-yellow-400 fill-current"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                        <svg
-                          className="w-6 h-6 text-yellow-400 fill-current"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                        <svg
-                          className="w-6 h-6 text-yellow-400 fill-current"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                        <svg
-                          className="w-6 h-6 text-yellow-400 fill-current"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                    </div>
-                  </div>
-                </div>
+            <p className="md:text-lg text-gray-700 leading-relaxed mb-8 line-clamp-6">
+              {currentReviews?.text}
+            </p>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="text-2xl font-bold text-gray-900 mb-1">
+                  {currentReviews?.user?.name}
+                </h4>
+              </div>
+
+              {/* Rating Stars */}
+              <div className="flex gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <svg
+                    key={i}
+                    className="w-6 h-6 text-yellow-400 fill-current"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                  </svg>
+                ))}
               </div>
             </div>
-
-            {/* Navigation Buttons */}
-            <button
-              onClick={prevReview}
-              className="absolute left-4 md:-left-6 top-1/2 -translate-y-1/2 bg-white w-12 h-12 rounded-full shadow-xl flex items-center justify-center text-teal-600 hover:bg-teal-600 hover:text-white transition-all duration-300 hover:scale-110 z-10"
-              aria-label="Previous testimonial"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-
-            <button
-              onClick={nextReview}
-              className="absolute right-4 md:-right-6 top-1/2 -translate-y-1/2 bg-white w-12 h-12 rounded-full shadow-xl flex items-center justify-center text-teal-600 hover:bg-teal-600 hover:text-white transition-all duration-300 hover:scale-110 z-10"
-              aria-label="Next testimonial"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
-          </div>
-          {/* Dots Indicator */}
-          <div className="flex justify-center gap-3 mt-12">
-            {reviews.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentReview(index)}
-                className={`transition-all duration-300 rounded-full ${
-                  index === currentReview
-                    ? "w-12 h-3 bg-teal-600"
-                    : "w-3 h-3 bg-gray-300 hover:bg-teal-400"
-                }`}
-                aria-label={`Go to testimonial ${index + 1}`}
-              />
-            ))}
           </div>
         </div>
-      </section>
+      </div>
+
+      {/* Navigation Buttons */}
+      <button
+        onClick={prevReview}
+        className="absolute left-4 md:-left-6 top-1/2 -translate-y-1/2 bg-white w-12 h-12 rounded-full shadow-xl flex items-center justify-center text-teal-600 hover:bg-teal-600 hover:text-white transition-all duration-300 hover:scale-110 z-10"
+        aria-label="Previous testimonial"
+      >
+        <ChevronLeft className="w-6 h-6" />
+      </button>
+
+      <button
+        onClick={nextReview}
+        className="absolute right-4 md:-right-6 top-1/2 -translate-y-1/2 bg-white w-12 h-12 rounded-full shadow-xl flex items-center justify-center text-teal-600 hover:bg-teal-600 hover:text-white transition-all duration-300 hover:scale-110 z-10"
+        aria-label="Next testimonial"
+      >
+        <ChevronRight className="w-6 h-6" />
+      </button>
+    </div>
+
+    {/* Dots Indicator */}
+    <div className="flex justify-center gap-3 mt-12">
+      {reviews.map((_, index) => (
+        <button
+          key={index}
+          onClick={() => setCurrentReview(index)}
+          className={`transition-all duration-300 rounded-full ${
+            index === currentReview
+              ? "w-12 h-3 bg-teal-600"
+              : "w-3 h-3 bg-gray-300 hover:bg-teal-400"
+          }`}
+          aria-label={`Go to testimonial ${index + 1}`}
+        />
+      ))}
+    </div>
+  </div>
+</section>
 
       {/* FAQ section */}
       <section className="mt-15 flex justify-center">

@@ -505,12 +505,6 @@ export default function About() {
                         <span className="w-10 h-10 rounded-lg border border-white/30 bg-white/5 backdrop-blur-sm text-white flex items-center justify-center hover:border-white/60 transition ">
                           <FaLinkedinIn />
                         </span>
-                        <span className="w-10 h-10 rounded-lg border border-white/30 bg-white/5 backdrop-blur-sm text-white flex items-center justify-center hover:border-white/60 transition ">
-                          <FaTwitter />
-                        </span>
-                        <span className="w-10 h-10 rounded-lg border border-white/30 bg-white/5 backdrop-blur-sm text-white flex items-center justify-center hover:border-white/60 transition ">
-                          <FaInstagram />
-                        </span>
                       </div>
                     </div>
                   </div>
