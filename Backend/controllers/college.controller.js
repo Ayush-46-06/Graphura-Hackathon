@@ -312,9 +312,9 @@ export const exportCollegeStudents = async (req, res) => {
   try {
     const collegeName = req.college.name;
 
-
+    
     const users = await User.find({ collegeName }).select(
-      "_id name email contactNumber university"
+      "_id name email contactNumber university address collegeName courseName yearOfStudy occupation"
     );
 
     if (!users.length) {
@@ -326,12 +326,10 @@ export const exportCollegeStudents = async (req, res) => {
 
     const userIds = users.map((u) => u._id);
 
-   
     const registrations = await Registration.find({
       user: { $in: userIds },
     }).populate("hackathon", "title");
 
-   
     const hackathonMap = {};
 
     registrations.forEach((reg) => {
@@ -343,18 +341,23 @@ export const exportCollegeStudents = async (req, res) => {
       hackathonMap[uid].add(reg.hackathon.title);
     });
 
- 
+    // Mapping the user data along with the new fields
     const exportData = users.map((user) => ({
       Name: user.name,
       Email: user.email,
       Contact: user.contactNumber || "",
       University: user.university || "",
+      College: user.collegeName || "",
+      Address: user.address || "",
+      Course: user.courseName || "",
+      YearOfStudy: user.yearOfStudy || "",
+      Occupation: user.occupation || "",
       Hackathons: Array.from(hackathonMap[user._id.toString()] || []).join(
         ", "
       ),
     }));
 
-
+  
     await googleSheetService.exportCollegeUsers(exportData);
 
     console.log(`📊 College students exported: ${collegeName}`);
