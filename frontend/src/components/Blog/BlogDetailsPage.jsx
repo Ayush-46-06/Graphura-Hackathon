@@ -8,8 +8,8 @@ import {
 import { FaXTwitter } from "react-icons/fa6";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
-import Footer from "../Footer";
 import Navbar from "../Navbar";
+import Footer from "../Footer";
 
 /* ================= STATIC SIDEBAR DATA (UNCHANGED) ================= */
 
@@ -85,6 +85,33 @@ const BlogDetails = () => {
 
     fetchData();
   }, [id]);
+
+  const handleShare = (platform) => {
+    const url = window.location.href;
+
+    // 1️⃣ Copy link
+    navigator.clipboard.writeText(url);
+
+    // 2️⃣ Show alert first
+    alert("Link copied!");
+
+    let shareUrl = "";
+
+    if (platform === "facebook") {
+      shareUrl = "https://www.facebook.com";
+    }
+
+    if (platform === "twitter") {
+      shareUrl = "https://twitter.com";
+    }
+
+    if (platform === "instagram") {
+      shareUrl = "https://www.instagram.com";
+    }
+
+    // 3️⃣ Open platform in new tab AFTER alert
+    window.open(shareUrl, "_blank", "noopener,noreferrer");
+  };
 
   if (loading) {
     return <p className="text-center py-32">Loading blog...</p>;
@@ -227,15 +254,28 @@ const BlogDetails = () => {
           {/* Share */}
           <div className="flex justify-between items-center border-t pt-6">
             <span className="font-medium">Share:</span>
+
             <div className="flex gap-3">
-              {[FaFacebookF, FaInstagram, FaXTwitter].map((Icon, i) => (
-                <div
-                  key={i}
-                  className="w-9 h-9 border rounded-full flex items-center justify-center hover:bg-emerald-700 hover:text-white cursor-pointer"
-                >
-                  <Icon />
-                </div>
-              ))}
+              <div
+                onClick={() => handleShare("facebook")}
+                className="w-9 h-9 border rounded-full flex items-center justify-center hover:bg-emerald-700 hover:text-white cursor-pointer transition"
+              >
+                <FaFacebookF />
+              </div>
+
+              <div
+                onClick={() => handleShare("instagram")}
+                className="w-9 h-9 border rounded-full flex items-center justify-center hover:bg-emerald-700 hover:text-white cursor-pointer transition"
+              >
+                <FaInstagram />
+              </div>
+
+              <div
+                onClick={() => handleShare("twitter")}
+                className="w-9 h-9 border rounded-full flex items-center justify-center hover:bg-emerald-700 hover:text-white cursor-pointer transition"
+              >
+                <FaXTwitter />
+              </div>
             </div>
           </div>
 

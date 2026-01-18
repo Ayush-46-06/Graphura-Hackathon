@@ -15,6 +15,7 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import Footer from "../Footer";
 import Navbar from "../Navbar";
+import HackathonSEO from "../SEO/HackathonPageSEO";
 
 const Hackathon = () => {
   const [view, setView] = useState("grid");
@@ -132,6 +133,7 @@ const Hackathon = () => {
 
   return (
     <div className="overflow-x-hidden">
+      <HackathonSEO />
       <Navbar />
       {/* Hero section */}
       <section className="bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] pt-27  pb-5 flex justify-center">

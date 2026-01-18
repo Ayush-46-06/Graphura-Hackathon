@@ -1,12 +1,53 @@
 import React from "react";
-import heroImage1 from "../../assets/partnerPage/Hero-image-Partners.avif";
+import { useState } from "react";
+import axios from "axios";
+// import heroImage1 from "../../assets/partnerPage/Hero-image-Partners.avif";
 import innovationAndImpact from "../../assets/partnerPage/innovationAndImpact.avif";
 import collaboration from "../../assets/partnerPage/Collaboration.avif";
 import brandVisibility from "../../assets/partnerPage/BrandVisibility.avif";
 import Navbar from "../Navbar";
+import heroMain from "/hero-section-1.jpg";
+import heroCardTop from "/hero-section-2.jpg";
+import heroCardBottom from "/hero-section-3.jpeg";
 import Footer from "../Footer";
 
 export default function PartnerPage() {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    workEmail: "",
+    companyHQ: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await axios.post("http://localhost:5001/api/partner/apply", formData);
+
+      alert("Partnership request submitted successfully");
+
+      setFormData({
+        firstName: "",
+        lastName: "",
+        workEmail: "",
+        companyHQ: "",
+        message: "",
+      });
+    } catch (err) {
+      alert("Something went wrong. Please try again.");
+      console.error(err);
+    }
+  };
+
   return (
     <div className="w-full bg-white text-gray-900">
       <Navbar />
@@ -43,13 +84,35 @@ export default function PartnerPage() {
             </button>
           </div>
 
-          {/* RIGHT IMAGE */}
-          <div>
-            <img
-              src={heroImage1}
-              className="w-full h-[260px] sm:h-[340px] md:h-[420px]"
-              alt="Partner"
-            />
+          {/* RIGHT HERO IMAGES */}
+          <div className="relative grid grid-cols-4 gap-4">
+            {/* Main tall image (narrower now) */}
+            <div className="col-span-2">
+              <img
+                src={heroMain}
+                alt="Partner collaboration"
+                className="w-full h-[420px] object-cover rounded-2xl shadow-xl"
+              />
+            </div>
+
+            {/* Right stacked images */}
+            <div className="flex flex-col gap-4 col-span-2">
+              <div className="bg-white rounded-2xl shadow-lg p-3">
+                <img
+                  src={heroCardTop}
+                  alt="Growth insights"
+                  className="w-full h-[180px] object-cover rounded-xl"
+                />
+              </div>
+
+              <div className="overflow-hidden rounded-xl">
+                <img
+                  src={heroCardBottom}
+                  alt="Team collaboration"
+                  className="w-full h-[200px] object-cover object-top"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -163,23 +226,53 @@ export default function PartnerPage() {
           Become a Partner Today
         </h2>
 
-        <form className="grid md:grid-cols-2 gap-6">
-          <input className="border rounded-lg p-3" placeholder="First name" />
+        <form className="grid md:grid-cols-2 gap-6" onSubmit={handleSubmit}>
+          <input
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            className="border rounded-lg p-3"
+            placeholder="First name"
+          />
 
-          <input className="border rounded-lg p-3" placeholder="Last name" />
+          <input
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            className="border rounded-lg p-3"
+            placeholder="Last name"
+          />
 
-          <input className="border rounded-lg p-3" placeholder="Work e-mail" />
+          <input
+            name="workEmail"
+            value={formData.workEmail}
+            onChange={handleChange}
+            className="border rounded-lg p-3"
+            placeholder="Work e-mail"
+          />
 
-          <input className="border rounded-lg p-3" placeholder="Company HQ" />
+          <input
+            name="companyHQ"
+            value={formData.companyHQ}
+            onChange={handleChange}
+            className="border rounded-lg p-3"
+            placeholder="Company HQ"
+          />
 
           <textarea
+            name="message"
+            value={formData.message}
+            onChange={handleChange}
             rows="4"
             className="border rounded-lg p-3 md:col-span-2"
             placeholder="What do you expect from your collaboration with us?"
           ></textarea>
 
           <div className="md:col-span-2 flex justify-center">
-            <button className="mt-4 px-10 py-4 bg-[#F8C62F] text-[#0C121D] rounded-xl font-semibold hover:bg-[#e0b429] transition-all hover:scale-105 hover:shadow-2xl hover:shadow-[#F8C62F]/40">
+            <button
+              type="submit"
+              className="mt-4 px-10 py-4 bg-[#F8C62F] text-[#0C121D] rounded-xl font-semibold hover:bg-[#e0b429] transition-all hover:scale-105 hover:shadow-2xl hover:shadow-[#F8C62F]/40"
+            >
               Apply
             </button>
           </div>

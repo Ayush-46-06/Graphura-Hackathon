@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { User, Mail, Lock, Phone, MapPin, GraduationCap, Building2, BookOpen, Calendar } from 'lucide-react';
@@ -7,7 +8,27 @@ import Navbar from "../Navbar";
 const SlidingAuthPage = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [colleges, setColleges] = useState([]);
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+  const fetchColleges = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:5001/api/public/colleges"
+      );
+
+      if (res.data.success) {
+        setColleges(res.data.data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch colleges");
+    }
+  };
+
+  fetchColleges();
+}, []);
 
   // Login Form State
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
@@ -137,6 +158,8 @@ const SlidingAuthPage = () => {
       setLoading(false);
     }
   };
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] flex items-center justify-center p-4 md:pt-20 relative overflow-hidden">
@@ -406,16 +429,24 @@ const SlidingAuthPage = () => {
                       />
                     </div>
                     <div className="relative">
-                      <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                      <input
-                        type="text"
-                        name="college"
-                        placeholder="College"
-                        value={signupForm.college}
-                        onChange={handleSignupChange}
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-3 py-2.5 text-gray-800 text-sm placeholder-gray-400 focus:bg-white focus:border-[#03594E] focus:ring-2 focus:ring-[#03594E]/20 outline-none transition-all"
-                      />
-                    </div>
+  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+  <select
+    name="college"
+    value={signupForm.college}
+    onChange={handleSignupChange}
+    className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-3 py-2.5 text-gray-800 text-sm focus:bg-white focus:border-[#03594E] focus:ring-2 focus:ring-[#03594E]/20 outline-none transition-all cursor-pointer"
+  >
+    <option value="">Select College</option>
+
+    {colleges.map((college) => (
+      <option key={college._id} value={college.name}>
+        {college.name}
+        {college.shortName ? ` (${college.shortName})` : ""}
+      </option>
+    ))}
+  </select>
+</div>
+
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">

@@ -3,6 +3,45 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   const [scrollY, setScrollY] = useState(0);
+  const [email, setEmail] = useState("");
+const [loading, setLoading] = useState(false);
+const [message, setMessage] = useState("");
+const [error, setError] = useState("");
+
+const handleSubscribe = async () => {
+  if (!email) {
+    setError("Please enter your email");
+    return;
+  }
+
+  setLoading(true);
+  setError("");
+  setMessage("");
+
+  try {
+    const res = await fetch("http://localhost:5001/api/subscribe", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      setError(data.message || "Subscription failed");
+      return;
+    }
+
+    setMessage(data.message);
+    setEmail("");
+  } catch (err) {
+    setError("Server error. Please try again later.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,26 +93,48 @@ const Footer = () => {
                 <div className="w-full md:w-auto md:min-w-[380px]">
                   <div className="flex bg-white rounded-lg overflow-hidden shadow-lg">
                     <input
-                      type="email"
-                      placeholder="Enter Your Email Address"
-                      className="flex-1 px-6 py-4 text-gray-700 outline-none"
-                    />
-                    <button className="bg-teal-700 hover:bg-teal-600 text-white px-6 transition-colors">
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M14 5l7 7m0 0l-7 7m7-7H3"
-                        />
-                      </svg>
-                    </button>
+  type="email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  placeholder="Enter Your Email Address"
+  className="flex-1 px-6 py-4 text-gray-700 outline-none"
+/>
+
+<button
+  onClick={handleSubscribe}
+  disabled={loading}
+  className="bg-teal-700 hover:bg-teal-600 text-white px-6 transition-colors disabled:opacity-60"
+>
+  {loading ? "..." : (
+    <svg
+      className="w-6 h-6"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M14 5l7 7m0 0l-7 7m7-7H3"
+      />
+    </svg>
+  )}
+</button>
+
+
                   </div>
+                  {message && (
+  <p className="text-green-300 mt-3 text-sm font-medium">
+    {message}
+  </p>
+)}
+
+{error && (
+  <p className="text-red-300 mt-3 text-sm font-medium">
+    {error}
+  </p>
+)}
                 </div>
               </div>
             </div>
@@ -90,14 +151,14 @@ const Footer = () => {
         }}
       >
         {/* Decorative dots pattern on left with upward-downward animation */}
-        <div className="absolute left-8 top-1/2 -translate-y-1/2 hidden lg:grid grid-cols-5 gap-3 animate-float">
+        {/* <div className="absolute left-8 top-1/2 -translate-y-1/2 hidden lg:grid grid-cols-5 gap-3 animate-float">
           {[...Array(25)].map((_, i) => (
             <div
               key={i}
               className="w-2 h-2 rounded-full bg-teal-600 opacity-60"
             />
           ))}
-        </div>
+        </div> */}
 
         {/* Rotating spiral dots pattern on right */}
         <div className="absolute right-8 top-0 w-56 h-56 hidden lg:block">
@@ -175,7 +236,7 @@ const Footer = () => {
                 Graphura — Where Hackathons Meet Esports.
               </p>
               <Link
-                to="/about"
+                to="/contact"
                 className="inline-flex items-center gap-2 bg-teal-700 hover:bg-teal-800 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
               >
                 Contact Us
@@ -320,7 +381,7 @@ const Footer = () => {
                     href="mailto:educeet@gmail.com"
                     className="hover:text-teal-600 transition-colors"
                   >
-                    support@graphura.in
+                    join@graphura.in 
                   </a>
                 </li>
                 <li className="text-gray-600">

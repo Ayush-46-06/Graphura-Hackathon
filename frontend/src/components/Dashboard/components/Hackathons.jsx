@@ -13,6 +13,8 @@ const Hackathons = () => {
   const [editHackathon, setEditHackathon] = useState(null);
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const [uploadingId, setUploadingId] = useState(null);
+const [selectedFile, setSelectedFile] = useState(null);
 
   // 🔹 Participants states
   const [showParticipants, setShowParticipants] = useState(false);
@@ -52,6 +54,41 @@ const Hackathons = () => {
       alert("Delete failed");
     }
   };
+
+  const uploadProblemStatement = async (hackathonId) => {
+  if (!selectedFile) {
+    alert("Please select a PDF file");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("activityPdf", selectedFile);
+
+  try {
+    setUploadingId(hackathonId);
+
+    await axios.post(
+      `${API_URL}/${hackathonId}/activity-pdf`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    alert("Problem statement uploaded successfully");
+    setSelectedFile(null);
+    fetchHackathons(); // refresh list
+
+  } catch (err) {
+    alert("Failed to upload problem statement");
+  } finally {
+    setUploadingId(null);
+  }
+};
+
 
   // ✅ FIXED VIEW PARTICIPANTS
   const viewParticipants = async (hackathon) => {
@@ -217,6 +254,32 @@ const Hackathons = () => {
                         >
                           Delete
                         </button>
+                        <label className="px-4 py-2 rounded-lg text-sm font-medium cursor-pointer"
+  style={{ backgroundColor: "#EEF2FF", color: "#3730A3" }}
+>
+  Upload Problem Statement
+  <input
+    type="file"
+    accept="application/pdf"
+    hidden
+    onChange={(e) => setSelectedFile(e.target.files[0])}
+  />
+</label>
+
+<button
+  onClick={() => uploadProblemStatement(h._id)}
+  disabled={uploadingId === h._id}
+  className="px-4 py-2 rounded-lg text-sm font-medium"
+  style={{
+    backgroundColor: "#1AB69D",
+    color: "#fff",
+    opacity: uploadingId === h._id ? 0.6 : 1,
+  }}
+>
+  {uploadingId === h._id ? "Uploading..." : "Submit PDF"}
+</button>
+
+
                       </div>
                     </div>
                   </div>

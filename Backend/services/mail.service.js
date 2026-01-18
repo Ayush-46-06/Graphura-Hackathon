@@ -21,7 +21,7 @@ export const sendContactMail = async (data) => {
         email: config.BREVO_SENDER_EMAIL,
         name: config.BREVO_SENDER_NAME
       },
-      to: [{ email: "abhihivarkar783@gmail.com" }],
+      to: [{ email: "official.graphura@gmail.com" }],
       subject: data.subject,
       htmlContent: `
 <!DOCTYPE html>
@@ -343,7 +343,7 @@ export const sendPartnerAdminMail = async ({
         email: config.BREVO_SENDER_EMAIL,
         name: "Graphura Website"
       },
-      to: [{ email: "abhi783@gmail.com" }],
+      to: [{ email: "official.graphura@gmail.com" }],
       subject: "🤝 New Partnership Application – Graphura",
       htmlContent: `
         <h3>New Partnership Application</h3>
@@ -424,7 +424,7 @@ export const sendSponsorInterestMail = async ({
         email: config.BREVO_SENDER_EMAIL,
         name: config.BREVO_SENDER_NAME
       },
-      to: [{ email: "abhihivarkar783@gmail.com" }],
+      to: [{ email: "official.graphura@gmail.com" }],
       subject: "🤝 New Sponsorship Interest – Graphura",
       htmlContent: `
         <h2>New Sponsorship / Partnership Inquiry</h2>

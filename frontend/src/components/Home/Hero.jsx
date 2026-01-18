@@ -87,7 +87,7 @@ export default function Hero() {
             </div>
 
             {/* Main image container */}
-            <div className="relative w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] lg:w-[500px] lg:h-[600px] flex items-center justify-center z-10">
+            <div className="relative w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] lg:w-[500px] lg:h-[600px] -mb-28 flex items-center justify-center z-10">
               <img
                 src="https://ordainit.com/html/educeet/educeet/assets/img/hero/hero-1-1.png"
                 alt="Student learning"
@@ -128,7 +128,7 @@ export default function Hero() {
             </div>
 
             <div
-              className="absolute w-[140px] sm:w-[180px] lg:w-[260px] top-[55%] sm:top-[60%] lg:top-[65%] -translate-y-1/2 right-2 sm:right-4 lg:-right-20 bg-white px-3 sm:px-5 lg:px-6 py-2.5 sm:py-4 lg:py-5 rounded-lg sm:rounded-xl lg:rounded-2xl shadow-2xl hover:scale-105 transition-transform float-animation z-20"
+              className="absolute w-[140px] sm:w-[180px] lg:w-[280px] top-[55%] sm:top-[60%] lg:top-[65%] -translate-y-1/2 right-2 sm:right-4 lg:-right-20 bg-white px-3 sm:px-5 lg:px-6 py-2.5 sm:py-4 lg:py-5 rounded-lg sm:rounded-xl lg:rounded-2xl shadow-2xl hover:scale-105 transition-transform float-animation z-20"
               style={{ animationDelay: "0.5s" }}
             >
               <div className="flex items-center gap-2 sm:gap-2.5 lg:gap-3">

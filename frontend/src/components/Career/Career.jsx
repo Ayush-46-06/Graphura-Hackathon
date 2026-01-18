@@ -131,18 +131,35 @@ const Career = () => {
   const currentReviews = reviews[currentReview];
 
   const universities = [
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767859754/brand1-2_w5p2l5.svg",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767859753/brand1-1_ioex5l.svg",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767859752/brand1-3_w0wikb.svg",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767859753/brand1-4_edfuqd.svg",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1767859752/brand2-2_lkvyci.svg",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1768289838/brand2-3_km6bbb.svg",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1768290009/brand2-4_vsdtxg.svg",
-    "https://res.cloudinary.com/drq2a0262/image/upload/v1768290009/brand2-5_bj0zix.svg"
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561171/0a8d0497-ecca-4135-b047-393bc52ed5e4_removalai_preview_yzpaog",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561288/bb2bd7b7-dd7e-4e4c-ad9c-482cea8861dc_removalai_preview_pylvja",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561288/b094f29e-2783-466f-a6da-35c05910ed3c_removalai_preview_w8cj70",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561288/80e54548-ab6b-4c6d-8c32-e377aa4272f1_removalai_preview_so2ubo",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561288/74951467-33d0-4bfd-8b69-0844ea367f08_removalai_preview_qbgzgl",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561288/857a49f3-5eeb-4c65-9f96-b3d8f7393fe9_removalai_preview_akhaxb",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561287/Jigyasa_University_Logo_-_Color__1_n8jokp",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561287/VIT_pbfcph",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561287/11c98e03-0279-411f-8abf-832e2c05ea47_removalai_preview_rwcg0v",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561288/89d84749-b44e-486a-b14e-16bb1a3de50d_removalai_preview_amds5h",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561287/6c2c4609-ffda-4183-99dc-ba34f3de9e64_removalai_preview_oir4np",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561287/mu-logo_fri1x0_ytedpe",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561287/2d-logo-miet-comp_mtdoi2",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561286/Vellore_Institute_of_Technology_seal_2017.svg_yljl5k",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561286/logo_pn22s9",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561286/latest_logo-CERg6eCh_xbuthi",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561286/National_Institute_of_Technology__Kurukshetra_Logo_cqzp8f",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561285/InstituteLogo_Colour_ftmshg",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561284/Indian_Institute_of_Technology_Delhi_Logo_1_rg5kdx",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561281/bhartilogo_lltuk8",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561284/iitp_logo_sdjfps",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561284/d0cf9993-b4cf-430b-bd83-cce09b67a726_kovpvw",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561283/cc75ce0b-e8ba-4b13-a971-5f1255a5b46d_removalai_preview_1_peiilg",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561283/f4cb457d-bff7-44e8-a156-6f48fdae60b0_removalai_preview_k2sy6h",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561283/IIIT_Gwalior_Simply_modern_logo_qe9eqq",
   ];
   const navigate = useNavigate();
   return (
-    <div className="pb-15 overflow-hidden">
+    <div className=" overflow-hidden">
       <Navbar />
       {/* hero section */}
       <section className="pt-18 bg-linear-to-br from-[#03594E] via-[#03594E] to-[#1AB69D] flex justify-center">
@@ -377,8 +394,7 @@ const Career = () => {
         </div>
       </section>
 
-      {/* Testimonial section */}
-      // Replace the existing testimonial section (around line 390-480) with this:
+
 
 {/* Testimonial section */}
 <section className="py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 overflow-hidden">

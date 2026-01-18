@@ -15,8 +15,35 @@ import {
   FaTwitter,
   FaInstagram
 } from "react-icons/fa";
+import AboutPageSEO from "./SEO/AboutPageSEO";
 
-
+const universities = [
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561171/0a8d0497-ecca-4135-b047-393bc52ed5e4_removalai_preview_yzpaog",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561288/bb2bd7b7-dd7e-4e4c-ad9c-482cea8861dc_removalai_preview_pylvja",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561288/b094f29e-2783-466f-a6da-35c05910ed3c_removalai_preview_w8cj70",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561288/80e54548-ab6b-4c6d-8c32-e377aa4272f1_removalai_preview_so2ubo",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561288/74951467-33d0-4bfd-8b69-0844ea367f08_removalai_preview_qbgzgl",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561288/857a49f3-5eeb-4c65-9f96-b3d8f7393fe9_removalai_preview_akhaxb",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561287/Jigyasa_University_Logo_-_Color__1_n8jokp",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561287/VIT_pbfcph",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561287/11c98e03-0279-411f-8abf-832e2c05ea47_removalai_preview_rwcg0v",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561288/89d84749-b44e-486a-b14e-16bb1a3de50d_removalai_preview_amds5h",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561287/6c2c4609-ffda-4183-99dc-ba34f3de9e64_removalai_preview_oir4np",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561287/mu-logo_fri1x0_ytedpe",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561287/2d-logo-miet-comp_mtdoi2",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561286/Vellore_Institute_of_Technology_seal_2017.svg_yljl5k",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561286/logo_pn22s9",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561286/latest_logo-CERg6eCh_xbuthi",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561286/National_Institute_of_Technology__Kurukshetra_Logo_cqzp8f",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561285/InstituteLogo_Colour_ftmshg",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561284/Indian_Institute_of_Technology_Delhi_Logo_1_rg5kdx",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561281/bhartilogo_lltuk8",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561284/iitp_logo_sdjfps",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561284/d0cf9993-b4cf-430b-bd83-cce09b67a726_kovpvw",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561283/cc75ce0b-e8ba-4b13-a971-5f1255a5b46d_removalai_preview_1_peiilg",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561283/f4cb457d-bff7-44e8-a156-6f48fdae60b0_removalai_preview_k2sy6h",
+    "https://res.cloudinary.com/drq2a0262/image/upload/f_webp/v1768561283/IIIT_Gwalior_Simply_modern_logo_qe9eqq",
+  ];
 const whyChooseData = [
   {
     icon: <FaUsers />,
@@ -98,6 +125,7 @@ export default function About() {
   return (
     <>
       {/* HEADER */}
+      <AboutPageSEO />
       <Navbar />
 
       {/* MAIN CONTENT */}
@@ -364,7 +392,7 @@ export default function About() {
         <div className="h-[2px] bg-gradient-to-r from-transparent via-[#E6F4F1]/70 to-transparent" />
 
         {/* ================= PARTNERS ================= */}
-        <section className="relative py-16 md:py-28 bg-[#F6FAF9] overflow-hidden">
+      <section className="relative py-16 md:py-28 bg-[#F6FAF9] overflow-hidden">
           {/* Background accents */}
           <div className="absolute -top-20 -left-20 w-80 h-80 bg-[#1AB69D]/10 rounded-full blur-3xl" />
           <div className="absolute bottom-0 -right-24 w-96 h-96 bg-[#F8C62F]/20 rounded-full blur-3xl" />
@@ -381,51 +409,43 @@ export default function About() {
           </div>
 
           <div className="marquee-wrapper">
-            <div className="marquee-track">
+  <div className="marquee-track">
 
-              {[1,6,2,7,3,8,4,9,10].map((i) => {
-                const isDark = darkLogos.includes(i);
+    {/* FIRST LOOP */}
+    {universities.map((logo, index) => (
+      <div
+        key={`uni-a-${index}`}
+        className="rounded-xl p-6 mx-5 flex items-center justify-center shadow-sm min-w-[140px] sm:min-w-[180px] bg-white"
+      >
+        <img
+          src={logo}
+          alt={`University ${index + 1}`}
+          className="h-20 object-contain"
+          loading="lazy"
+        />
+      </div>
+    ))}
 
-                return (
-                  <div
-                    key={`a-${i}`}
-                    className={`rounded-xl p-6 mx-5 flex items-center justify-center shadow-sm min-w-[140px] sm:min-w-[180px]
-                      ${isDark ? "bg-[#03594E]" : "bg-white"}
-                    `}
-                  >
-                    <img
-                      src={`/about_img/brand${i}.webp`}
-                      alt="Partner Logo"
-                      className={`h-20 object-contain`}
-                    />
-                  </div>
-                );
-              })}
+    {/* DUPLICATE LOOP (for infinite marquee) */}
+    {universities.map((logo, index) => (
+      <div
+        key={`uni-b-${index}`}
+        className="rounded-xl p-6 mx-5 flex items-center justify-center shadow-sm min-w-[140px] sm:min-w-[180px] bg-white"
+      >
+        <img
+          src={logo}
+          alt={`University ${index + 1}`}
+        className="h-20 object-contain"
+          loading="lazy"
+        />
+      </div>
+    ))}
 
+  </div>
+</div>
 
-              {[1,6,2,7,3,8,4,9,10].map((i) => {
-                const isDark = darkLogos.includes(i);
-
-                return (
-                  <div
-                    key={`b-${i}`}
-                    className={`rounded-xl p-6 mx-5 flex items-center justify-center shadow-sm min-w-[140px] sm:min-w-[180px]
-                      ${isDark ? "bg-[#03594E]" : "bg-white"}
-                    `}
-                  >
-                    <img
-                      src={`/about_img/brand${i}.webp`}
-                      alt="Partner Logo"
-                      className={`h-20 object-contain`}
-                    />
-                  </div>
-                );
-              })}
-
-
-            </div>
-          </div>
         </section>
+
 
 
         <div className="h-[2px] bg-gradient-to-r from-transparent via-[#E6F4F1]/70 to-transparent" />

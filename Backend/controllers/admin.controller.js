@@ -10,15 +10,92 @@ import path from "path";
 
 /* ================= GET ALL USERS ================= */
 export const getAllUsers = async (req, res) => {
-  const users = await User.find().select("-password");
-  res.json({ success: true, data: users });
+  try {
+    
+    const users = await User.find().select("-password").lean();
+
+    const userIds = users.map(u => u._id);
+
+    
+    const registrations = await Registration.find({
+      user: { $in: userIds },
+      hackathon: { $ne: null }
+    })
+      .populate("hackathon", "title status startDate endDate category")
+      .lean();
+
+ 
+    const userHackMap = {};
+    registrations.forEach(reg => {
+      const uid = reg.user.toString();
+      if (!userHackMap[uid]) userHackMap[uid] = [];
+      userHackMap[uid].push({
+        hackathon: reg.hackathon,
+        status: reg.status,
+        participationType: reg.participationType,
+        paymentStatus: reg.paymentStatus,
+        teamMembers: reg.teamMembers
+      });
+    });
+
+   
+    const finalUsers = users.map(user => ({
+      ...user,
+      hackathons: userHackMap[user._id.toString()] || []
+    }));
+
+    res.json({
+      success: true,
+      data: finalUsers
+    });
+
+  } catch (error) {
+    console.error("GET ALL USERS ERROR:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch users"
+    });
+  }
 };
 
 /* ================= EXPORT USERS ================= */
 export const exportStudentsToSheet = async (req, res) => {
-  const users = await User.find().select("name email university");
-  await googleSheetService.exportUsers(users);
-  res.json({ success: true, message: "Students exported to Google Sheet" });
+  try {
+
+    const users = await User.find().select(
+      "name email contactNumber university address collegeName courseName yearOfStudy"
+    );
+
+
+    const exportData = users.map((user) => ({
+      Name: user.name,
+      Email: user.email,
+      Contact: user.contactNumber || "",
+      University: user.university || "",
+      Address: user.address || "",
+      College: user.collegeName || "",
+      Course: user.courseName || "",
+      YearOfStudy: user.yearOfStudy || "",
+      Occupation: user.occupation || ""
+    }));
+
+
+    await googleSheetService.exportUsers(exportData);
+
+    console.log("📊 Students exported to Google Sheet");
+
+    res.json({
+      success: true,
+      message: "Students exported to Google Sheet successfully",
+      count: exportData.length,
+    });
+  } catch (error) {
+    console.error("EXPORT STUDENTS ERROR:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to export students",
+    });
+  }
 };
 
 /* ================= PRIZE SPLIT ================= */

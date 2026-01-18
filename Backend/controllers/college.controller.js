@@ -291,7 +291,7 @@ export const getCollegeStudents = async (req, res) => {
       email: user.email,
       contactNumber: user.contactNumber,
       hackathons: Array.from(hackathonMap[user._id.toString()] || []),
-    }));
+    })); 
 
     res.json({
       success: true,

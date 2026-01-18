@@ -60,47 +60,54 @@ const JudgeDashboard = () => {
 
   /* ================= SUBMIT ALL RANKINGS ================= */
   const submitAllRanks = async () => {
-    if (!Object.keys(draftRanks).length) {
-      alert("Please rank at least one participant");
-      return;
-    }
+  if (!Object.keys(draftRanks).length) {
+    alert("Please rank at least one participant");
+    return;
+  }
 
-    setSubmitting(true);
+  setSubmitting(true);
 
-    try {
-      for (const [userId, rank] of Object.entries(draftRanks)) {
-        await fetch(
-          `http://localhost:5001/api/judge/hackathon/${selectedHackathon}/review`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ userId, rank }),
-          }
-        );
-      }
-
-      // update UI after successful submit
-      setParticipants(prev =>
-        prev.map(p =>
-          draftRanks[p.user._id]
-            ? { ...p, rank: draftRanks[p.user._id] }
-            : p
-        )
+  try {
+    for (const [userId, rank] of Object.entries(draftRanks)) {
+      const res = await fetch(
+        `http://localhost:5001/api/judge/hackathon/${selectedHackathon}/review`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ userId, rank }),
+        }
       );
 
-      setDraftRanks({});
-      alert("All rankings submitted successfully ✅");
+      const data = await res.json();
 
-    } catch (err) {
-      console.error(err);
-      alert("Failed to submit rankings");
-    } finally {
-      setSubmitting(false);
+      if (!res.ok) {
+        throw new Error(data.message || "Ranking failed");
+      }
     }
-  };
+
+    // update UI after successful submit
+    setParticipants(prev =>
+      prev.map(p =>
+        draftRanks[p.user._id]
+          ? { ...p, rank: draftRanks[p.user._id] }
+          : p
+      )
+    );
+
+    setDraftRanks({});
+    alert("All rankings submitted successfully ✅");
+
+  } catch (err) {
+    console.error(err);
+    alert(err.message || "Failed to submit rankings");
+  } finally {
+    setSubmitting(false);
+  }
+};
+
 
   /* ================= FILTER PARTICIPANTS ================= */
   const filteredParticipants = participants.filter(p => {
@@ -313,14 +320,17 @@ const JudgeDashboard = () => {
                               <div className="flex gap-2">
                                 {[1, 2, 3].map(r => (
                                   <button
-                                    key={r}
-                                    onClick={() => selectRank(p.user._id, r)}
-                                    className={`w-16 h-16 rounded-xl font-bold text-lg transition-all duration-300 shadow-md ${
-                                      selectedRank === r
-                                        ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white scale-110 shadow-lg shadow-emerald-300"
-                                        : "bg-gray-100 text-gray-700 border-2 border-gray-300 hover:bg-gray-200 hover:scale-105"
-                                    }`}
-                                  >
+  disabled={!p.submittedAt}
+  onClick={() => selectRank(p.user._id, r)}
+  className={`w-16 h-16 rounded-xl font-bold text-lg transition-all ${
+    !p.submittedAt
+      ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+      : selectedRank === r
+        ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white"
+        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+  }`}
+>
+
                                     {r}
                                   </button>
                                 ))}

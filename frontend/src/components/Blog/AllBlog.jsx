@@ -7,6 +7,7 @@ import heroImg from "../../assets/blogs/blog-hero.png";
 import circleImg from "../../assets/blogs/breadcrumb-circle.png";
 import Footer from "../Footer";
 import Navbar from "../Navbar";
+import GraphuraBlogSEO from "../SEO/GraphuraBlogSEO";
 
 const BLOGS_PER_PAGE = 9;
 const API_URL = "http://localhost:5001/api/blog";
@@ -46,6 +47,7 @@ const AllBlog = () => {
 
   return (
     <div className="bg-[#f8fafb]">
+      <GraphuraBlogSEO />
       <Navbar />
       {/* ================= HERO SECTION ================= */}
       <section className="relative overflow-hidden min-h-[70vh] bg-gradient-to-br from-[#03594E] via-[#03594E] to-[#1AB69D]">

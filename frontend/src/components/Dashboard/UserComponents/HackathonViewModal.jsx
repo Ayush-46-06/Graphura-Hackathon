@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import TeamRegistrationModal from "./TeamRegistrationModal"
 
-const tabs = ["Overview", "Rules & Guidelines", "Judges", "Prizes"];
+const tabs = ["Overview", "Rules & Guidelines", "Prizes"];
 
 const defaultRules = [
   "Only original code, content, and design are allowed.",
@@ -170,14 +170,14 @@ const HackathonViewModal = ({ hackathonId, onClose }) => {
         </div>
 
         {/* TABS */}
-        <div className="bg-gradient-to-b from-gray-50 to-white border-b px-6 pt-4 flex gap-2 overflow-x-auto">
+        <div className="bg-gradient-to-b from-gray-50 to-white border-b  pb-5 flex gap-2 overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-6 py-3 rounded-t-xl font-semibold transition-all whitespace-nowrap ${
+              className={`px-6 py-2 rounded-t-xl font-semibold transition-all whitespace-nowrap ${
                 activeTab === tab
-                  ? "bg-white text-[#03594E] shadow-lg transform -translate-y-0.5"
+                  ? " text-[#03594E] shadow-lg transform -translate-y-0.5"
                   : "text-gray-600 hover:text-gray-900 hover:bg-white/50"
               }`}
             >
