@@ -3,7 +3,7 @@ import axios from "axios";
 import { Plus, Edit2, Calendar, Tag, Search, Grid, List, Loader2, BookOpen, TrendingUp, Clock, ImageIcon } from "lucide-react";
 import AddEditBlogModal from "./AddEditBlogModal";
 
-const API_URL = "http://localhost:5001/api/blog";
+const API_URL = "/api/blog";
 const token = localStorage.getItem("token");
 
 const Blogs = () => {

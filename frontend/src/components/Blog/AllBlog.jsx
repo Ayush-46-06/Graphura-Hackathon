@@ -10,7 +10,7 @@ import Navbar from "../Navbar";
 import GraphuraBlogSEO from "../SEO/GraphuraBlogSEO";
 
 const BLOGS_PER_PAGE = 9;
-const API_URL = "http://localhost:5001/api/blog";
+const API_URL = "/api/blog";
 
 const AllBlog = () => {
   const [blogs, setBlogs] = useState([]);

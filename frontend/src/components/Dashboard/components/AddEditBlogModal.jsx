@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { X, Upload, Plus, Trash2 } from "lucide-react";
 
-const API_URL = "http://localhost:5001/api/blog";
+const API_URL = "/api/blog";
 const token = localStorage.getItem("token");
 
 const AddEditBlogModal = ({ blog, onClose, onSuccess }) => {

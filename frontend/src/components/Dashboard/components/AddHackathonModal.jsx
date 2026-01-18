@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { X, Upload, Calendar, DollarSign, Tag, Award, Info, Gift } from "lucide-react";
 
-const API_URL = "http://localhost:5001/api/hackathon";
+const API_URL = "/api/hackathon";
 
 const AddHackathonModal = ({ onClose, onCreated, editData = null }) => {
   const token = localStorage.getItem("token");

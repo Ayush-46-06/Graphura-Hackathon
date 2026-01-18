@@ -62,7 +62,7 @@ const Sponsor = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5001/api/sponsor-interest",
+        "/api/sponsor-interest",
         formData
       );
 

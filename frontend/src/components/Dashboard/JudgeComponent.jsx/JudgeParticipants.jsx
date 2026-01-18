@@ -6,7 +6,7 @@ const JudgeParticipants = ({ hackathonId }) => {
 
   useEffect(() => {
     axios.get(
-      `http://localhost:5001/api/judge/hackathon/${hackathonId}/participants`,
+      `/api/judge/hackathon/${hackathonId}/participants`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -19,7 +19,7 @@ const JudgeParticipants = ({ hackathonId }) => {
 
   const giveRank = async (userId, rank) => {
     await axios.post(
-      `http://localhost:5001/api/judge/hackathon/${hackathonId}/review`,
+      `/api/judge/hackathon/${hackathonId}/review`,
       { userId, rank },
       {
         headers: {

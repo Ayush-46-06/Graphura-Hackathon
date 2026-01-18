@@ -35,7 +35,7 @@ const TeamRegistrationModal = ({
     if (memberEmails.length === 0) return;
 
     await axios.post(
-      "http://localhost:5001/api/hackathon/register/team/add-member",
+      "/api/hackathon/register/team/add-member",
       {
         hackathonId: hackathon._id,
         memberEmails,
@@ -52,7 +52,7 @@ const TeamRegistrationModal = ({
     try {
       /* 1️⃣ CREATE TEAM */
       await axios.post(
-        "http://localhost:5001/api/hackathon/register/team/create",
+        "/api/hackathon/register/team/create",
         { hackathonId: hackathon._id },
         { headers: { Authorization: `Bearer ${token}` } }
       );

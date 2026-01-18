@@ -12,7 +12,7 @@ const DeclareResult = () => {
   const [success, setSuccess] = useState("");
 
   const token = localStorage.getItem("token");
-  const API_URL = "http://localhost:5001/api";
+  const API_URL = "/api";
 
   /* ================= FETCH ALL HACKATHONS ================= */
   useEffect(() => {

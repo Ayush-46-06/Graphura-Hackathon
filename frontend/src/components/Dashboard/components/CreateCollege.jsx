@@ -31,7 +31,7 @@ const CreateCollege = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5001/api/college", {
+      const res = await fetch("/api/college", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

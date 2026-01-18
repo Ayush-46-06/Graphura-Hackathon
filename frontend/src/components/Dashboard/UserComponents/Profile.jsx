@@ -29,7 +29,7 @@ const Profile = () => {
   /* ================= FETCH PROFILE ================= */
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const API = "http://localhost:5001/api/user/profile";
+    const API = "/api/user/profile";
 
     fetch(API, {
       headers: { Authorization: `Bearer ${token}` },
@@ -86,7 +86,7 @@ const Profile = () => {
     setSuccess(false);
 
     const token = localStorage.getItem("token");
-    const API = "http://localhost:5001/api/user/profile";
+    const API = "/api/user/profile";
 
     try {
       const formData = new FormData();
@@ -201,7 +201,7 @@ const Profile = () => {
                 <img
   src={
     imagePreview ||
-    `http://localhost:5001/${profile.image}?t=${Date.now()}`
+    `/${profile.image}?t=${Date.now()}`
   }
   alt="profile"
   className="w-full h-full object-cover"

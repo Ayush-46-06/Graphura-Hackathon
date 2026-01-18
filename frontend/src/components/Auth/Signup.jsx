@@ -4,7 +4,7 @@ import axios from "axios";
 import Navbar from "../Navbar";
 import signup from "/signup.jpg"
 
-const API_URL = "http://localhost:5001/api/auth/register";
+const API_URL = "/api/auth/register";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -74,15 +74,15 @@ const Signup = () => {
     if (form.role === "admin") {
       payload.role = "admin";
       payload.adminSecret = form.adminSecret;
-      apiUrl = "http://localhost:5001/api/auth/register";
+      apiUrl = "/api/auth/register";
     }
     else if (form.role === "judge") {
       payload.judgeSecret = form.judgeSecret;
-      apiUrl = "http://localhost:5001/api/auth/judge-register"; // ✅ EXACT MATCH
+      apiUrl = "/api/auth/judge-register"; // ✅ EXACT MATCH
     }
     else {
       payload.role = "user";
-      apiUrl = "http://localhost:5001/api/auth/register";
+      apiUrl = "/api/auth/register";
     }
 
     const res = await axios.post(apiUrl, payload);

@@ -44,7 +44,7 @@ const latestBlogs = [
 
 /* ================= API ================= */
 
-const API_URL = "http://localhost:5001/api/blog";
+const API_URL = "/api/blog";
 
 const BlogDetails = () => {
   const { id } = useParams();

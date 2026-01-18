@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { Search, Filter, Users, Download, X, Eye, Mail, Phone, GraduationCap, Calendar, Wallet, Shield } from "lucide-react";
 
-const API_BASE = "http://localhost:5001/api";
+const API_BASE = "/api";
 
 /* ================= SMALL UI HELPER ================= */
 const Info = ({ label, value, icon: Icon }) => (

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Trash2, Edit2, Send, Save, X, Star, Quote, Sparkles } from "lucide-react";
 
-const API_BASE = "http://localhost:5001/api";
+const API_BASE = "/api";
 
 const Testimonials = () => {
   const [reviews, setReviews] = useState([]);

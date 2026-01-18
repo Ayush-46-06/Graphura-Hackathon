@@ -44,7 +44,7 @@ const HackathonDetail = () => {
     const fetchHackathon = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5001/api/hackathon/${id}`
+          `/api/hackathon/${id}`
         );
 
         setData(res.data.data);
@@ -61,7 +61,7 @@ const HackathonDetail = () => {
   useEffect(() => {
     const fetchAllHackathons = async () => {
       try {
-        const res = await axios.get("http://localhost:5001/api/hackathon");
+        const res = await axios.get("/api/hackathon");
         setAllHackathons(res.data.data);
       } catch (err) {
         console.error("Failed to fetch data", err);
@@ -77,7 +77,7 @@ const HackathonDetail = () => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const res = await axios.get(`http://localhost:5001/api/comment/${id}`, {
+        const res = await axios.get(`/api/comment/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -98,7 +98,7 @@ const HackathonDetail = () => {
   const postComment = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:5001/api/comment",
+        "/api/comment",
         {
           hackathonId: id,
           text: replyTo ? replyText : commentText,

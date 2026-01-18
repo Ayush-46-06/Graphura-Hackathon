@@ -31,7 +31,7 @@ export default function PartnerPage() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5001/api/partner/apply", formData);
+      await axios.post("/api/partner/apply", formData);
 
       alert("Partnership request submitted successfully");
 

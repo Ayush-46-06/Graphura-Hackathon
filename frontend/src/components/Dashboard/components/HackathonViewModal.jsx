@@ -39,7 +39,7 @@ const HackathonViewModal = ({ hackathonId, onClose }) => {
     const fetchHackathon = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5001/api/hackathon/${hackathonId}`
+          `/api/hackathon/${hackathonId}`
         );
         setHackathon(res.data.data);
       } catch (err) {
@@ -57,7 +57,7 @@ const HackathonViewModal = ({ hackathonId, onClose }) => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://localhost:5001/api/hackathon/register",
+        "/api/hackathon/register",
         { hackathonId },
         {
           headers: { Authorization: `Bearer ${token}` }

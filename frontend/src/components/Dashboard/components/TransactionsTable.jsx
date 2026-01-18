@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { DollarSign, Filter, Search, Download, RefreshCw, CheckCircle, Clock, XCircle, User, Mail, AlertCircle } from "lucide-react";
 
-const API_URL = "http://localhost:5001/api/transaction";
+const API_URL = "/api/transaction";
 
 const Transactions = () => {
   const [transactions, setTransactions] = useState([]);

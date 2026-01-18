@@ -18,7 +18,7 @@ const Results = () => {
   useEffect(()=>{
     const fetchPastHackathons = async ()=> {
       try {
-        const res = await axios.get("http://localhost:5001/api/hackathon");
+        const res = await axios.get("/api/hackathon");
         setPastHackathons(res.data.data);
         console.log(res.data.data);
       } catch(err) {

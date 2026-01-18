@@ -44,7 +44,7 @@ const Hackathon = () => {
   useEffect(() => {
     const fetchHackathons = async () => {
       try {
-        const res = await axios.get("http://localhost:5001/api/hackathon");
+        const res = await axios.get("/api/hackathon");
         setData(res.data.data);
       } catch (err) {
         console.log("Failed to fetch data", err);

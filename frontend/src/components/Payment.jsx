@@ -19,7 +19,7 @@ const openRazorpayPayment = async ({ hackathonId, token, onSuccess }) => {
 
   // 1️⃣ Create order
   const { data } = await axios.post(
-    "http://localhost:5001/api/hackathon/register/paid/create-order",
+    "/api/hackathon/register/paid/create-order",
     { hackathonId },
     {
       headers: {
@@ -47,7 +47,7 @@ const openRazorpayPayment = async ({ hackathonId, token, onSuccess }) => {
     handler: async function (response) {
       // 3️⃣ Verify payment
       const verifyRes = await axios.post(
-        "http://localhost:5001/api/hackathon/register/paid/verify",
+        "/api/hackathon/register/paid/verify",
         {
           orderId: response.razorpay_order_id,
           paymentId: response.razorpay_payment_id,

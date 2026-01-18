@@ -19,7 +19,7 @@ const JudgeDashboard = () => {
   useEffect(() => {
     if (!token) return;
 
-    fetch("http://localhost:5001/api/judge/hackathons", {
+    fetch("/api/judge/hackathons", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())
@@ -35,7 +35,7 @@ const JudgeDashboard = () => {
     setDraftRanks({}); // reset drafts when hackathon changes
 
     fetch(
-      `http://localhost:5001/api/judge/hackathon/${selectedHackathon}/participants`,
+      `/api/judge/hackathon/${selectedHackathon}/participants`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
       .then(res => res.json())
@@ -70,7 +70,7 @@ const JudgeDashboard = () => {
   try {
     for (const [userId, rank] of Object.entries(draftRanks)) {
       const res = await fetch(
-        `http://localhost:5001/api/judge/hackathon/${selectedHackathon}/review`,
+        `/api/judge/hackathon/${selectedHackathon}/review`,
         {
           method: "POST",
           headers: {

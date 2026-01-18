@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Users, Download, Search, RefreshCw, CheckCircle2, AlertCircle, Loader2, Trophy, Mail, Phone, User } from "lucide-react";
 
-const API_URL = "http://localhost:5001/api/college/dashboard/students";
-const EXPORT_URL = "http://localhost:5001/api/college/dashboard/export";
+const API_URL = "/api/college/dashboard/students";
+const EXPORT_URL = "/api/college/dashboard/export";
 
 const CollegeStudents = () => {
   const token = localStorage.getItem("token");

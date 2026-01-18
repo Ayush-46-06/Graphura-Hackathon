@@ -16,7 +16,7 @@ const SlidingAuthPage = () => {
   const fetchColleges = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5001/api/public/colleges"
+        "/api/public/colleges"
       );
 
       if (res.data.success) {
@@ -70,7 +70,7 @@ const SlidingAuthPage = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5001/api/auth/login",
+        "/api/auth/login",
         loginForm
       );
 
@@ -137,13 +137,13 @@ const SlidingAuthPage = () => {
       if (signupForm.role === "admin") {
         payload.role = "admin";
         payload.adminSecret = signupForm.adminSecret;
-        apiUrl = "http://localhost:5001/api/auth/register";
+        apiUrl = "/api/auth/register";
       } else if (signupForm.role === "judge") {
         payload.judgeSecret = signupForm.judgeSecret;
-        apiUrl = "http://localhost:5001/api/auth/judge-register";
+        apiUrl = "/api/auth/judge-register";
       } else {
         payload.role = "user";
-        apiUrl = "http://localhost:5001/api/auth/register";
+        apiUrl = "/api/auth/register";
       }
 
       const res = await axios.post(apiUrl, payload);

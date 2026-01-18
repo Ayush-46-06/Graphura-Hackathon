@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const API_URL = "http://localhost:5001/api/college/login";
+const API_URL = "/api/college/login";
 
 const CollegeLogin = () => {
   const navigate = useNavigate();

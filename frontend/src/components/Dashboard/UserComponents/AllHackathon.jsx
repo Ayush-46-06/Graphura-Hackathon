@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Users, Calendar, Award, Tag, Search, Filter, X, ChevronDown, DollarSign, UserCheck } from "lucide-react";
 import HackathonViewModal from "./HackathonViewModal";
 
-const API_URL = "http://localhost:5001/api/hackathon";
+const API_URL = "/api/hackathon";
 
 const ExploreEvents = () => {
   const [hackathons, setHackathons] = useState([]);

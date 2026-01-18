@@ -12,7 +12,7 @@ const ResetPassword = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const API_URL = "http://localhost:5001/api/auth";
+  const API_URL = "/api/auth";
 
   const handleSubmit = async (e) => {
     e.preventDefault();

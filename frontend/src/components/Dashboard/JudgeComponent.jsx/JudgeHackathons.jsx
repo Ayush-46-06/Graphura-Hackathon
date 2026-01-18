@@ -5,7 +5,7 @@ const JudgeHackathons = ({ setActive, setSelectedHackathon }) => {
   const [hackathons, setHackathons] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:5001/api/judge/hackathons", {
+    axios.get("/api/judge/hackathons", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },

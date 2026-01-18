@@ -22,7 +22,7 @@ const HomeHackathonSlider = () => {
   useEffect(() => {
     const fetchHackathons = async () => {
       try {
-        const res = await fetch("http://localhost:5001/api/hackathon");
+        const res = await fetch("/api/hackathon");
         const json = await res.json();
         setData(json.data || []);
       } catch (err) {

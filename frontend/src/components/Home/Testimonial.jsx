@@ -10,7 +10,7 @@ const TestimonialSection = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await axios.get("http://localhost:5001/api/review");
+        const res = await axios.get("/api/review");
         setReviews(res.data.review || []);
       } catch (error) {
         console.error("Failed to fetch testimonials", error);

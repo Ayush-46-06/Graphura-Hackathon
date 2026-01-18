@@ -4,7 +4,7 @@ import AddHackathonModal from "./AddHackathonModal";
 import HackathonViewModal from "./HackathonViewModal";
 import { Users, Calendar, Award, Tag } from "lucide-react";
 
-const API_URL = "http://localhost:5001/api/hackathon";
+const API_URL = "/api/hackathon";
 
 const Hackathons = () => {
   const [hackathons, setHackathons] = useState([]);
